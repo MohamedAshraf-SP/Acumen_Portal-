@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { IoIosCloseCircleOutline } from "react-icons/io";
 
-export default function Addaccountant({ handleShowform }) {
+export default function Editaccountant({ handleShowform }) {
   const [note, shownote] = useState(true);
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-[#1c252e7a] z-50 ">
@@ -33,7 +33,9 @@ export default function Addaccountant({ handleShowform }) {
         <div className="py-6 px-4">
           <form className="flex flex-col gap-4">
             <div className="relative">
-              <label htmlFor="clientName">Client Name</label>
+              <label htmlFor="clientName" className="customlabel">
+                Client Name
+              </label>
               <input
                 type="text"
                 id="clientName"
@@ -42,7 +44,9 @@ export default function Addaccountant({ handleShowform }) {
               />
             </div>
             <div className="relative">
-              <label htmlFor="clientName">Email</label>
+              <label htmlFor="clientName" className="customlabel">
+                Email
+              </label>
               <input
                 type="text"
                 id="clientName"
@@ -51,7 +55,9 @@ export default function Addaccountant({ handleShowform }) {
               />
             </div>
             <div className="relative">
-              <label htmlFor="clientName">Phone</label>
+              <label htmlFor="clientName" className="customlabel">
+                Phone
+              </label>
               <input
                 type="text"
                 id="clientName"
@@ -60,7 +66,9 @@ export default function Addaccountant({ handleShowform }) {
               />
             </div>
             <div className="relative">
-              <label htmlFor="clientName">Department</label>
+              <label htmlFor="clientName" className="customlabel">
+                Department
+              </label>
               <input
                 type="text"
                 id="clientName"

@@ -138,65 +138,65 @@ export const dashboardAnalytics = [
     iconColor: "#8035E6",
     titleColor: "#8035E6",
   },
-  {
-    icon: <FaBuildingShield />,
-    Title: "Companies",
-    count: "77",
-    bgColor: "#FFF2CC",
-    iconColor: "#EAA215",
-    titleColor: "#EBA417",
-  },
-  {
-    icon: <MdEmail />,
-    Title: "Alerts",
-    count: "58",
-    bgColor: "#FFE6D7",
-    iconColor: "#F26847",
-    titleColor: "#E3492F",
-  },
-];
+//   {
+//     icon: <FaBuildingShield />,
+//     Title: "Companies",
+//     count: "77",
+//     bgColor: "#FFF2CC",
+//     iconColor: "#EAA215",
+//     titleColor: "#EBA417",
+//   },
+//   {
+//     icon: <MdEmail />,
+//     Title: "Alerts",
+//     count: "58",
+//     bgColor: "#FFE6D7",
+//     iconColor: "#F26847",
+//     titleColor: "#E3492F",
+//   },
+// ];
 
-// Documents Table Column Title
-export const ordersGrid = [
-  {
-    headerText: "Client Name",
-    textAlign: "Center",
-    width: "120",
-  },
-  {
-    field: "OrderItems",
-    headerText: "Companmy",
-    width: "150",
-    editType: "dropdownedit",
-    textAlign: "Center",
-  },
-  {
-    field: "CustomerName",
-    headerText: "Title",
-    width: "150",
-    textAlign: "Center",
-  },
-  {
-    field: "TotalAmount",
-    headerText: "Data Time",
-    format: "C2",
-    textAlign: "Center",
-    editType: "numericedit",
-    width: "150",
-  },
-  {
-    headerText: "Status",
+// // Documents Table Column Title
+// export const ordersGrid = [
+//   {
+//     headerText: "Client Name",
+//     textAlign: "Center",
+//     width: "120",
+//   },
+//   {
+//     field: "OrderItems",
+//     headerText: "Companmy",
+//     width: "150",
+//     editType: "dropdownedit",
+//     textAlign: "Center",
+//   },
+//   {
+//     field: "CustomerName",
+//     headerText: "Title",
+//     width: "150",
+//     textAlign: "Center",
+//   },
+//   {
+//     field: "TotalAmount",
+//     headerText: "Data Time",
+//     format: "C2",
+//     textAlign: "Center",
+//     editType: "numericedit",
+//     width: "150",
+//   },
+//   {
+//     headerText: "Status",
 
-    field: "OrderItems",
-    textAlign: "Center",
-    width: "120",
-  },
-  {
-    field: "OrderID",
-    headerText: "Action",
-    width: "120",
-    textAlign: "Center",
-  },
+//     field: "OrderItems",
+//     textAlign: "Center",
+//     width: "120",
+//   },
+//   {
+//     field: "OrderID",
+//     headerText: "Action",
+//     width: "120",
+//     textAlign: "Center",
+//   },
 ];
 
  

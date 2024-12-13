@@ -1,16 +1,13 @@
 import { useStateContext } from "../Contexts/ContextProvider";
 // import icons
-import { IoIosArrowForward } from "react-icons/io";
-import { IoIosArrowBack } from "react-icons/io";
+import { CiMenuFries } from "react-icons/ci";
 import { MdOutlineSettingsSuggest } from "react-icons/md";
 import { MdKeyboardArrowDown } from "react-icons/md";
-import { CiMenuFries } from "react-icons/ci";
 
 // import images
 import userimg from "/images/user/avatar-25.webp";
 import { useEffect, useRef, useState } from "react";
 import { TooltipComponent } from "@syncfusion/ej2-react-popups";
-import SettingsPannel from "./SettingsPannel";
 export default function Navbar() {
   const [MobileScreen, setMobileScreen] = useState(false);
   const {
@@ -30,16 +27,13 @@ export default function Navbar() {
   // create resuable NavButton
   const NavButton = ({ Title, CustomFunc, color, dotColor, icon }) => (
     <TooltipComponent content={Title} position="BottomCenter">
-      <button
-        type="button"
-        className="relative  rounded-full  p-1 hover:bg-light-gray "
+      <span
+        className="relative rounded-full w-10 h-10 text-xl cursor-pointer    flex items-center justify-center border border-solid border-neutral-200 overflow-hidden  hover:bg-light-gray outline-none"
         style={{ color }}
         onClick={() => CustomFunc()}
       >
-        <span className="Icon  " style={{ background: dotColor }}>
-          {icon}
-        </span>
-      </button>
+        {icon}
+      </span>
     </TooltipComponent>
   );
   // show navbar when in mobile screen
@@ -72,11 +66,7 @@ export default function Navbar() {
               className="  cursor-pointer bg-white"
               onClick={handleCollapse}
             >
-              {!collapsed ? (
-                <IoIosArrowBack className="Icon !p-0 w-6 h-6 !font-medium" />
-              ) : (
-                <IoIosArrowForward className="Icon !p-0 w-6 h-6 !font-medium " />
-              )}
+              <CiMenuFries className=" w-10 h-10 p-2 transition  rounded-full border border-solid hover:border-gray-400  " />
             </span>
           )}
         </div>

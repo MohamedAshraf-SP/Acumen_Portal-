@@ -1,8 +1,11 @@
 import axios from "axios";
-const api = import.meta.env.VITE_API_URLL;
+const api = import.meta.env.VITE_API_URL;
 // Centralized error handling function
 const handleError = (error, action) => {
-  throw new Error(`Sorry Error is ${action} : ${error.message} `);
+  console.error(error.message); // Fix: Use `error` not `errors`
+  throw new Error(
+    `Sorry, an error occurred during ${action}: ${error.message}`
+  );
 };
 // Generic API call
 const apiCall = async (method, path, data = null) => {
@@ -15,27 +18,28 @@ const apiCall = async (method, path, data = null) => {
 };
 
 // get All Items
-const getAllItems = (path) => {
+export const getAllItems = (path) => {
   return apiCall("GET", path);
 };
 
 // get One Item
-const getItem = (path, itemId) => {
+export const getItem = (path, itemId) => {
   return apiCall("GET", `${path}/${itemId}`);
 };
 // get Count
-const getCount = () => {
+export const getCount = (path) => {
   return apiCall("GET", `${path}/count`);
 };
 // add Item
-const addItem = (path, data) => {
+export const addItem = (path, data) => {
   return apiCall("POST", path, data);
 };
 // update Item
-const updateItem = (path, itemId, data) => {
+export const updateItem = (path, itemId, data) => {
   return apiCall("PUT", `${path}/${itemId}`, data);
 };
 // delete Item
-const deleteItem = (path, itemId) => {
+export const deleteItem = (path, itemId) => {
+ 
   return apiCall("DELETE", `${path}/${itemId}`);
 };

@@ -102,7 +102,6 @@ const Companytable = () => {
           toolbar={["Search"]}
           width="auto"
           pageSettings={{ pageSize: 5 }}
-         className="custom-grid"
         >
           <ColumnsDirective>
             <ColumnDirective
@@ -131,7 +130,6 @@ const Companytable = () => {
               format="C2"
             />
             <ColumnDirective
- 
               headerText="Company Phone"
               width="100"
               textAlign="Left"

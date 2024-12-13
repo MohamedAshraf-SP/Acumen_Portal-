@@ -11,7 +11,7 @@ export default function MainLayout() {
       {/* Sidebar */}
 
       <div
-        className={`fixed z-50 overflow-x-hidden ${
+        className={`fixed z-10 overflow-x-hidden ${
           activeMenu ? "translate-x-0" : "-translate-x-full"
         } ${collapsed ? "w-20 " : "w-60"} transition-all duration-300`}
       >

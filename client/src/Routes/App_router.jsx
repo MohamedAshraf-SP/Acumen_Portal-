@@ -3,11 +3,14 @@ import { lazy, Suspense } from "react";
 import MainLayout from "../Layouts/MainLayout"; // Import your layout
 import NotFind from "../pages/NotFind"; // 404 Page Component
 import Loader from "../component/Loader"; // Loading component
+import AddAcountant from "../component/AddAcountant";
 
 // Lazy Load Pages
 // -------------Admin --------------
 const AdminDashboard = lazy(() => import("../pages/Admin/Admin_Dashboard"));
 const AdminAccounts = lazy(() => import("../pages/Admin/Accountants"));
+const Addaccountant = lazy(() => import("../component/AddAcountant"));
+const AddClient = lazy(() => import("../component/AddClientform"));
 const AdminClients = lazy(() => import("../pages/Admin/Clients"));
 const AdminCompaines = lazy(() => import("../pages/Admin/Compaines"));
 const AdminNotifications = lazy(() => import("../pages/Admin/Notifications"));
@@ -17,7 +20,7 @@ const ImportClients = lazy(() => import("../pages/Admin/Import_clients"));
 const SentNotifications = lazy(() =>
   import("../pages/Admin/sent_Notifications")
 );
-const AddClient = lazy(() => import("../component/AddClientform"));
+
 // ---------------client ---------
 const ClientDashboard = lazy(() => import("../pages/Client/Client_Dashboard"));
 const AddCompany = lazy(() => import("../pages/Client/Add_Company"));
@@ -54,7 +57,12 @@ const AppRouter = () => {
               <Route
                 path="/accountants"
                 element={withSuspense(<AdminAccounts />)}
-              />
+              >
+                <Route
+                  path="add-accountant"
+                  element={withSuspense(<Addaccountant />)}
+                />
+              </Route>
               <Route path="/clients" element={withSuspense(<AdminClients />)} />
               <Route
                 path="/companies"
@@ -82,6 +90,10 @@ const AppRouter = () => {
               />
               <Route
                 path="/add-account"
+                element={withSuspense(<AddAcountant />)}
+              />
+              <Route
+                path="clients/add-Client"
                 element={withSuspense(<AddClient />)}
               />
             </>

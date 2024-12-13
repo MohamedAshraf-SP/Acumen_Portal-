@@ -11,11 +11,11 @@ export default function Block_Count({
 }) {
   return (
     <div
-      className="relative   rounded-[16px] overflow-hidden p-[14px] "
+      className="relative   rounded-[16px] overflow-hidden px-[14px] py-2"
       style={{ backgroundColor: bgColor }}
     >
       {/* Icon Section */}
-      <div className="flex flex-col items-start gap-4">
+      <div className="flex flex-col items-start gap-3">
         <div
           className="w-[48px] h-[48px] overflow-hidden text-4xl flex justify-center items-center z-10"
           style={{ color: iconColor }}

@@ -1,9 +1,10 @@
-import React from 'react'
+import React from "react";
+import ClientTable from "../../component/ClientTable";
 
 export default function Clients() {
   return (
     <div>
-      clients
+      <ClientTable />
     </div>
-  )
+  );
 }

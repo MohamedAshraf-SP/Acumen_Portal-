@@ -2,7 +2,11 @@ import { useState } from "react";
 // import icons
 import { LuDot } from "react-icons/lu";
 import { GoPlus } from "react-icons/go";
-import { MdDelete } from "react-icons/md";
+import { FaRegTrashCan } from "react-icons/fa6";
+
+import { BiShow } from "react-icons/bi";
+import { MdOutlineModeEditOutline } from "react-icons/md";
+// import components
 import { TooltipComponent } from "@syncfusion/ej2-react-popups";
 import {
   GridComponent,
@@ -14,14 +18,14 @@ import {
   Toolbar,
 } from "@syncfusion/ej2-react-grids";
 
-import Addaccountant from "../../component/Addaccountant";
+import Addaccountant from "../../component/Editaccountant";
 import ConfirmDelete from "../../component/ConfirmDelete";
-import { useStateContext } from "../../Contexts/ContextProvider";
-import ConfrmMessage from "../../component/ConfrmMessage";
+import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 export default function Accountants() {
+  const { deleteHintmsg } = useSelector((state) => state.setting);
   // Context imports
-  const { Deletemsg, showDeletemsg, setconfirmmsg, confirmmsg } =
-    useStateContext();
+
   const routes = ["Dashboard", "Admin", "Accountants"];
   // Display show or hide add accountant form
   const [addAccountant, showaddAccontant] = useState(false);
@@ -61,50 +65,21 @@ export default function Accountants() {
     },
   ];
 
-  const customerTemplate = ({ avatar, customerName, email }) => (
-    <div className="flex items-center space-x-3">
-      <img
-        src={avatar}
-        alt={`${customerName}'s avatar`}
-        className="w-8 h-8 rounded-full"
-      />
-      <div>
-        <p className="font-semibold">{customerName}</p>
-        <p className="text-sm text-gray-500">{email}</p>
-      </div>
-    </div>
-  );
-
-  const actionTemplate = () => (
-    <div>
-      <ul className="flex items-center justify-center space-x-2">
-        <TooltipComponent content={"Delete"} position="TopCenter">
-          <li
-            className="w-8 h-8 text-md rounded-full flex items-center justify-center bg-[#F7DDD8] text-[#CC5B56] hover:bg-[#CC5B56] hover:text-white transition-all duration-300 ease-in-out cursor-pointer"
-            onClick={() => showDeletemsg(!Deletemsg)}
-          >
-            <MdDelete />
-          </li>
-        </TooltipComponent>
-      </ul>
-    </div>
-  );
-
   return (
     <div className="py-10  dark:bg-secondary-dark-bg">
       {/* start Page Header */}
       <div>
         <div className="flex flex-row items-start justify-between">
           <h4 className="text-xl font-semibold leading-[1.5] dark:text-white">
-            Accountants
+            Accountant
           </h4>
-          <button
+          <Link
+            to="/add-account"
             className="flex items-center gap-1 bg-[#1C252E] text-white px-3 py-2 rounded-md hover:shadow-lg hover:opacity-[.8] font-semibold text-[13px] transition"
-            onClick={handleShowAddaccountant}
           >
             <GoPlus className="text-lg" />
             Add Accountant
-          </button>
+          </Link>
         </div>
         <ul className="flex flex-row items-center space-x-1 text-sm py-2">
           {routes.map((route, index) => (
@@ -163,7 +138,22 @@ export default function Accountants() {
                 headerText="Action"
                 width="100"
                 textAlign="Left"
-                template={actionTemplate}
+                template={(rowData) => (
+                  <div>
+                    <ul className="flex items-center justify-center space-x-2">
+                      <TooltipComponent content={"Delete"} position="TopCenter">
+                        <li
+                          className="w-6 h-6 rounded-full flex items-center justify-center bg-[#FFE9E3] text-[#ec3b3b] hover:bg-[#FF6D43] hover:text-white transition-all duration-300 ease-in-out cursor-pointer"
+                          onClick={() =>
+                            deleteItemClick(rowData._id, "clients")
+                          }
+                        >
+                          <FaRegTrashCan />
+                        </li>
+                      </TooltipComponent>
+                    </ul>
+                  </div>
+                )}
               />
             </ColumnsDirective>
             <Inject services={[Page, Search, Toolbar]} />
@@ -175,9 +165,8 @@ export default function Accountants() {
       {addAccountant && (
         <Addaccountant handleShowform={handleShowAddaccountant} />
       )}
-      {Deletemsg}
-      {Deletemsg && <ConfirmDelete />}
-      {confirmmsg && <ConfrmMessage />}
+
+      {deleteHintmsg && <ConfirmDelete />}
     </div>
   );
 }

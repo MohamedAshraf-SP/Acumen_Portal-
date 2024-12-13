@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const api = import.meta.env.VITE_API_URLL;
+const api = import.meta.env.VITE_API_URL;
 // Centralized error handling function
 const handleError = (error, action) => {
   throw new Error(`${action}:sorry error is ${error.message}`);
@@ -20,6 +20,4 @@ const getAllCompanies = (itemId) => {
 };
 
 //Get Department Of Clients
-const getClientDepartment = () => {
-  
-}
+const getClientDepartment = () => {};
