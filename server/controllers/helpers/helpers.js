@@ -1,5 +1,22 @@
 import Helper from "../../models/helpers/helpers.js";
+import User from "../../models/users/user.js";
 
+
+
+
+export const checkEmail = async (req, res) => {
+    try {
+        //console.log(req);
+
+        const email = await User.find({ userName: req.body.email })
+        if (email.length != 0) {
+            return res.status(400).json({ message: "email already exist" })
+        }
+        return res.status(200).json({ message: "Email is Okey" })
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+}
 // CREATE - Add a new helper
 export const addHelper = async (req, res) => {
     try {

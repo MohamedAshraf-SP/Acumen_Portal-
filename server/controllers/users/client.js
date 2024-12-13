@@ -50,10 +50,19 @@ export const getClients = async (req, res) => {
 };
 
 
+
+
+
+
 // Add a new client
 export const addClient = async (req, res) => {
     try {
         //console.log(req);
+
+        const email = User.find({userName:req.body.email})
+        if(email){
+            res.status(400).json({message:"email already exist"})
+        }
 
         const nUser = new User({
             userName: req.body.email,
@@ -62,6 +71,8 @@ export const addClient = async (req, res) => {
         })
 
         const newUser = await nUser.save();
+
+
 
 
 

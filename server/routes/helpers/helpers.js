@@ -5,8 +5,12 @@ import { upload } from "../../config/multer.js";
 import { Router } from 'express';
 import { getEmailLogs, getLogsCount } from "../../controllers/helpers/emailLogs.js";
 
-import { addHelper, updateHelper,getHelpers, deleteHelper, getHelperById } from "../../controllers/helpers/helpers.js"
+
+import { addHelper, updateHelper,getHelpers, deleteHelper, getHelperById,checkEmail } from "../../controllers/helpers/helpers.js"
 const helpersRoute = new Router()
+
+//check if email exits
+helpersRoute.get("/checkEmail", checkEmail)
 
 //csv import
 helpersRoute.post('/importCSV', upload.single('clients'), importClientsFromCSV)

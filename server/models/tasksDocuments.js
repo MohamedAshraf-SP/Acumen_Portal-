@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 
 const tasksDocumentSchema = new mongoose.Schema({
+  clinetID: { type: mongoose.Types.ObjectId, required: true },
   clientName: { type: String, required: true },
   companyName: { type: String },
   path: { type: String, required: true },
@@ -22,4 +23,4 @@ const tasksDocumentSchema = new mongoose.Schema({
   },
 }, { timestamps: true }); // Automatically adds createdAt and updatedAt fields
 
-export default mongoose.model('tasksDocument', tasksDocumentSchema);
+export default mongoose.model('TasksDocument', tasksDocumentSchema);
