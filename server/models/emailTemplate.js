@@ -8,7 +8,7 @@ const emailTemplateSchema = new mongoose.Schema({
   updatedAt: { type: Date, default: Date.now }, // Timestamp for when the template was last updated
 });
 
-emailTemplateSchema.pre('save', function(next) {
+emailTemplateSchema.pre('save', function (next) {
   this.updatedAt = Date.now();
   next();
 });

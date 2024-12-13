@@ -112,27 +112,37 @@ export const deleteForm = async (req, res) => {
 
 
 export const downloadFile = async (req, res) => {
-    const { id } = req.params;
+    try {
 
 
-    const form = await Form.findById(id)
+        const { id } = req.params;
 
 
-    //const filePath = path.join('uploads', form.path); // Construct the file path
+        const form = await Form.findById(id)
 
-    // res.download(filePath, (err) => {
-    //     if (err) {
-    //         console.error('Error downloading file:', err.message);
-    //         res.status(500).json({ error: 'File could not be downloaded' });
-    //     }
-    // });
+        if (!form) {
+            return res.status(404).send("File Not Found!!")
+        }
 
 
-    var file = fs.readFileSync(__dirname + "\\..\\" + form.PATH, 'binary');
+        //const filePath = path.join('uploads', form.path); // Construct the file path
 
-    res.setHeader('Content-Length', file.length);
-    res.write(file, 'binary');
-    res.end();
+        // res.download(filePath, (err) => {
+        //     if (err) {
+        //         console.error('Error downloading file:', err.message);
+        //         res.status(500).json({ error: 'File could not be downloaded' });
+        //     }
+        // });
+
+
+        var file = fs.readFileSync(__dirname + "\\..\\" + form.PATH, 'binary');
+
+        res.setHeader('Content-Length', file.length);
+        res.write(file, 'binary');
+        res.end();
+    } catch (e) {
+        res.status(400).json(e)
+    }
 
 
 
@@ -143,7 +153,7 @@ export const getFormsCount = async (req, res) => {
 
     try {
         const count = await Form.countDocuments()
-        res.json(count)
+        res.json({ count })
     } catch (e) {
         res.status(500).json(e)
     }

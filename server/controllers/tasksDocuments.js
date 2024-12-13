@@ -90,8 +90,9 @@ export const downloadTaskById = async (req, res) => {
         }
         const biFile = fs.readFileSync(task.path, "binary")
 
-        res.setHeaders("Content-Length", biFile.length)
-        res.setHeader('Content-Type', 'application/pdf');
+
+
+        res.setHeader("Content-Length", biFile.length)
         res.status(200).write(biFile, "binary")
         res.end()
 
