@@ -1,145 +1,162 @@
-import { fileURLToPath } from 'url';
+import mongoose from 'mongoose';
 import TasksDocument from '../models/tasksDocuments.js';
-import path from "path"
 import fs from "fs"
+import { deleteFileWithPath } from "../helpers/deleteFile.js"
+import { fileURLToPath } from 'url';
+import path from "path"
 
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 
-// CREATE - Add a new tasksDocument with file upload
-export const addTasksDocument = async (req, res) => {
+// CREATE: Add a new task
+export const addTask = async (req, res) => {
     try {
-        const { name, additionalName } = req.body;
-        const filePath = req.file ? req.file.path : null;
+        console.log(req.file.path)
+        const { clientID, clientName, companyName, title, status, userKey, accountantName, action } = req.body;
 
-        if (!filePath) {
-            return res.status(400).json({ error: 'File is required' });
+        if (!req.file) {
+            return res.status(400).json({ message: 'File is required' });
         }
 
-        const tasksDocument = new TasksDocument({
-            name,
-            path: filePath,
-            additionalName
+        const newTask = new TasksDocument({
+            clientID: clientID,
+            clientName,
+            companyName,
+            path: req.file.path,
+            title,
+            status,
+            userKey,
+            accountantName,
+            action,
         });
 
-        await tasksDocument.save();
-        res.status(201).json(tasksDocument);
+        const savedTask = await newTask.save();
+        res.status(201).json(savedTask);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 };
 
-// READ - Get all tasksDocuments
-export const getTasksDocuments = async (req, res) => {
+// READ: Get all tasks
+export const getAllTasks = async (req, res) => {
+
+    const page = req.query.page || 1;
+    const limit = req.query.limit || 10;
+    const skip = (page - 1) * limit;
+
+    const TasksDocumentCount = await TasksDocument.countDocuments();
+    // console.log(clientCount)
+
+    const pagesCount = Math.ceil(TasksDocumentCount / limit) || 0;
+
     try {
-        const tasksDocuments = await TasksDocument.find();
-        res.status(200).json(tasksDocuments);
+        const TasksDocuments = await TasksDocument.find(
+            {}
+        ).skip(skip)
+            .limit(limit); // Skip the specified number of documents.limit(limit);;
+        res.status(200).json({
+            currentPage: page,
+            pagesCount: pagesCount,
+            TasksDocuments: TasksDocuments,
+            TasksDocumentCount,
+        });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 };
 
-// READ - Get a single tasksDocument by ID
-export const getTasksDocumentById = async (req, res) => {
+
+// READ: Get task by ID
+export const getTaskById = async (req, res) => {
     try {
-        const { id } = req.params;
-        const tasksDocument = await TasksDocument.findById(id);
-
-        if (!tasksDocument) {
-            return res.status(404).json({ error: 'TasksDocument not found' });
+        const task = await TasksDocument.findById(req.params.id);
+        if (!task) {
+            return res.status(404).json({ message: 'Task not found' });
         }
-
-        res.status(200).json(tasksDocument);
+        res.status(200).json(task);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 };
 
-// UPDATE - Update a tasksDocument (with optional file replacement)
-export const updateTasksDocument = async (req, res) => {
+export const downloadTaskById = async (req, res) => {
     try {
-        const { id } = req.params;
-        const { clientName, companyName, path, title, dateTime, status, userKey, accountantName, action } = req.body;
-        const filePath = req.file ? req.file.path : null;
-
-        const tasksDocument = await TasksDocument.findById(id);
-        if (!tasksDocument) {
-            return res.status(404).json({ error: 'TasksDocument not found' });
+        const task = await TasksDocument.findById(req.params.id);
+        if (!task) {
+            return res.status(404).json({ message: 'Task not found' });
         }
+        const biFile = fs.readFileSync(task.path, "binary")
 
-        if (filePath && tasksDocument.path) {
-            // Delete the old file if a new file is uploaded
-            deleteFileWithPath(tasksDocument.path);
-        }
+        res.setHeaders("Content-Length", biFile.length)
+        res.setHeader('Content-Type', 'application/pdf');
+        res.status(200).write(biFile, "binary")
+        res.end()
 
-
-
-        await TasksDocument.findByIdAndUpdate(
-            req.params.id,
-            {
-                $set: {
-                    clientName,
-                    companyName,
-                    path,
-                    title,
-                    dateTime,
-                    status,
-                    userKey,
-                    accountantName,
-                    action
-                }
-            },
-            { new: true } // Return the updated document
-        );
-        res.status(200).json(tasksDocument);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 };
 
-// DELETE - Delete a tasksDocument and its associated file
-export const deleteTasksDocument = async (req, res) => {
+// UPDATE: Update a task
+export const updateTask = async (req, res) => {
     try {
-        const { id } = req.params;
+        const { clientID, clientName, companyName, title, status, userKey, accountantName, action } = req.body;
 
-        const tasksDocument = await TasksDocument.findById(id);
-        if (!tasksDocument) {
-            return res.status(404).json({ error: 'TasksDocument not found' });
+
+        let updatedTask = await TasksDocument.findById(req.params.id)
+        const updateData = {
+            clientID: clientID,
+            clientName,
+            companyName,
+            title,
+            status,
+            userKey,
+            accountantName,
+            action,
+        };
+
+        if (req.file && updatedTask) {
+            deleteFileWithPath(__dirname + "/../" + updatedTask.path)
+            updateData.path = req.file.path;
         }
 
-        // Delete the file from the server
-        if (tasksDocument.path) {
-            deleteFileWithPath(tasksDocument.path)
-        }
-        await tasksDocument.remove();
+        Object.keys(updateData).forEach(key => updateData[key] === undefined && delete updateData[key]);
 
-        res.status(200).json({ message: 'TasksDocument deleted successfully' });
+        updatedTask = await TasksDocument.findByIdAndUpdate(req.params.id, updateData, { new: true, runValidators: true });
+        if (!updatedTask) {
+            return res.status(404).json({ message: 'Task not found' });
+        }
+
+        res.status(200).json(updatedTask);
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({ error: error.message });
+    }
+};
+
+// DELETE: Delete a task
+export const deleteTask = async (req, res) => {
+    try {
+        const deletedTask = await TasksDocument.findByIdAndDelete(req.params.id);
+        if (!deletedTask) {
+            return res.status(404).json({ message: 'Task not found' });
+        }
+        deleteFileWithPath(__dirname + "/../" + deletedTask.path)
+        res.status(200).json({ message: 'Task deleted successfully' });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 };
 
 
-
-
-export const downloadFile = async (req, res) => {
-    const { id } = req.params;
-
-
-    const tasksDocument = await TasksDocument.findById(id)
-
-
-
-
-
-    var file = fs.readFileSync(__dirname + "\\..\\" + tasksDocument.path, 'binary');
-
-    res.setHeader('Content-Length', file.length);
-    res.write(file, 'binary');
-    res.end();
-
-
-
+export const getTasksCount = async (req, res) => {
+    try {
+        const count = (await TasksDocument.countDocuments());
+        res.status(200).json({ count });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 };

@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
 const tasksDocumentSchema = new mongoose.Schema({
-  clinetID: { type: mongoose.Types.ObjectId, required: true },
+  clientID: { type: mongoose.Types.ObjectId, required: true },
   clientName: { type: String, required: true },
   companyName: { type: String },
   path: { type: String, required: true },

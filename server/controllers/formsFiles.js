@@ -1,11 +1,12 @@
 import { fileURLToPath } from 'url';
 import Form from '../models/formsFiles.js';
 import path from "path"
+import { deleteFileWithPath } from "../helpers/deleteFile.js"
 import fs from "fs"
 
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const __filename = fileURLToPath(import.meta.url); ///Users/john/app/index.mjs
+const __dirname = path.dirname(__filename);     ///Users/john/app/
 
 
 // CREATE - Add a new form with file upload
@@ -71,7 +72,7 @@ export const updateForm = async (req, res) => {
 
         if (filePath && form.PATH) {
             // Delete the old file if a new file is uploaded
-            deleteFileWithPath(form.PATH);
+            deleteFileWithPath(__dirname + "/../" + form.PATH)
         }
 
         form.name = name || form.name;
@@ -97,9 +98,9 @@ export const deleteForm = async (req, res) => {
 
         // Delete the file from the server
         if (form.PATH) {
-            deleteFileWithPath(form.PATH)
+            deleteFileWithPath(__dirname + "/../" + form.PATH)
         }
-        await form.remove();
+        await Form.deleteOne({ _id: id });
 
         res.status(200).json({ message: 'Form deleted successfully' });
     } catch (error) {
@@ -136,3 +137,14 @@ export const downloadFile = async (req, res) => {
 
 
 };
+
+
+export const getFormsCount = async (req, res) => {
+
+    try {
+        const count = await Form.countDocuments()
+        res.json(count)
+    } catch (e) {
+        res.status(500).json(e)
+    }
+}

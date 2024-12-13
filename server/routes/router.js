@@ -6,6 +6,7 @@ import emailSenderRouter from "./email.js";
 import helpersRoute from "./helpers/helpers.js";
 import clientRouter from "./clients.js";
 import formsRoute from "./formsFiles.js";
+import tasksRouter from "./tasksdocuments.js";
 
 // import {
 //   roleMiddleware,
@@ -21,6 +22,7 @@ router.use("/v1", usersRoute);
 router.use("/v1/emailsender", emailSenderRouter);
 router.use("/v1/helpers", helpersRoute);
 router.use("/v1/forms", formsRoute);
+router.use("/v1/tasksDocuments", tasksRouter);
 // /v1/Students/Count
 
 export default router;
