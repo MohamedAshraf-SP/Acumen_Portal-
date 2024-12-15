@@ -6,6 +6,7 @@ import { Company } from "../../models/company/index.js";
 import user from "../../models/users/user.js";
 import { addEmailLog } from "../../helpers/emailLogs.js";
 import mongoose from "mongoose";
+import TasksDocument from "../../models/tasksDocuments.js";
 
 // Get a Client by ID
 export const getClient = async (req, res) => {
@@ -58,32 +59,30 @@ export const getClients = async (req, res) => {
 // Add a new client
 export const addClient = async (req, res) => {
     try {
-        //console.log(req);
 
         const email = await User.findOne({ userName: req.body.email })
 
-        if (email.length > 0) {
+        if (email) {
             return res.status(400).json({ message: "email already exist", email })
         }
 
+        // create user
         const nUser = new User({
             userName: req.body.email,
             userRole: 'client'
 
         })
-
         const newUser = await nUser.save();
 
+
+        //create default company
         const company = new Company({
             companyName: `default company for client ${req.body.name} `
         })
-
         const newCompany = await company.save();
 
-        console.log("xxxxxxxxxxxx", company, newCompany);
 
-
-
+        //create the new client
 
         const newClient = new Client({
             userID: newUser._id,
@@ -91,35 +90,55 @@ export const addClient = async (req, res) => {
             email: req.body.email,
             notification: req.body.notification,
             department: req.body.department,
-            company: [newCompany._id]
+            companies: [newCompany._id]
         });
 
-        console.log(newClient);
-
-
+        //sent the email notification
 
         await sendEmail(
             'Accumen portal New User Notification!',
             `Hello ${req.body.name}, `,
             req.body.email,
             `
-        these are your credintials to ACCUMEN PORTAL :
-        EMAIL: ${req.body.email}
-        Password: ${newUser.password} 
+            these are your credintials to ACCUMEN PORTAL :
+            EMAIL: ${req.body.email}
+            Password: ${newUser.password} 
 
 
-        Thank you
-        accumen portal team.
-       `, 'reply to Accumen Portal Email'
+            Thank you
+            accumen portal team.
+        `, 'reply to Accumen Portal Email'
         )
 
+
+        //add the email log
         addEmailLog(req.body.email, "Accumen portal New User Notification!", req.body.name)
+
+
+
+
 
         const clientData = await newClient.save();
 
-        return res.status(201).json(clientData.toJSON());
+
+        //add the task of the loE
+        if (!req.file) {
+            return res.status(400).json({ message: 'File is required' });
+        }
+        const newTask = new TasksDocument({
+            clientID: clientData._id,
+            clientName: clientData.name,
+            companyName: "default",
+            path: req.file.path,
+            department: clientData.department,
+            title: "LOE",
+        });
+        const savedTask = await newTask.save();
+
+        return res.status(201).json({ client: clientData.toJSON(), task: savedTask.toJSON() });
     } catch (error) {
-        res.status(400).json({ error });
+        console.log(error);
+        res.status(400).json(error.message);
     }
 };
 
@@ -193,7 +212,7 @@ export const getClientCompanies = async (req, res) => {
         res.status(200).json({
             currentPage: page,
             pagesCount,
-            client,
+            companies: client.companies,
             companyCount,
         });
     } catch (error) {
