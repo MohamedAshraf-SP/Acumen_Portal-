@@ -32,8 +32,9 @@ button {
   @apply flex items-center justify-center gap-1 bg-[#1C252E] text-white px-3 py-2 rounded-md hover:shadow-lg hover:opacity-[.8] font-semibold text-[13px] transition;
 }
 .customlabel {
-  @apply absolute cursor-text bg-white px-1 left-2.5 top-2.5 text-[#9EA9B5] text-[14px] transition-all transform origin-left  peer-focus:-top-2 peer-focus:left-2.5 peer-focus:text-xs peer-focus:text-black peer-focus:scale-90;
+  @apply absolute cursor-text bg-white px-1 left-2.5 -top-3  transition-all transform origin-left  peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-[#9EA9B5]   peer-focus:text-xs focus:-top-4 focus:left-2.5 focus:transform     scale-90;
 }
+
 @keyframes fade {
   0% {
     opacity: 0;

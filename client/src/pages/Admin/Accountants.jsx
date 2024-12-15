@@ -1,13 +1,4 @@
-import { useState } from "react";
-// import icons
-import { LuDot } from "react-icons/lu";
-import { GoPlus } from "react-icons/go";
-import { FaRegTrashCan } from "react-icons/fa6";
-
-import { BiShow } from "react-icons/bi";
-import { MdOutlineModeEditOutline } from "react-icons/md";
-// import components
-import { TooltipComponent } from "@syncfusion/ej2-react-popups";
+import React, { useEffect, useState } from "react";
 import {
   GridComponent,
   ColumnsDirective,
@@ -17,156 +8,161 @@ import {
   Inject,
   Toolbar,
 } from "@syncfusion/ej2-react-grids";
+import { useDispatch, useSelector } from "react-redux";
 
-import Addaccountant from "../../component/Editaccountant";
-import ConfirmDelete from "../../component/ConfirmDelete";
-import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-export default function Accountants() {
+import { GoPlus } from "react-icons/go";
+import { FaRegTrashCan } from "react-icons/fa6";
+
+import { TooltipComponent } from "@syncfusion/ej2-react-popups";
+import Nodataimg from "/images/table/No data.svg";
+import ConfirmDelete from "../../component/ConfirmDelete";
+import { FetchedItems } from "../../Rtk/slices/getAllslice";
+import { setdeleteHintmsg } from "../../Rtk/slices/settingSlice";
+
+const Accountants = () => {
+  const data = useSelector((state) => state?.getall?.entities.accountants);
+  const status = useSelector((state) => state.getall.status);
   const { deleteHintmsg } = useSelector((state) => state.setting);
-  // Context imports
+  const dispatch = useDispatch();
+  const [selectedItem, setSelectedItem] = useState(null);
 
-  const routes = ["Dashboard", "Admin", "Accountants"];
-  // Display show or hide add accountant form
-  const [addAccountant, showaddAccontant] = useState(false);
-  const handleShowAddaccountant = () => {
-    showaddAccontant((prev) => !prev);
+  const handleAction = (actionType, path, itemId) => {
+    setSelectedItem({ actionType, path, itemId });
+    if (actionType === "delete") dispatch(setdeleteHintmsg(!deleteHintmsg));
   };
-  const ordersGrid = [
-    {
-      id: "SANDARUWAN ESHAN PERERA MALLAWA ARACHCHIGE",
-      customerName: "b.leung@acumenaccountants.co.uk",
-      email: "07480895596",
-      avatar: "https://via.placeholder.com/32",
-      date: "30 Nov 2024, 2:29 PM",
-      items: 6,
-      price: "Annual accounts, CT and Director department",
-      status: "Refunded",
-    },
-    {
-      id: 6011,
-      customerName: "Lucian Obrien",
-      email: "ashlynn.ohara62@gmail.com",
-      avatar: "https://via.placeholder.com/32",
-      date: "29 Nov 2024, 1:29 PM",
-      items: 1,
-      price: 83.74,
-      status: "Completed",
-    },
-    {
-      id: "BARI & SONS INVESTMENTS LIMITED",
-      customerName: "Acumen Accountants",
-      email: "shafiul@bigmak.co.uk, motin@bigmak.co.uk",
-      avatar: "https://via.placeholder.com/32",
-      date: "20 Nov 2024, 4:29 AM",
-      items: 5,
-      price: "01069136665",
-      status: "Pending",
-    },
-  ];
 
+  const ActionButton = ({ tooltip, onClick, icon, styles }) => (
+    <TooltipComponent content={tooltip} position="TopCenter">
+      <li
+        className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 ease-in-out cursor-pointer ${styles}`}
+        onClick={onClick}
+      >
+        {icon}
+      </li>
+    </TooltipComponent>
+  );
+
+  useEffect(() => {
+    dispatch(FetchedItems("accountants"));
+  }, [dispatch]);
+  console.log(data);
   return (
-    <div className="py-10  dark:bg-secondary-dark-bg">
-      {/* start Page Header */}
-      <div>
-        <div className="flex flex-row items-start justify-between">
-          <h4 className="text-xl font-semibold leading-[1.5] dark:text-white">
-            Accountant
-          </h4>
+    <>
+      {deleteHintmsg && (
+        <ConfirmDelete
+          path={selectedItem?.path}
+          deletedItemId={selectedItem?.itemId}
+        />
+      )}
+
+      <div className="my-8 rounded-lg shadow-sm bg-white overflow-scroll dark:bg-secondary-dark-bg dark:text-gray-200">
+        {/* Header */}
+        <div className="flex justify-between items-center p-4 border-b dark:border-gray-700">
+          <h4 className="text-xl font-semibold">Accountants</h4>
           <Link
-            to="/add-account"
+            to="/accontants/add-account"
             className="flex items-center gap-1 bg-[#1C252E] text-white px-3 py-2 rounded-md hover:shadow-lg hover:opacity-[.8] font-semibold text-[13px] transition"
           >
             <GoPlus className="text-lg" />
             Add Accountant
           </Link>
         </div>
-        <ul className="flex flex-row items-center space-x-1 text-sm py-2">
-          {routes.map((route, index) => (
-            <li
-              key={index}
-              className={`flex flex-row items-center  ${
-                index === routes.length - 1
-                  ? "text-gray-400"
-                  : "text-slate-900 dark:text-gray-200"
-              }`}
+
+        {/* Table or No Data */}
+        <div className="overflow-scroll border-none">
+          {status === "loading" && (
+            <div className="flex items-center justify-center h-64">
+              <svg
+                aria-hidden="true"
+                className="w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-slate-900"
+                viewBox="0 0 100 101"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                  fill="currentColor"
+                />
+                <path
+                  d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                  fill="currentFill"
+                />
+              </svg>
+            </div>
+          )}
+          {status === "failed" && (
+            <div className="flex items-center justify-center h-64">
+              <p className="text-red-600">
+                Failed to load Accountants. Please try again later.
+              </p>
+            </div>
+          )}
+          {status === "success" && data?.accountants?.length === 0 && (
+            <div className="flex flex-col justify-center items-center h-64">
+              <img src={Nodataimg} alt="No Data" className="w-32 h-32" />
+              <p className="text-sm text-gray-500 font-medium mt-2">No data</p>
+            </div>
+          )}
+          {status === "success" && data?.accountants?.length > 0 && (
+            <GridComponent
+              className="transition"
+              dataSource={data?.accountants}
+              allowPaging={true}
+              allowSorting={true}
+              toolbar={["Search"]}
+              width="auto"
+              pageSettings={{ pageSize: 5, currentPage: 1 }}
             >
-              <LuDot className="text-lg text-gray-400 font-bold" /> {route}
-            </li>
-          ))}
-        </ul>
-      </div>
-      {/* start Page Header */}
-      <div className="my-4">
-        <div className="overflow-hidden border-none">
-          <GridComponent
-            dataSource={ordersGrid}
-            allowPaging={true}
-            allowSorting
-            toolbar={["Search"]}
-            width="100%"
-            pageSettings={{ pageSize: 10 }}
-            //className="custom-grid"
-          >
-            <ColumnsDirective>
-              <ColumnDirective
-                field="id"
-                headerText="Accountant Name "
-                width="auto"
-                textAlign="Left"
-              />
-              <ColumnDirective
-                field="customerName"
-                headerText="Email"
-                width="auto"
-                textAlign="Left"
-              />
-              <ColumnDirective
-                field="email"
-                headerText="Phone"
-                width="auto"
-                textAlign="Left"
-              />
-              <ColumnDirective
-                field="price"
-                headerText="Department"
-                width="auto"
-                textAlign="Left"
-                format="C2"
-              />
-              <ColumnDirective
-                headerText="Action"
-                width="100"
-                textAlign="Left"
-                template={(rowData) => (
-                  <div>
+              <ColumnsDirective>
+                <ColumnDirective
+                  field="name"
+                  headerText="Accountant Name"
+                  width="200"
+                  textAlign="Left"
+                />
+                <ColumnDirective
+                  field="customerName"
+                  headerText="Email"
+                  width="150"
+                  textAlign="Left"
+                />
+                <ColumnDirective
+                  field="email"
+                  headerText="Phone"
+                  width="200"
+                  textAlign="Left"
+                />
+                <ColumnDirective
+                  field="phone"
+                  headerText="Department"
+                  width="150"
+                  textAlign="Left"
+                />
+                <ColumnDirective
+                  headerText="Actions"
+                  width="150"
+                  textAlign="Center"
+                  template={(rowData) => (
                     <ul className="flex items-center justify-center space-x-2">
-                      <TooltipComponent content={"Delete"} position="TopCenter">
-                        <li
-                          className="w-6 h-6 rounded-full flex items-center justify-center bg-[#FFE9E3] text-[#ec3b3b] hover:bg-[#FF6D43] hover:text-white transition-all duration-300 ease-in-out cursor-pointer"
-                          onClick={() =>
-                            deleteItemClick(rowData._id, "clients")
-                          }
-                        >
-                          <FaRegTrashCan />
-                        </li>
-                      </TooltipComponent>
+                      <ActionButton
+                        tooltip="Delete"
+                        icon={<FaRegTrashCan />}
+                        styles="bg-[#FFF2F2] text-[#FF0000] hover:bg-[#FF0000] hover:text-white"
+                        onClick={() =>
+                          handleAction("delete", "accountants", rowData._id)
+                        }
+                      />
                     </ul>
-                  </div>
-                )}
-              />
-            </ColumnsDirective>
-            <Inject services={[Page, Search, Toolbar]} />
-          </GridComponent>
+                  )}
+                />
+              </ColumnsDirective>
+              <Inject services={[Search, Page, Toolbar]} />
+            </GridComponent>
+          )}
         </div>
       </div>
-
-      {/* Add accountant */}
-      {addAccountant && (
-        <Addaccountant handleShowform={handleShowAddaccountant} />
-      )}
-
-      {deleteHintmsg && <ConfirmDelete />}
-    </div>
+    </>
   );
-}
+};
+
+export default Accountants;

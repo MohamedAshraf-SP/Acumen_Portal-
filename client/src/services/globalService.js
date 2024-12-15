@@ -40,6 +40,5 @@ export const updateItem = (path, itemId, data) => {
 };
 // delete Item
 export const deleteItem = (path, itemId) => {
- 
   return apiCall("DELETE", `${path}/${itemId}`);
 };
