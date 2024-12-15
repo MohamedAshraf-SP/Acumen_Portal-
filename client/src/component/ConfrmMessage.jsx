@@ -17,11 +17,15 @@ function ConfrmMessage() {
 
   // Automatically hide message after 4 seconds
   useEffect(() => {
-    const timer = setTimeout(() => {
-      dispatch(clearSuccessMsg()); // Clear all messages after 4 seconds
-    }, 4000); // Auto-clear all messages after 4000ms (4 seconds)
-    return () => clearTimeout(timer);
-  }, [successmsg, dispatch]);
+    if (successmsg) {
+      const timer = setTimeout(() => {
+        dispatch(clearSuccessMsg()); // Clear the message after 2 seconds
+      }, 2000); // Auto-clear the message after 2000ms (2 seconds)
+
+      // Cleanup the timer when the effect is cleaned up (new message or unmount)
+      return () => clearTimeout(timer);
+    }
+  }, []); // Only run when `successmsg` or `dispatch` changes
 
   return (
     <div className={`absolute top-0 right-0 z-50 w-fit h-fit rounded-lg`}>

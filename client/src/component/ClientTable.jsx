@@ -8,81 +8,78 @@ import {
   Inject,
   Toolbar,
 } from "@syncfusion/ej2-react-grids";
-import { Link } from "react-router-dom";
-// import icons
-import { GoPlus } from "react-icons/go";
-import { FaRegTrashCan } from "react-icons/fa6";
-import { BiShow } from "react-icons/bi";
-import { MdOutlineModeEditOutline } from "react-icons/md";
-import { getAllItems } from "../services/globalService";
-
-// import images
-import Nodataimg from "/images/table/No data.svg";
-// import components
-import ConfirmDelete from "./ConfirmDelete";
-import { TooltipComponent } from "@syncfusion/ej2-react-popups";
 import { useDispatch, useSelector } from "react-redux";
+import ConfirmDelete from "./ConfirmDelete";
+import EditClient from "./EditClient";
+import ViewClientCard from "./ViewClientCard";
+import { FetchedItems } from "../Rtk/slices/getAllslice";
 import {
   setdeleteHintmsg,
   seteditItemForm,
   setViewClient,
 } from "../Rtk/slices/settingSlice";
-import EditClient from "./EditClient";
-import ViewClientCard from "./ViewClientCard";
+import { Link } from "react-router-dom";
+import { GoPlus } from "react-icons/go";
+import { FaRegTrashCan } from "react-icons/fa6";
+import { BiShow } from "react-icons/bi";
+import { MdOutlineModeEditOutline } from "react-icons/md";
+import { TooltipComponent } from "@syncfusion/ej2-react-popups";
+import Nodataimg from "/images/table/No data.svg";
 
 const ClientTable = () => {
-  const [loading, setloading] = useState(false);
-  const [clients, setclients] = useState([]);
-  const [itemToDelete, setItemToDelete] = useState(null);
-  const dispatch = useDispatch();
+  const data = useSelector((state) => state?.getall?.entities?.clients);
+  const status = useSelector((state) => state.getall.status);
   const { deleteHintmsg, editItemForm, ViewClient } = useSelector(
     (state) => state.setting
   );
+  const dispatch = useDispatch();
 
-  // handle edit item
-  const editItem = () => {
-    dispatch(seteditItemForm(!editItemForm));
+  const [selectedItem, setSelectedItem] = useState(null);
+
+  const handleAction = (actionType, path, itemId) => {
+    setSelectedItem({ actionType, path, itemId });
+    if (actionType === "delete") dispatch(setdeleteHintmsg(!deleteHintmsg));
+    if (actionType === "edit") dispatch(seteditItemForm(!editItemForm));
+    if (actionType === "view") dispatch(setViewClient(!ViewClient));
   };
-  // handle view client Card
-  const handleViewClientCard = () => {
-    dispatch(setViewClient(!ViewClient));
-  };
-  // handle show delete msg and taeget item
-  const deleteItemClick = (path, itemId) => {
-    setItemToDelete({ itemId, path });
-    dispatch(setdeleteHintmsg(!deleteHintmsg));
-  };
-  // get All Client
+
+  const ActionButton = ({ tooltip, onClick, icon, styles }) => (
+    <TooltipComponent content={tooltip} position="TopCenter">
+      <li
+        className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 ease-in-out cursor-pointer ${styles}`}
+        onClick={onClick}
+      >
+        {icon}
+      </li>
+    </TooltipComponent>
+  );
+
   useEffect(() => {
-    const getAllclient = async () => {
-      try {
-        setloading(true);
-        const response = await getAllItems("clients");
-        setclients(response?.clients);
-      } catch (error) {
-        console.log("error loading data:", error);
-      } finally {
-        setloading(false);
-      }
-    };
-    getAllclient();
-  }, [itemToDelete]);
+    dispatch(FetchedItems("clients"));
+  }, [dispatch]);
 
   return (
     <>
       {deleteHintmsg && (
         <ConfirmDelete
-          path={itemToDelete?.path}
-          deletedItemId={itemToDelete?.itemId}
+          path={selectedItem?.path}
+          deletedItemId={selectedItem?.itemId}
         />
       )}
       {editItemForm && (
-        <EditClient onClose={() => dispatch(seteditItemForm(!editItemForm))} />
+        <EditClient
+          TargetItem={selectedItem}
+          onClose={() => dispatch(seteditItemForm(!editItemForm))}
+        />
       )}
       {ViewClient && (
-        <ViewClientCard onClose={() => dispatch(setViewClient(false))} />
+        <ViewClientCard
+          TargetItem={selectedItem}
+          onClose={() => dispatch(setViewClient(!ViewClient))}
+        />
       )}
-      <div className="my-8 rounded-lg shadow-sm bg-white overflow-scroll  dark:bg-secondary-dark-bg dark:text-gray-200">
+
+      <div className="my-8 rounded-lg shadow-sm bg-white overflow-scroll dark:bg-secondary-dark-bg dark:text-gray-200">
         {/* Header */}
         <div className="flex justify-between items-center p-4 border-b dark:border-gray-700">
           <h4 className="text-xl font-semibold">Clients</h4>
@@ -95,16 +92,14 @@ const ClientTable = () => {
           </Link>
         </div>
 
-        {/* Table or No Data Image */}
+        {/* Table or No Data */}
         <div className="overflow-scroll border-none">
-          {loading ? (
-            <div>
-              {" "}
+          {status === "loading" && (
+            <div className="flex items-center justify-center h-64">
               <svg
                 aria-hidden="true"
                 className="w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-slate-900"
                 viewBox="0 0 100 101"
-                fill="none"
                 xmlns="http://www.w3.org/2000/svg"
               >
                 <path
@@ -116,20 +111,30 @@ const ClientTable = () => {
                   fill="currentFill"
                 />
               </svg>
-            </div> // Placeholder for loading state
-          ) : clients.length === 0 ? (
-            <div className="flex flex-col  justify-center items-center p-4 w-[200px] h-[150px] mx-auto ">
-              <img src={Nodataimg} alt="No Data" className="w-full h-full" />
-              <p className="text-sm text-[#93A0AD] font-medium">No data</p>
             </div>
-          ) : (
+          )}
+          {status === "failed" && (
+            <div className="flex items-center justify-center h-64">
+              <p className="text-red-600">
+                Failed to load clients. Please try again later.
+              </p>
+            </div>
+          )}
+          {status === "success" && data?.clients?.length === 0 && (
+            <div className="flex flex-col justify-center items-center h-64">
+              <img src={Nodataimg} alt="No Data" className="w-32 h-32" />
+              <p className="text-sm text-gray-500 font-medium mt-2">No data</p>
+            </div>
+          )}
+          {status === "success" && data?.clients?.length > 0 && (
             <GridComponent
-              dataSource={clients}
+              className="transition"
+              dataSource={data?.clients}
               allowPaging={true}
-              allowSorting
+              allowSorting={true}
               toolbar={["Search"]}
               width="auto"
-              pageSettings={{ pageSize: 5 }}
+              pageSettings={{ pageSize: 5, currentPage: 1 }}
             >
               <ColumnsDirective>
                 <ColumnDirective
@@ -151,54 +156,46 @@ const ClientTable = () => {
                   textAlign="Left"
                 />
                 <ColumnDirective
-                  field="price"
+                  field="phone"
                   headerText="Phone"
-                  width="100"
+                  width="150"
                   textAlign="Left"
-                  format="C2"
                 />
                 <ColumnDirective
                   headerText="Actions"
-                  width="100"
+                  width="150"
                   textAlign="Center"
                   template={(rowData) => (
-                    <div>
-                      <ul className="flex items-center justify-center space-x-2">
-                        <TooltipComponent content={"View"} position="TopCenter">
-                          <li
-                            className="w-8 h-8 text-[15px] rounded-full flex items-center justify-center bg-[#E3E7FF] text-[#465DFF] hover:bg-[#465DFF] hover:text-white transition-all duration-300 ease-in-out cursor-pointer"
-                            onClick={() => handleViewClientCard()}
-                          >
-                            <BiShow />
-                          </li>
-                        </TooltipComponent>
-                        <TooltipComponent content={"Edit"} position="TopCenter">
-                          <li
-                            className="w-8 h-8 text-[15px] rounded-full flex items-center justify-center bg-[#E9F7E6] text-[#129fd6] hover:bg-[#129fd6] hover:text-white transition-all duration-300 ease-in-out cursor-pointer"
-                            onClick={() => editItem(rowData._id)}
-                          >
-                            <MdOutlineModeEditOutline />
-                          </li>
-                        </TooltipComponent>
-                        <TooltipComponent
-                          content={"Delete"}
-                          position="TopCenter"
-                        >
-                          <li
-                            className="w-8 h-8 text-md rounded-full flex items-center justify-center bg-[#FFE9E3] text-[#ec3b3b] hover:bg-[#FF6D43] hover:text-white transition-all duration-300 ease-in-out cursor-pointer"
-                            onClick={() =>
-                              deleteItemClick("clients", rowData._id)
-                            }
-                          >
-                            <FaRegTrashCan />
-                          </li>
-                        </TooltipComponent>
-                      </ul>
-                    </div>
+                    <ul className="flex items-center justify-center space-x-2">
+                      <ActionButton
+                        tooltip="View"
+                        icon={<BiShow />}
+                        styles="bg-[#E3E7FF] text-[#465DFF] hover:bg-[#465DFF] hover:text-white"
+                        onClick={() =>
+                          handleAction("view", "clients", rowData._id)
+                        }
+                      />
+                      <ActionButton
+                        tooltip="Edit"
+                        icon={<MdOutlineModeEditOutline />}
+                        styles="bg-[#E9F7E6] text-[#19A2D6] hover:bg-[#19A2D6] hover:text-white"
+                        onClick={() =>
+                          handleAction("edit", "clients", rowData._id)
+                        }
+                      />
+                      <ActionButton
+                        tooltip="Delete"
+                        icon={<FaRegTrashCan />}
+                        styles="bg-[#FFF2F2] text-[#FF0000] hover:bg-[#FF0000] hover:text-white"
+                        onClick={() =>
+                          handleAction("delete", "clients", rowData._id)
+                        }
+                      />
+                    </ul>
                   )}
                 />
               </ColumnsDirective>
-              <Inject services={[Page, Search, Toolbar]} />
+              <Inject services={[Search, Page, Toolbar]} />
             </GridComponent>
           )}
         </div>

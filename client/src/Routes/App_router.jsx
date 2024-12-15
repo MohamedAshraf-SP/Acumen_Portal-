@@ -89,7 +89,7 @@ const AppRouter = () => {
                 element={withSuspense(<SentNotifications />)}
               />
               <Route
-                path="/add-account"
+                path="accontants/add-account"
                 element={withSuspense(<AddAcountant />)}
               />
               <Route
