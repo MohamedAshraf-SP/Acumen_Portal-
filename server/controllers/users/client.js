@@ -5,6 +5,7 @@ import company from "../../models/company/company.js";
 import { Company } from "../../models/company/index.js";
 import user from "../../models/users/user.js";
 import { addEmailLog } from "../../helpers/emailLogs.js";
+import mongoose from "mongoose";
 
 // Get a Client by ID
 export const getClient = async (req, res) => {
@@ -59,9 +60,10 @@ export const addClient = async (req, res) => {
     try {
         //console.log(req);
 
-        const email = User.find({userName:req.body.email})
-        if(email){
-            res.status(400).json({message:"email already exist"})
+        const email = await User.findOne({ userName: req.body.email })
+
+        if (email.length > 0) {
+            return res.status(400).json({ message: "email already exist", email })
         }
 
         const nUser = new User({
@@ -72,15 +74,14 @@ export const addClient = async (req, res) => {
 
         const newUser = await nUser.save();
 
-
-
-
-
-
         const company = new Company({
             companyName: `default company for client ${req.body.name} `
         })
+
         const newCompany = await company.save();
+
+        console.log("xxxxxxxxxxxx", company, newCompany);
+
 
 
 
@@ -91,8 +92,9 @@ export const addClient = async (req, res) => {
             notification: req.body.notification,
             department: req.body.department,
             company: [newCompany._id]
-
         });
+
+        console.log(newClient);
 
 
 
@@ -111,13 +113,13 @@ export const addClient = async (req, res) => {
        `, 'reply to Accumen Portal Email'
         )
 
-        addEmailLog(req.body.email,"Accumen portal New User Notification!",req.body.name)
+        addEmailLog(req.body.email, "Accumen portal New User Notification!", req.body.name)
 
         const clientData = await newClient.save();
 
-        res.status(201).json(clientData.toJSON());
+        return res.status(201).json(clientData.toJSON());
     } catch (error) {
-        res.status(400).json({ error: error.message });
+        res.status(400).json({ error });
     }
 };
 
@@ -126,11 +128,11 @@ export const deleteClient = async (req, res) => {
     try {
         const result = await Client.findByIdAndDelete(req.params.id);
         let result1
-        if(result){
-         result1 = await user.findByIdAndDelete(result.userID);
+        if (result) {
+            result1 = await user.findByIdAndDelete(result.userID);
         }
-        
-        console.log(result,result1)
+
+        console.log(result, result1)
         if (!result) {
             return res.status(404).json({ message: "Client not found" });
         }

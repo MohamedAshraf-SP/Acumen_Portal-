@@ -1,6 +1,7 @@
 import User from "../../models/users/user.js";
 import Accountant from "../../models/users/accountants.js"; // Import the Accountant model
 import { sendEmail } from "../../helpers/emailSender.js";
+import { addEmailLog } from "../../helpers/emailLogs.js";
 
 // Get a Accountant by ID
 export const getAccountant = async (req, res) => {
