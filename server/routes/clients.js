@@ -19,7 +19,7 @@ clientRoute.get("/ofdepartment", getDepartmentClients);
 clientRoute.get("/:id", getClient);
 clientRoute.get("/", getClients);
 clientRoute.get("/:id/companies", getClientCompanies);
-clientRoute.post("/",upload.single('file'), addClient);
+clientRoute.post("/",upload.single('LOEfile'), addClient);
 clientRoute.put("/:id", updateClient);
 clientRoute.delete("/:id", deleteClient);
 

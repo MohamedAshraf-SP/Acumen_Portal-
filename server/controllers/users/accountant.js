@@ -134,7 +134,7 @@ export const updateAccountant = async (req, res) => {
 // Get the number of accountant
 export const getAccountantsCount = async (req, res) => {
   try {
-    const count = (await Accountant.countDocuments()) - 1;
+    const count = (await Accountant.countDocuments());
     res.status(200).json({ count });
   } catch (error) {
     res.status(500).json({ error: error.message });

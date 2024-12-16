@@ -180,7 +180,7 @@ export const updateClient = async (req, res) => {
 // Get the number of client
 export const getClientsCount = async (req, res) => {
     try {
-        const count = (await Client.countDocuments()) - 1;
+        const count = (await Client.countDocuments());
         res.status(200).json({ count });
     } catch (error) {
         res.status(500).json({ error: error.message });
