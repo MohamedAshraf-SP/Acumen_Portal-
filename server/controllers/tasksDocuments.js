@@ -4,6 +4,7 @@ import fs from "fs"
 import { deleteFileWithPath } from "../helpers/deleteFile.js"
 import { fileURLToPath } from 'url';
 import path from "path"
+import Client from '../models/users/clients.js';
 
 
 
@@ -14,8 +15,11 @@ const __dirname = path.dirname(__filename)
 // CREATE: Add a new task
 export const addTask = async (req, res) => {
     try {
-        console.log(req.file.path)
+        // console.log(req.file.path)
         const { clientID, clientName, companyName, title, status, userKey, accountantName, action } = req.body;
+        const client = await Client.findById(clientID)
+
+
 
         if (!req.file) {
             return res.status(400).json({ message: 'File is required' });
@@ -25,6 +29,7 @@ export const addTask = async (req, res) => {
             clientID: clientID,
             clientName,
             companyName,
+            department: client.department,
             path: req.file.path,
             title,
             status,
