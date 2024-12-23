@@ -48,6 +48,7 @@ export const importClientsFromCSV = async (req, res) => {
 
         res.status(200).json({ importedClients });
     } catch (e) {
+
         console.error(e);
         res.status(400).json({ Error: e.message });
     }

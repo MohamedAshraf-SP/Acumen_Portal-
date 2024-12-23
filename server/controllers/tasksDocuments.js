@@ -34,7 +34,7 @@ export const addTask = async (req, res) => {
         });
 
         const savedTask = await newTask.save();
-        res.status(201).json(savedTask);
+        res.status(201).json({ message: "Task added successfully!!" });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
@@ -131,7 +131,7 @@ export const updateTask = async (req, res) => {
             return res.status(404).json({ message: 'Task not found' });
         }
 
-        res.status(200).json(updatedTask);
+        res.status(200).json({ message: "Task updated successfully!!" });
     } catch (error) {
         console.log(error)
         res.status(500).json({ error: error.message });
@@ -146,7 +146,7 @@ export const deleteTask = async (req, res) => {
             return res.status(404).json({ message: 'Task not found' });
         }
         deleteFileWithPath(__dirname + "/../" + deletedTask.path)
-        res.status(200).json({ message: 'Task deleted successfully' });
+        res.status(200).json({ message: 'Task deleted successfully!!' });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

@@ -91,7 +91,7 @@ export const addAccountant = async (req, res) => {
 
     const ans = await newAccountant.save();
 
-    res.status(201).json(ans.toJSON());
+    res.status(201).json({ message: "New Accountant added successfully!!" });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
@@ -109,7 +109,7 @@ export const deleteAccountant = async (req, res) => {
     if (!result) {
       return res.status(404).json({ message: "Accountant not found" });
     }
-    res.status(200).json({ message: "Accountant deleted successfully" });
+    res.status(200).json({ message: "Accountant deleted successfully!!" });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -125,7 +125,7 @@ export const updateAccountant = async (req, res) => {
     if (!updatedAccountant) {
       return res.status(404).json({ message: "Accountant not found!!" });
     }
-    res.status(200).json(updatedAccountant);
+    res.status(200).json({ message: "Accountant updated successfully!!" });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }

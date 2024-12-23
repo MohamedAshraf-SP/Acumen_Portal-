@@ -13,7 +13,7 @@ const __dirname = path.dirname(__filename);     ///Users/john/app/
 export const addForm = async (req, res) => {
     try {
         const { name, additionalName } = req.body;
-        const filePath = req.file ? req.file.path : null;
+        const filePath = req.file ? req.file.path : 0
 
         if (!filePath) {
             return res.status(400).json({ error: 'File is required' });
@@ -80,7 +80,7 @@ export const updateForm = async (req, res) => {
         form.PATH = filePath || form.PATH;
 
         await form.save();
-        res.status(200).json(form);
+        res.status(200).json({ message: "Form updated successfully!!" });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
@@ -102,7 +102,7 @@ export const deleteForm = async (req, res) => {
         }
         await Form.deleteOne({ _id: id });
 
-        res.status(200).json({ message: 'Form deleted successfully' });
+        res.status(200).json({ message: 'Form deleted successfully!!' });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
@@ -141,7 +141,7 @@ export const downloadFile = async (req, res) => {
         res.write(file, 'binary');
         res.end();
     } catch (e) {
-        res.status(400).json(e)
+        res.status(400).json(e.message)
     }
 
 
@@ -155,6 +155,6 @@ export const getFormsCount = async (req, res) => {
         const count = await Form.countDocuments()
         res.json({ count })
     } catch (e) {
-        res.status(500).json(e)
+        res.status(500).json(e.message)
     }
 }
