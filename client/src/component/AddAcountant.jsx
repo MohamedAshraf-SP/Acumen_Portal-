@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 // import icons
 import { IoIosCloseCircleOutline } from "react-icons/io";
 import { LuDot } from "react-icons/lu";
-import { BsExclamationCircleFill } from "react-icons/bs";
+
 // formik using
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -12,10 +12,19 @@ import { addNewData } from "../Rtk/slices/addNewSlice";
 import Skeleton from "react-loading-skeleton";
 
 export default function AddClientform() {
+  // List Departments
+  const Departments = [
+    "Annual accounts, CT and Director department",
+    "Finance department",
+    "General and administrative matters",
+    "Paye, Pension and CIS department department",
+    "Self-employed and partnership department",
+    "Vat department",
+  ];
+
   const dispatch = useDispatch();
   const status = useSelector((state) => state.AddNew.status);
-  const [alert, setalert] = useState(false);
-  const [note, shownote] = useState(true);
+  const [alert, setalert] = useState({ msg: "", showmsg: false });
 
   const routes = ["Clients", "Add Client"];
   // handle formik inputs
@@ -23,38 +32,34 @@ export default function AddClientform() {
     initialValues: {
       name: "",
       email: "",
-      notification: 1,
+      phone: "",
       department: "Finance department",
-      LOEfile: "",
     },
     validationSchema: Yup.object({
       name: Yup.string().required("Please enter client name."),
       email: Yup.string()
         .email("Invalid email")
         .required("Please enter a valid Email."),
-      LOEfile: Yup.mixed()
-        .required("Please select a file.")
-        .test("fileType", "Only PDF files are allowed.", (value) =>
-          value ? value.type === "application/pdf" : false
-        ),
+      phone: Yup.number().required("phone is required"),
     }),
-    onSubmit: (values, { resetForm }) => {
-      dispatch(addNewData({ path: "clients", itemData: values }));
-      setalert(true);
-      setTimeout(() => {
-        setalert(false);
-      }, 4000);
+    onSubmit: async (values, { resetForm }) => {
+      const response = await dispatch(
+        addNewData({ path: "accountants", itemData: values })
+      );
+
+      setalert({
+        msg: JSON.stringify(response.payload),
+        showmsg: true,
+      });
 
       resetForm();
-      setFileName("");
     },
   });
-
   return (
     <div className="dark:bg-secondary-dark-bg rounded-md h-full">
       <div>
         <h1 className="text-xl font-semibold leading-[1.5] dark:text-white text-[#1C252E]">
-          Create new Account
+          Add new Accountant
         </h1>
 
         <ul className="flex flex-row items-center space-x-1 text-sm py-2">
@@ -76,34 +81,28 @@ export default function AddClientform() {
         </ul>
       </div>
       {/* display success Adding or failed */}
-      {alert && (
-        <div
-          className={`${
-            alert ? "fade 0.3s ease-out" : "fade-out 0.3s ease-in 2.7s forwards"
-          }`}
-        >
-          {status == "loading" ? (
+      {alert.showmsg && (
+        <div>
+          {status === "loading" ? (
             <div>
-              {" "}
               <Skeleton height="2rem" width="100%" className="mb-2" />
-            </div>
-          ) : status == "success" ? (
-            <div
-              className="bg-green-100 text-green-800 p-4 my-4 rounded-lg animate-pulse"
-              role="alert"
-            >
-              <strong className="font-bold text-sm mr-4">Success!</strong>
-              <span className="block text-sm sm:inline max-sm:mt-2">
-                Adding new Account done !!
-              </span>
             </div>
           ) : (
             <div
-              className="p-4 mb-4 text-sm text-red-500 rounded-xl bg-red-50 font-normal"
+              className={`p-4 mb-4 text-sm  rounded-xl  font-normal flex flex-row items-center justify-between  ${
+                status == "success"
+                  ? "text-green-700  bg-green-100"
+                  : "bg-red-50 text-red-500"
+              }`}
               role="alert"
             >
-              <span className="font-semibold mr-2">Error :</span>Failed Add New
-              Account
+              <span className="font-semibold mr-2">{alert.msg}</span>
+              <IoIosCloseCircleOutline
+                className="cursor-pointer text-slate-700 text-xl hover:text-slate-400 transition"
+                onClick={() =>
+                  setalert((prevState) => ({ ...prevState, showmsg: false }))
+                }
+              />
             </div>
           )}
         </div>
@@ -124,7 +123,7 @@ export default function AddClientform() {
             <div className="relative w-full">
               <label
                 htmlFor="clientName"
-                className=" customlabel text-gray-500"
+                className=" customlabel text-gray-900"
               >
                 Accountant Name
               </label>
@@ -147,7 +146,7 @@ export default function AddClientform() {
             <div className="relative w-full">
               <label
                 htmlFor="clientemail"
-                className=" customlabel text-gray-500"
+                className=" customlabel text-gray-900"
               >
                 Email
               </label>
@@ -169,50 +168,60 @@ export default function AddClientform() {
             </div>
             <div className="relative w-full">
               <label
-                htmlFor="clientemail"
-                className=" customlabel text-gray-500"
+                htmlFor="clientPhone"
+                className=" customlabel text-gray-900"
               >
                 Phone
               </label>
               <input
-                id="clientemail"
-                name="email"
+                id="department"
+                name="phone"
                 className="peer input "
-                type="email"
+                type="number"
+                min={0}
                 placeholder=" " // Placeholder space for floating label
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                value={formik.values.email}
+                value={formik.values.phone}
               />
-              {formik.touched.email && formik.errors.email ? (
+              {formik.touched.phone && formik.errors.phone ? (
                 <div className="text-red-600 italic mt-1 text-[12px]">
-                  {formik.errors.email}
-                </div>
-              ) : null}
-            </div>
-            <div className="relative w-full">
-              <label
-                htmlFor="clientemail"
-                className=" customlabel text-gray-500"
-              >
-                Department
-              </label>
-              <input
-                id="clientemail"
-                name="email"
-                className="peer input "
-                type="email"
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                value={formik.values.email}
-              />
-              {formik.touched.email && formik.errors.email ? (
-                <div className="text-red-600 italic mt-1 text-[12px]">
-                  {formik.errors.email}
+                  {formik.errors.phone}
                 </div>
               ) : null}
             </div>
 
+            <div className="relative w-full">
+              <label
+                htmlFor="countries"
+                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+              >
+                Select Department
+              </label>
+              <select
+                id="departments"
+                name="department"
+                value={formik.values.department || "Finance Department"}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-slate-700 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 outline-none"
+              >
+                {Departments.map((department, index) => (
+                  <option
+                    className="!cursor-pointer"
+                    key={index}
+                    value={department}
+                  >
+                    {department}
+                  </option>
+                ))}
+              </select>
+              {formik.touched.department && formik.errors.department ? (
+                <div className="text-red-600 italic mt-1 text-[12px]">
+                  {formik.errors.department}
+                </div>
+              ) : null}
+            </div>
             <div className="flex gap-2 items-center">
               <button
                 className={`font-thin px-10 max-w-sm mt-4 ${
@@ -244,12 +253,13 @@ export default function AddClientform() {
                     />
                   </svg>
                 )}
-                {status == "loading" ? "Loading..." : "Add client"}
+                {status == "loading" ? "Loading..." : "Add accountant"}
               </button>
 
               <button
                 type="button"
                 className=" font-thin bg-[#1C252E] text-white px-10 max-w-sm mt-4"
+                onClick={() => formik.resetForm()}
               >
                 cancel
               </button>

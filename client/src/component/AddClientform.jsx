@@ -14,7 +14,7 @@ import Skeleton from "react-loading-skeleton";
 export default function AddClientform() {
   const dispatch = useDispatch();
   const status = useSelector((state) => state.AddNew.status);
-  const [alert, setalert] = useState(false);
+  const [alert, setalert] = useState({ msg: "", showmsg: false });
   const [note, shownote] = useState(true);
   const [fileName, setFileName] = useState(""); // State to hold the file name
   const routes = ["Clients", "Add Client"];
@@ -45,13 +45,14 @@ export default function AddClientform() {
           (value) => value && ["application/pdf"].includes(value.type)
         ),
     }),
-    onSubmit: (values, { resetForm }) => {
-      dispatch(addNewData({ path: "clients", itemData: values }));
-      setalert(true);
-      setTimeout(() => {
-        setalert(false);
-      }, 4000);
+    onSubmit: async (values, { resetForm }) => {
+      const response = await dispatch(
+        addNewData({ path: "clients", itemData: values })
+      );
 
+      setalert(response.payload);
+      setalert((prevState) => ({ ...prevState, msg: response.payload }));
+      setalert((prevState) => ({ ...prevState, showmsg: true }));
       resetForm();
       setFileName("");
     },
@@ -66,6 +67,7 @@ export default function AddClientform() {
       setFileName("");
     }
   };
+
   return (
     <div className="dark:bg-secondary-dark-bg rounded-md h-full">
       <div>
@@ -92,34 +94,28 @@ export default function AddClientform() {
         </ul>
       </div>
       {/* display success Adding or failed */}
-      {alert && (
-        <div
-          className={`${
-            alert ? "fade 0.3s ease-out" : "fade-out 0.3s ease-in 2.7s forwards"
-          }`}
-        >
-          {status == "loading" ? (
+      {alert.showmsg && (
+        <div>
+          {status === "loading" ? (
             <div>
-              {" "}
               <Skeleton height="2rem" width="100%" className="mb-2" />
-            </div>
-          ) : status == "success" ? (
-            <div
-              className="bg-green-100 text-green-800 p-4 my-4 rounded-lg animate-pulse"
-              role="alert"
-            >
-              <strong className="font-bold text-sm mr-4">Success!</strong>
-              <span className="block text-sm sm:inline max-sm:mt-2">
-                Adding new client done !!
-              </span>
             </div>
           ) : (
             <div
-              className="p-4 mb-4 text-sm text-red-500 rounded-xl bg-red-50 font-normal"
+              className={`p-4 mb-4 text-sm  rounded-xl  font-normal flex flex-row items-center justify-between  ${
+                status == "success"
+                  ? "text-green-700  bg-green-100"
+                  : "bg-red-50 text-red-500"
+              }`}
               role="alert"
             >
-              <span className="font-semibold mr-2">Error :</span>Failed Add New
-              Client
+              <span className="font-semibold mr-2">{alert.msg}</span>
+              <IoIosCloseCircleOutline
+                className="cursor-pointer text-slate-700 text-xl hover:text-slate-400 transition"
+                onClick={() =>
+                  setalert((prevState) => ({ ...prevState, showmsg: false }))
+                }
+              />
             </div>
           )}
         </div>
