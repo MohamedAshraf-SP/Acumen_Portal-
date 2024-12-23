@@ -8,12 +8,12 @@ import { MdHistoryToggleOff } from "react-icons/md";
 import { FaWpforms } from "react-icons/fa6";
 import { LiaFileInvoiceSolid } from "react-icons/lia";
 import { IoDocumentsOutline } from "react-icons/io5";
+import { PiMicrosoftExcelLogoFill } from "react-icons/pi";
+
 import { IoSettingsOutline } from "react-icons/io5";
 // ------------- dashboard overciew icons
 import { FaUserTie } from "react-icons/fa6";
 import { MdManageAccounts } from "react-icons/md";
-import { FaBuildingShield } from "react-icons/fa6";
-import { MdEmail } from "react-icons/md";
 
 // images
 import darkLightimg from "/images/SidebarSettings/modes/darkorlight.webp";
@@ -61,7 +61,7 @@ export const menuItems = {
     {
       path: "import-clients",
       label: "Import Clients",
-      icon: <MdOutlineManageAccounts />,
+      icon: <PiMicrosoftExcelLogoFill />,
     },
     {
       path: "sent-notification",
@@ -138,65 +138,77 @@ export const dashboardAnalytics = [
     iconColor: "#8035E6",
     titleColor: "#8035E6",
   },
-//   {
-//     icon: <FaBuildingShield />,
-//     Title: "Companies",
-//     count: "77",
-//     bgColor: "#FFF2CC",
-//     iconColor: "#EAA215",
-//     titleColor: "#EBA417",
-//   },
-//   {
-//     icon: <MdEmail />,
-//     Title: "Alerts",
-//     count: "58",
-//     bgColor: "#FFE6D7",
-//     iconColor: "#F26847",
-//     titleColor: "#E3492F",
-//   },
-// ];
+  //   {
+  //     icon: <FaBuildingShield />,
+  //     Title: "Companies",
+  //     count: "77",
+  //     bgColor: "#FFF2CC",
+  //     iconColor: "#EAA215",
+  //     titleColor: "#EBA417",
+  //   },
+  //   {
+  //     icon: <MdEmail />,
+  //     Title: "Alerts",
+  //     count: "58",
+  //     bgColor: "#FFE6D7",
+  //     iconColor: "#F26847",
+  //     titleColor: "#E3492F",
+  //   },
+  // ];
 
-// // Documents Table Column Title
-// export const ordersGrid = [
-//   {
-//     headerText: "Client Name",
-//     textAlign: "Center",
-//     width: "120",
-//   },
-//   {
-//     field: "OrderItems",
-//     headerText: "Companmy",
-//     width: "150",
-//     editType: "dropdownedit",
-//     textAlign: "Center",
-//   },
-//   {
-//     field: "CustomerName",
-//     headerText: "Title",
-//     width: "150",
-//     textAlign: "Center",
-//   },
-//   {
-//     field: "TotalAmount",
-//     headerText: "Data Time",
-//     format: "C2",
-//     textAlign: "Center",
-//     editType: "numericedit",
-//     width: "150",
-//   },
-//   {
-//     headerText: "Status",
+  // // Documents Table Column Title
+  // export const ordersGrid = [
+  //   {
+  //     headerText: "Client Name",
+  //     textAlign: "Center",
+  //     width: "120",
+  //   },
+  //   {
+  //     field: "OrderItems",
+  //     headerText: "Companmy",
+  //     width: "150",
+  //     editType: "dropdownedit",
+  //     textAlign: "Center",
+  //   },
+  //   {
+  //     field: "CustomerName",
+  //     headerText: "Title",
+  //     width: "150",
+  //     textAlign: "Center",
+  //   },
+  //   {
+  //     field: "TotalAmount",
+  //     headerText: "Data Time",
+  //     format: "C2",
+  //     textAlign: "Center",
+  //     editType: "numericedit",
+  //     width: "150",
+  //   },
+  //   {
+  //     headerText: "Status",
 
-//     field: "OrderItems",
-//     textAlign: "Center",
-//     width: "120",
-//   },
-//   {
-//     field: "OrderID",
-//     headerText: "Action",
-//     width: "120",
-//     textAlign: "Center",
-//   },
+  //     field: "OrderItems",
+  //     textAlign: "Center",
+  //     width: "120",
+  //   },
+  //   {
+  //     field: "OrderID",
+  //     headerText: "Action",
+  //     width: "120",
+  //     textAlign: "Center",
+  //   },
 ];
 
- 
+// Notifications content
+
+export const alertStyles = [
+  "bg-blue-100 text-blue-800 border-blue-200",
+  "bg-red-100 text-red-800 border-red-200",
+  "bg-green-100 text-green-800 border-green-200",
+  "bg-yellow-100 text-yellow-800 border-yellow-200",
+  "bg-gray-100 text-gray-800 border-gray-200",
+  "bg-purple-100 text-purple-800 border-purple-200",
+  "bg-pink-100 text-pink-800 border-pink-200",
+  "bg-teal-100 text-teal-800 border-teal-200",
+  "bg-orange-100 text-orange-800 border-orange-200",
+];

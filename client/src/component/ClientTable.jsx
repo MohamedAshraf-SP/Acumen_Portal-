@@ -41,6 +41,7 @@ const ClientTable = () => {
     if (actionType === "delete") dispatch(setdeleteHintmsg(!deleteHintmsg));
     if (actionType === "edit") dispatch(seteditItemForm(!editItemForm));
     if (actionType === "view") dispatch(setViewClient(!ViewClient));
+ 
   };
 
   const ActionButton = ({ tooltip, onClick, icon, styles }) => (
@@ -56,6 +57,7 @@ const ClientTable = () => {
 
   useEffect(() => {
     dispatch(FetchedItems("clients"));
+ 
   }, [dispatch]);
 
   return (

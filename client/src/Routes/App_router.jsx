@@ -4,6 +4,7 @@ import MainLayout from "../Layouts/MainLayout"; // Import your layout
 import NotFind from "../pages/NotFind"; // 404 Page Component
 import Loader from "../component/Loader"; // Loading component
 import AddAcountant from "../component/AddAcountant";
+import Editor from "../pages/Editor";
 
 // Lazy Load Pages
 // -------------Admin --------------
@@ -26,6 +27,7 @@ const ClientDashboard = lazy(() => import("../pages/Client/Client_Dashboard"));
 const AddCompany = lazy(() => import("../pages/Client/Add_Company"));
 const ClientEngagement = lazy(() => import("../pages/Client/Engagement"));
 // -------------- shared-----------
+const Editorpage = lazy(() => import("../pages/Editor"));
 const Forms = lazy(() => import("../pages/Forms"));
 const Invoices = lazy(() => import("../pages/Invoices"));
 const Documents = lazy(() => import("../pages/Documents"));
@@ -63,6 +65,7 @@ const AppRouter = () => {
                   element={withSuspense(<Addaccountant />)}
                 />
               </Route>
+              <Route path="editor/:id" element={<Editorpage />} />
               <Route path="/clients" element={withSuspense(<AdminClients />)} />
               <Route
                 path="/companies"
@@ -133,6 +136,7 @@ const AppRouter = () => {
         </Route>
 
         {/* Catch-all route for non-existent pages */}
+
         <Route path="*" element={<NotFind />} />
       </Routes>
     </BrowserRouter>

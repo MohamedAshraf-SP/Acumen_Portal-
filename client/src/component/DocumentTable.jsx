@@ -85,7 +85,7 @@ const DocumentTable = () => {
     <div className="my-8 rounded-lg shadow-sm bg-white overflow-hidden  dark:bg-secondary-dark-bg dark:text-gray-200">
       {/* Header */}
       <div className="flex justify-between items-center p-4 border-b dark:border-gray-700">
-        <h4 className="text-xl font-semibold">Clients</h4>
+        <h4 className="text-xl font-semibold">Recent Uploaded Files</h4>
         <Link
           to="/add-client"
           className="flex items-center gap-1 bg-[#1C252E] text-white px-3 py-2 rounded-md hover:shadow-lg hover:opacity-[.8] font-semibold text-[13px] transition"
