@@ -7,147 +7,215 @@ import { Company, DueDate, Shareholder, Address, RMdepartment, Director, BankDet
 import { sendEmail } from "../../helpers/emailSender.js"
 
 
+
+
+
+
 export const importClientsFromCSV = async (req, res) => {
     try {
-        const path = req.file.path;
-        const results = await readCsvAsync(`./${path}`);
+        let clientsArr = []
+        let emailNotSentRows = []
+        let problems = []
+        const path = req.file.path
+        const results = await readCsvAsync(`./${path}`)
 
-        const importedClients = [];
 
-        // Ensure CSV import limit is within bounds
-        const csvImportLimit = Math.min(results.length, process.env.CSV_import_limit || results.length);
 
-        for (let i = 1; i <= csvImportLimit; i++) {
-            try {
-                // 1. Create and save the company
-                const company = await saveCompany(results[i]);
+        for (let i = 1; i <= process.env.CSV_import_limit; i++) {
 
-                // 2. Create and save the user
-                const user = await saveUser(results[i]);
+            let newCompany = new Company({})
+            const companyID = (await newCompany.save())._id
 
-                // 3. Send an email with credentials
-                sendClientEmail(user);
+            const emailExist = await User.findOne({ userName: results[i]['Email'] })
 
-                // 4. Create related entities (Departments, DueDates, etc.)
-                const relatedEntities = await createRelatedEntities(company._id, results[i]);
 
-                // 5. Update the company with related entities
-                const updatedCompany = await updateCompanyWithEntities(company, relatedEntities);
-
-                // 6. Create and save the client
-                const client = await saveClient(user._id, results[i], updatedCompany);
-                importedClients.push(client);
-            } catch (err) {
-                console.error(`Error processing row ${i}:`, err.message);
-                // Continue to the next row without breaking
-                continue;
+            if (emailExist) {
+                problems.push(i)
+                continue
             }
+
+            const newUser = new User({
+                userName: results[i]['Email'],
+                userRole: 'client'
+            })
+            const savedUser = await newUser.save()
+
+
+            if (!sendEmail(
+                "welcome to ACCUMEN Portal",
+                `this is your ${savedUser.userRole} Credentials:
+
+                UserName: ${savedUser.userName}  ,
+                password: ${savedUser.password}
+                
+                
+                `, savedUser.userName, "accumen portal team")
+            ) {
+                await User.findByIdAndDelete(newUser._id)
+                await Company.findByIdAndDelete(newCompany._id)
+                emailNotSentRows.push(i)
+
+            }
+
+
+            const newRMdepartments = new RMdepartment({
+                companyID: companyID,
+                departmentName: results[i]['RMdepartmentName'] || "",
+                // departmentName: "xx",
+                description: `${results[i]['description']}` || "",
+                //description: "xx",
+
+            })
+
+            const savedRMdepartments = await newRMdepartments.save()
+
+
+            const newDueDate = new DueDate({
+                companyId: companyID,
+                vatNumber: results[i]['vatNumber'] || "",
+                vatReturnsPeriod: results[i]['vatReturnsPeriod'] || "", // annual, quarterly
+                quarter1DueBy: Date.parse(results[i].quarter1DueBy) || "",
+                quarter2DueBy: Date.parse(results[i]['quarter2DueBy']) || "",
+                quarter3DueBy: Date.parse(results[i]['quarter3DueBy']) || "",
+                quarter4DueBy: Date.parse(results[i]['quarter4DueBy']) || "",
+                confirmationStatementDueBy: Date.parse(results[i]['confirmationStatementDueBy']) || "",
+                annualVatDueBy: Date.parse(results[i]['annualVatDueBy']) || "",
+
+            })
+            const savedDueDate = await newDueDate.save()
+
+
+
+
+            const newAddress = new Address({
+                companyId: companyID,
+                businessAddress: results[i]['businessAddress'] || "",
+                vatReturnsPeriod: results[i]['vatReturnsPeriod'] || "", // annual, quarterly
+                registeredOfficeAddress: results[i]['registeredOfficeAddress'] || "",
+                telephone: results[i]['telephone'] || "",
+                email: results[i]['email'] || "",
+                website: results[i]['website'] || ""
+            })
+            const savedAddress = await newAddress.save()
+
+
+
+
+            const newBankDetails = new BankDetail({
+                bName: results[i]['bankName'] || "",
+                accountNumber: results[i]['accountNumber'] || "", // annual, quarterly
+                accountHolder: results[i]['accountHolder'] || "",
+                sortCode: results[i]['sortCode'] || "",
+            })
+            const savedBankDetails = await newBankDetails.save()
+
+
+
+            const newShareholder = new Shareholder({
+                companyId: companyID,
+                shName: results[i]['shName'] || "",
+                numberOfShares: results[i]['numberOfShares'] || "",
+                shareClass: results[i]['shareClass'] || "",
+
+            })
+            const savedShareholder = await newShareholder.save()
+
+
+
+            const newDirector = new Director({
+                companyId: companyID,
+                companyId: companyID,
+                dTitle: results[i]['directorTitle'] || "",
+                dateOfAppointment: Date.parse(results[i]['dateOfAppointment']) || "", // annual, quarterly
+                dateRegistrationForSE: Date.parse(results[i]['dateRegistrationForSE']) || "",
+                dateOfResignation: Date.parse(results[i]['dateOfResignation']) || "",
+                dName: results[i]['dName'] || "",
+                dDateOfBirth: Date.parse(results[i]['dDateOfBirth']) || "",
+                dUTR: results[i]['dUTR'] || "",
+                dUTR_ID: results[i]['dUTR_ID'] || "",
+                dUTR_Password: results[i]['dUTR_Password'] || "",
+                dNIN: results[i]['dNIN'] || "",
+            })
+            const savedDirector = await newDirector.save()
+
+
+
+
+            let vat = results[i]['VATRegistered']
+            if (vat == 0 || vat == '0' || vat == "false" || vat == "False" || vat == "FALSE") {
+                vat == false
+            } else {
+                vat == true
+            }
+
+            const savedCompany = await Company.findByIdAndUpdate(
+                companyID,
+                {
+                    companyName: results[i]['companyName'] || "",
+                    contactName: results[i]['contactName'] || "",
+                    phone: results[i]['phone'] || "",
+                    entryDate: Date.parse(results[i]['entryDate']) || "",
+                    registrationNumber: results[i]['registrationNumber'] || "",
+                    AuthCode: results[i]['AuthCode'] || "",
+                    CISRegistrationNumber: results[i]['CISRegistrationNumber'] || "",
+                    AccountsOfficeReference: results[i]['AccountsOfficeReference'] || "",
+                    natureOfBusiness: results[i]['natureOfBusiness'] || "",
+                    accountingReferenceDate: Date.parse(results[i]['accountingReferenceDate']) || "",
+                    registrationDate: Date.parse(results[i]['registrationDate']) || "",
+                    employerPAYEReference: results[i]['employerPAYEReference'] || "",
+                    status: results[i]['status'] || "",
+                    incorporationDate: Date.parse(results[i]['incorporationDate']) || "",
+                    corporationTax_UTR: results[i]['corporationTax_UTR'] || "",
+                    VATRegistered: vat,
+                    dueDates: savedDueDate._id,
+                    shareholders: [savedShareholder._id],
+                    directors: [savedDirector._id],
+                    address: savedAddress._id,
+                    bankDetails: savedBankDetails._id,
+                    RMdepartments: savedRMdepartments._id
+
+
+                },
+                { new: true } // Return the updated document
+            ).populate()
+
+
+            const newClient = new Client({
+                userID: newUser._id,
+                name: results[i]['clientName'] || "",
+                department: results[i]['clientDepartment'] || "",
+                email: results[i]['Email'] || "",
+                notification: 1,
+                companies: [savedCompany]
+
+            })
+
+
+
+            var savedClient = await newClient.save()
+
+            clientsArr.push(i)
+
         }
 
-        deleteFileWithPath(`./${path}`);
 
-        res.status(200).json({ importedClients });
+
+        deleteFileWithPath(`./${path}`)
+
+        res.status(200).json({
+            "new clients:": clientsArr,
+            "Email already exists for Rows:": problems,
+            "Email not Correct for Rows :": emailNotSentRows
+        })
     } catch (e) {
-
-        console.error(e);
-        res.status(400).json({ Error: e.message });
+        console.log(e.message)
+        res.status(400).json({ Error: ` ${e.message}` })
     }
-};
 
-// Function to save a company
-async function saveCompany(data) {
-    const newCompany = new Company({});
-    return await newCompany.save();
+
+
 }
 
-// Function to save a user
-async function saveUser(data) {
-    const newUser = new User({
-        userName: data['Email'],
-        userRole: 'client',
-    });
-    return await newUser.save();
-}
 
-// Function to send an email
-function sendClientEmail(user) {
-    sendEmail(
-        "Welcome to ACCUMEN Portal",
-        `This is your ${user.userRole} Credentials:
 
-        UserName: ${user.userName},
-        Password: ${user.password}
-        
-        `,
-        user.userName,
-        "ACCUMEN Portal Team"
-    );
-}
 
-// Function to create related entities
-async function createRelatedEntities(companyId, data) {
-    const department = new RMdepartment({
-        companyID: companyId,
-        departmentName: data['RMdepartmentName'] || "",
-        description: data['description'] || "",
-    });
-
-    const dueDate = new DueDate({
-        companyId,
-        vatNumber: data['vatNumber'] || "",
-        vatReturnsPeriod: data['vatReturnsPeriod'] || "",
-        quarter1DueBy: parseDate(data.quarter1DueBy),
-        quarter2DueBy: parseDate(data.quarter2DueBy),
-        quarter3DueBy: parseDate(data.quarter3DueBy),
-        quarter4DueBy: parseDate(data.quarter4DueBy),
-        confirmationStatementDueBy: parseDate(data.confirmationStatementDueBy),
-        annualVatDueBy: parseDate(data.annualVatDueBy),
-    });
-
-    const address = new Address({
-        companyId,
-        businessAddress: data['businessAddress'] || "",
-        registeredOfficeAddress: data['registeredOfficeAddress'] || "",
-        telephone: data['telephone'] || "",
-        email: data['email'] || "",
-        website: data['website'] || "",
-    });
-
-    const [savedDepartment, savedDueDate, savedAddress] = await Promise.all([
-        department.save(),
-        dueDate.save(),
-        address.save(),
-    ]);
-
-    return { savedDepartment, savedDueDate, savedAddress };
-}
-
-// Function to update a company with related entities
-async function updateCompanyWithEntities(company, entities) {
-    return await Company.findByIdAndUpdate(
-        company._id,
-        {
-            RMdepartments: entities.savedDepartment._id,
-            dueDates: entities.savedDueDate._id,
-            address: entities.savedAddress._id,
-        },
-        { new: true }
-    );
-}
-
-// Function to save a client
-async function saveClient(userId, data, company) {
-    const newClient = new Client({
-        userID: userId,
-        name: data['clientName'] || "",
-        email: data['Email'] || "",
-        notification: 1,
-        companies: [company],
-    });
-    return await newClient.save();
-}
-
-// Utility function for parsing dates
-function parseDate(dateString) {
-    return dateString ? Date.parse(dateString) : null;
-}

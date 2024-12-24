@@ -7,24 +7,24 @@ import csv from 'csv-parser';
 // Read and parse the CSV file
 
 
-  export const readCSV =async (path)=>{
-    const csvFilePath =path;
-     fs.createReadStream(csvFilePath)
+export const readCSV = async (path) => {
+  const csvFilePath = path;
+  fs.createReadStream(csvFilePath)
     .pipe(csv()) // Parse the CSV file
     .on('data', (row) => {
       console.log(row);
-       // Process each row
+      // Process each row
     })
     .on('end', () => {
       console.log('CSV file successfully processed');
     });
-  
-  }
+
+}
 
 
 
 
-  export const   readCsvAsync=async (filePath)=> {
+export const readCsvAsync = async (filePath) => {
   const results = [];
   return new Promise((resolve, reject) => {
     fs.createReadStream(filePath)

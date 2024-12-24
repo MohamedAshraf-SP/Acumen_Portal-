@@ -6,7 +6,7 @@ import { Router } from 'express';
 import { getEmailLogs, getLogsCount } from "../../controllers/helpers/emailLogs.js";
 
 
-import { addHelper, updateHelper,getHelpers, deleteHelper, getHelperById,checkEmail } from "../../controllers/helpers/helpers.js"
+import { addHelper, updateHelper, getHelpers, deleteHelper, getHelperById, checkEmail } from "../../controllers/helpers/helpers.js"
 const helpersRoute = new Router()
 
 //check if email exits

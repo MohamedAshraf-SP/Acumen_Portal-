@@ -55,9 +55,12 @@ export const sendEmail = async (subject, text, userEmail, message) => {
 
     try {
         const info = await assignEmail(subject, text, userEmail, message);
-        console.log({ success: true, message: 'Email sent!' });
+        //console.log({ success: true, message: 'Email sent!' });
+        return true
     } catch (error) {
-        console.error('Error sending feedback:', error);
+        // console.error('Error sending feedback', error.message);
+        return false
+
 
     }
 

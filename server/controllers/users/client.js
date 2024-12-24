@@ -77,7 +77,7 @@ export const addClient = async (req, res) => {
 
         //create default company
         const company = new Company({
-            companyName: `default company for client ${req.body.name} `
+            companyName: `default company `
         })
         const newCompany = await company.save();
 
@@ -124,7 +124,7 @@ export const addClient = async (req, res) => {
         //add the task of the loE
         if (!req.file) {
             return res.status(400).json({ message: 'File is required' });
-        }
+        }   
         const newTask = new TasksDocument({
             clientID: clientData._id,
             clientName: clientData.name,
@@ -135,7 +135,7 @@ export const addClient = async (req, res) => {
         });
         const savedTask = await newTask.save();
 
-        return res.status(201).json({ client: clientData.toJSON(), task: savedTask.toJSON() });
+        return res.status(201).json({ message: "Client added successfully!!" });
     } catch (error) {
         console.log(error);
         res.status(400).json(error.message);
