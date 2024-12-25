@@ -54,6 +54,8 @@ export const addAccountant = async (req, res) => {
 
     const password = Math.floor(Math.random() * 100000000000)
 
+    
+
     const nUser = new User({
       userName: req.body.email,
       password: password,
