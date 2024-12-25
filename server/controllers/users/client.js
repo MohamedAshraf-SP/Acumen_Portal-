@@ -59,31 +59,22 @@ export const getClients = async (req, res) => {
 // Add a new client
 export const addClient = async (req, res) => {
     try {
-
         const email = await User.findOne({ userName: req.body.email })
-
         if (email) {
             return res.status(400).json({ message: "email already exist", email })
         }
-
         // create user
         const nUser = new User({
             userName: req.body.email,
             userRole: 'client'
-
         })
         const newUser = await nUser.save();
-
-
         //create default company
         const company = new Company({
             companyName: `default company `
         })
         const newCompany = await company.save();
-
-
         //create the new client
-
         const newClient = new Client({
             userID: newUser._id,
             name: req.body.name,

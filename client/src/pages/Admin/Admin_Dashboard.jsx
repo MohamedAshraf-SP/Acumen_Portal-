@@ -31,7 +31,7 @@ export default function Admin_Dashboard() {
       }
     };
     fetchUsersCount();
-  }, []);
+  }, [OverViewAnalysis]);
 
   return (
     <div className="mt-4">
@@ -76,7 +76,7 @@ export default function Admin_Dashboard() {
       {error && <p className="text-red-500">Error: {error}</p>}
 
       <div className="container overflow-hidden">
-        <Suspense fallback={<Skeleton count={3} height="5rem" />}>
+        <Suspense fallback={<Skeleton count={3} height="10rem" className="mt-10"/>}>
           <ClientTable />
           <Companytable />
           <DocumentTable />

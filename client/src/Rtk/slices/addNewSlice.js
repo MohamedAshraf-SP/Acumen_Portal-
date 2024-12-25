@@ -6,6 +6,7 @@ const addNewData = createAsyncThunk(
   async ({ path, itemData }, thunkAPI) => {
     try {
       const response = await addItem(path, itemData); // Added `await` to handle the promise
+
       return response;
     } catch (error) {
       return thunkAPI.rejectWithValue(
