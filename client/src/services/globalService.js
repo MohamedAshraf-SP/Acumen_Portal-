@@ -2,10 +2,8 @@ import axios from "axios";
 const api = import.meta.env.VITE_API_URL;
 // Centralized error handling function
 const handleError = (error, action) => {
-  console.error(error.message); // Fix: Use `error` not `errors`
-  throw new Error(
-    `Sorry, an error occurred during ${action}: ${error.message}`
-  );
+  console.log(error);
+  throw new Error(`Sorry,${error?.response?.data?.message}`);
 };
 // Generic API call
 const apiCall = async (method, path, data = null) => {
@@ -36,6 +34,8 @@ export const addItem = (path, data) => {
 };
 // update Item
 export const updateItem = (path, itemId, data) => {
+  console.log(data);
+
   return apiCall("PUT", `${path}/${itemId}`, data);
 };
 // delete Item

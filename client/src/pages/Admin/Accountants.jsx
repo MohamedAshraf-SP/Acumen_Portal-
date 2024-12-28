@@ -26,7 +26,7 @@ const Accountants = () => {
   const { deleteHintmsg } = useSelector((state) => state.setting);
   const dispatch = useDispatch();
   const [selectedItem, setSelectedItem] = useState(null);
-
+  // handle several actions when click
   const handleAction = (actionType, path, itemId) => {
     setSelectedItem({ actionType, path, itemId });
     if (actionType === "delete") dispatch(setdeleteHintmsg(!deleteHintmsg));
@@ -42,12 +42,11 @@ const Accountants = () => {
       </li>
     </TooltipComponent>
   );
-
+  // dispatch load content action when detect change on dispatch
   useEffect(() => {
     dispatch(FetchedItems("accountants"));
   }, [dispatch]);
-  console.log(data);
-  return (
+   return (
     <>
       {deleteHintmsg && (
         <ConfirmDelete
@@ -56,7 +55,7 @@ const Accountants = () => {
         />
       )}
 
-      <div className="my-8 rounded-lg shadow-sm bg-white overflow-scroll dark:bg-secondary-dark-bg dark:text-gray-200">
+    <div className="my-8 rounded-lg shadow-sm bg-white overflow-scroll dark:bg-secondary-dark-bg dark:text-gray-200">
         {/* Header */}
         <div className="flex justify-between items-center p-4 border-b dark:border-gray-700">
           <h4 className="text-xl font-semibold">Accountants</h4>

@@ -15,7 +15,6 @@ function ConfirmDelete({ path, deletedItemId }) {
       const response = await dispatch(
         deleteTargetItem({ path, itemId: deletedItemId })
       );
-
       if (response.meta.requestStatus === "fulfilled") {
         dispatch(
           setsuccessmsg({
@@ -25,7 +24,7 @@ function ConfirmDelete({ path, deletedItemId }) {
         );
         setLoading(!loading);
         // Fetch the updated list of clients after deletion
-        dispatch(FetchedItems("clients"));
+        dispatch(FetchedItems(path));
       } else {
         throw new Error("Delete action failed");
       }
