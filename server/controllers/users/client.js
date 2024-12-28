@@ -124,7 +124,7 @@ export const addClient = async (req, res) => {
         //add the task of the loE
         if (!req.file) {
             return res.status(400).json({ message: 'File is required' });
-        }   
+        }
         const newTask = new TasksDocument({
             clientID: clientData._id,
             clientName: clientData.name,
