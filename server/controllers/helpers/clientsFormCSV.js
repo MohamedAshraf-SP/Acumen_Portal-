@@ -5,6 +5,7 @@ import User from "../../models/users/user.js"
 import { Company, DueDate, Shareholder, Address, RMdepartment, Director, BankDetail } from "../../models/company/index.js"
 
 import { sendEmail } from "../../helpers/emailSender.js"
+import bankDetails from "../../models/company/bankDetails.js"
 
 
 
@@ -13,15 +14,37 @@ import { sendEmail } from "../../helpers/emailSender.js"
 
 export const importClientsFromCSV = async (req, res) => {
     try {
+        let envLimit = parseInt(process.env.CSV_import_limit)
+        let start = parseInt(req.query.start) || 1
+        let end = parseInt(req.query.end) || envLimit
         let clientsArr = []
         let emailNotSentRows = []
         let problems = []
+
+        console.log(start, end);
+
+
+        if (start < 1 || start > envLimit || start > end) {
+            start = 1
+        }
+
+        if (end < start || end > envLimit) {
+            end = envLimit
+        }
+
+
+        if (!req.file) {
+            return res.status(400).json({ message: "File not found!!" })
+        }
+
+
         const path = req.file.path
         const results = await readCsvAsync(`./${path}`)
 
 
-
-        for (let i = 1; i <= process.env.CSV_import_limit; i++) {
+        console.log(start, end);
+        for (let i = start; i <= end; i++) {
+            console.log(i);
 
             let newCompany = new Company({})
             const companyID = (await newCompany.save())._id
@@ -30,6 +53,7 @@ export const importClientsFromCSV = async (req, res) => {
 
 
             if (emailExist) {
+                await Company.findByIdAndDelete(companyID)
                 problems.push(i)
                 continue
             }
@@ -87,27 +111,12 @@ export const importClientsFromCSV = async (req, res) => {
 
 
 
-            const newAddress = new Address({
-                companyId: companyID,
-                businessAddress: results[i]['businessAddress'] || "",
-                vatReturnsPeriod: results[i]['vatReturnsPeriod'] || "", // annual, quarterly
-                registeredOfficeAddress: results[i]['registeredOfficeAddress'] || "",
-                telephone: results[i]['telephone'] || "",
-                email: results[i]['email'] || "",
-                website: results[i]['website'] || ""
-            })
-            const savedAddress = await newAddress.save()
 
 
 
 
-            const newBankDetails = new BankDetail({
-                bName: results[i]['bankName'] || "",
-                accountNumber: results[i]['accountNumber'] || "", // annual, quarterly
-                accountHolder: results[i]['accountHolder'] || "",
-                sortCode: results[i]['sortCode'] || "",
-            })
-            const savedBankDetails = await newBankDetails.save()
+
+
 
 
 
@@ -152,7 +161,6 @@ export const importClientsFromCSV = async (req, res) => {
                 companyID,
                 {
                     companyName: results[i]['companyName'] || "",
-                    contactName: results[i]['contactName'] || "",
                     phone: results[i]['phone'] || "",
                     entryDate: Date.parse(results[i]['entryDate']) || "",
                     registrationNumber: results[i]['registrationNumber'] || "",
@@ -170,8 +178,25 @@ export const importClientsFromCSV = async (req, res) => {
                     dueDates: savedDueDate._id,
                     shareholders: [savedShareholder._id],
                     directors: [savedDirector._id],
-                    address: savedAddress._id,
-                    bankDetails: savedBankDetails._id,
+
+
+
+                    //bankDetails
+                    bName: results[i]['bankName'] || "",
+                    accountNumber: results[i]['accountNumber'] || "", // annual, quarterly
+                    accountHolder: results[i]['accountHolder'] || "",
+                    sortCode: results[i]['sortCode'] || "",
+
+                    //address
+                    businessAddress: results[i]['businessAddress'] || "",
+                    vatReturnsPeriod: results[i]['vatReturnsPeriod'] || "", // annual, quarterly
+                    registeredOfficeAddress: results[i]['registeredOfficeAddress'] || "",
+                    telephone: results[i]['telephone'] || "",
+                    email: results[i]['email'] || "",
+                    website: results[i]['website'] || "",
+
+
+
                     RMdepartments: savedRMdepartments._id
 
 
@@ -189,10 +214,20 @@ export const importClientsFromCSV = async (req, res) => {
                 companies: [savedCompany]
 
             })
-
-
-
             var savedClient = await newClient.save()
+
+            await Company.findByIdAndUpdate(
+                companyID,
+                {
+                    clientID: savedClient.id,
+                    clientName: results[i]['clientName'] || "",
+                }
+            )
+
+
+
+
+
 
             clientsArr.push(i)
 

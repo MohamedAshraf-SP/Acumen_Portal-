@@ -151,7 +151,7 @@ export const deleteClient = async (req, res) => {
             result1 = await user.findByIdAndDelete(result.userID);
         }
 
-        console.log(result, result1)
+        // console.log(result, result1)
         if (!result) {
             return res.status(404).json({ message: "Client not found" });
         }

@@ -9,6 +9,9 @@ import {
     BankDetail,
     RMdepartment
 } from "../../models/company/index.js";
+import Client from "../../models/users/clients.js";
+import User from "../../models/users/user.js";
+
 
 
 
@@ -16,6 +19,8 @@ import {
 export const addCompany = async (req, res) => {
     try {
         const {
+            clientID,
+            clientName,
             AccountsOfficeReference,
             AuthCode,
             CISRegistrationNumber,
@@ -26,7 +31,6 @@ export const addCompany = async (req, res) => {
             companyName,
             contactName,
             corporationTax_UTR,
-
             employerPAYEReference,
             entryDate,
             incorporationDate,
@@ -40,6 +44,8 @@ export const addCompany = async (req, res) => {
 
         // Create the company
         const company = new Company({
+            clientID,
+            clientName,
             AccountsOfficeReference,
             AuthCode,
             CISRegistrationNumber,
@@ -84,13 +90,10 @@ export const getCompanies = async (req, res) => {
 
         // Fetch companies with pagination
         const companies = await Company.find()
-            .populate({ path: "DueDate", strictPopulate: false })
+
             .populate({ path: "shareholder", strictPopulate: false })
             .populate({ path: "director", strictPopulate: false })
-            .populate({ path: "address", strictPopulate: false })
             .populate({ path: "document", strictPopulate: false })
-            .populate({ path: "BankDetail", strictPopulate: false })
-            .populate({ path: "RMdepartment", strictPopulate: false })
             .skip((pageNumber - 1) * limitNumber) // Skip documents for the previous pages
             .limit(limitNumber); // Limit the number of documents per page
 
@@ -103,7 +106,45 @@ export const getCompanies = async (req, res) => {
         });
     } catch (error) {
         console.log(error)
-        res.status(500).json({ message: "Error retrieving companies", error });
+        res.status(500).json({ message: "Error retrieving companies!", error });
+    }
+};
+
+
+export const getCompaniesAbstracted = async (req, res) => {
+    try {
+        const { page = 1, limit = 10 } = req.query; // Default page = 1, limit = 10
+
+        // Parse page and limit to integers
+        const pageNumber = parseInt(page, 10);
+        const limitNumber = parseInt(limit, 10);
+
+        // Calculate total count for pagination metadata
+        const totalCompanies = await Company.countDocuments();
+
+        // Fetch companies with pagination
+        const companies = await Company.find()
+            .populate({ path: "Client", strictPopulate: false })
+            .select({
+                companyName: 1,
+                clientName: 1,
+                email: 1,
+                telephone: 1
+            })
+
+            .skip((pageNumber - 1) * limitNumber) // Skip documents for the previous pages
+            .limit(limitNumber); // Limit the number of documents per page
+
+        // Return paginated response
+        res.status(200).json({
+            TotalCompanies: totalCompanies,
+            CurrentPage: pageNumber,
+            TotalPages: Math.ceil(totalCompanies / limitNumber),
+            companies,
+        });
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({ message: "Error retrieving companies!!", error });
     }
 };
 
@@ -148,10 +189,24 @@ export const updateCompany = async (req, res) => {
     }
 };
 
+//update duedates
+
+
+//update directers
+
+//update shareholders
+
+// update RMdepartments
+
+
 // Delete a company
 export const deleteCompany = async (req, res) => {
     try {
         const company = await Company.findByIdAndDelete(req.params.id);
+        // await Company.deleteMany()
+        // await Client.deleteMany()
+        // await User.deleteMany()
+
 
         if (!company) {
             return res.status(404).json({ message: "Company not found" });
@@ -163,9 +218,9 @@ export const deleteCompany = async (req, res) => {
         await Document.deleteMany({ _id: { $in: company.documents } });
 
         await DueDate.deleteMany({ _id: company.dueDates });
-        await Address.deleteMany({ _id: company.address });
+        // await Address.deleteMany({ _id: company.address });
         await RMdepartment.deleteMany({ _id: company.RMdepartments });
-        await BankDetail.deleteMany({ _id: company.bankDetails });
+        //await BankDetail.deleteMany({ _id: company.bankDetails });
 
         res.status(200).json({ message: "Company deleted successfully" });
     } catch (error) {

@@ -1,5 +1,6 @@
 import mongoose from "mongoose"
 import { DueDate, Shareholder, Director, Address, Document, BankDetail, RMdepartment } from './index.js'
+import Client from "../users/clients.js";
 
 
 
@@ -8,9 +9,11 @@ import { DueDate, Shareholder, Director, Address, Document, BankDetail, RMdepart
 
 
 const companySchema = new mongoose.Schema({
-  contactName: String,
-  phone: String,
-  entryDate: Date,
+  //client Data
+  clientID: { type: mongoose.Types.ObjectId, ref: "Client" },
+  clientName: String,
+
+  companyName: String,
   registrationDate: Date,
   incorporationDate: Date,
   accountingReferenceDate: Date,
@@ -19,19 +22,38 @@ const companySchema = new mongoose.Schema({
   CISRegistrationNumber: String,
   AccountsOfficeReference: String,
   natureOfBusiness: String,
-  companyName: String,
   employerPAYEReference: String,
   status: String,
   corporationTax_UTR: String,
   VATRegistered: Boolean,
+
+  //contact
+  contactName: String,
+  phone: String,
+  entryDate: Date,
+
+  //address
+  businessAddress: String,
+  registeredOfficeAddress: String,
+  telephone: String,
+  email: String,
+  website: String,
+
+  //bankDetails
+  bName: String,
+  accountNumber: String,
+  accountHolder: String,
+  sortCode: String,
+
+
+  RMdepartments: { type: mongoose.Schema.Types.ObjectId, ref: "RMdepartments" },
   dueDates: { type: mongoose.Schema.Types.ObjectId, ref: "DueDate" },
   shareholders: [{ type: mongoose.Schema.Types.ObjectId, ref: "Shareholder" }],
   directors: [{ type: mongoose.Schema.Types.ObjectId, ref: "Director" }],
-  address: { type: mongoose.Schema.Types.ObjectId, ref: "Address" },
+
 
   documents: [{ type: mongoose.Schema.Types.ObjectId, ref: "Document" }],
-  bankDetails: { type: mongoose.Schema.Types.ObjectId, ref: "BankDetail" },
-  RMdepartments: { type: mongoose.Schema.Types.ObjectId, ref: "RMdepartments" },
+
 });
 
 export default mongoose.model("Company", companySchema);
