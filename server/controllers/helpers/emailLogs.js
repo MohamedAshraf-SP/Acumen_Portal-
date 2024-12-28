@@ -14,7 +14,15 @@ export const getEmailLogs = async (req, res) => {
     try {
         const emailLogs = await EmailLog.find(
             {}
-        )
+        ).select({
+            emailedTo: 1, // Recipient email address
+            emailSubject: 1, // Subject of the email
+            clientName: 1, // Client name
+            companyName: 1, // Company name
+            date: 1, // Date when the email was sent
+            deadline: 1, // Deadline for the task or action
+            period: 1
+        })
             .skip(skip)
             .limit(limit); // Skip the specified number of documents.limit(limit);;
         res.status(200).json({

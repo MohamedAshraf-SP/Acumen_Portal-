@@ -6,6 +6,7 @@ import { Company, DueDate, Shareholder, Address, RMdepartment, Director, BankDet
 
 import { sendEmail } from "../../helpers/emailSender.js"
 import bankDetails from "../../models/company/bankDetails.js"
+import { addEmailLog } from "../../helpers/emailLogs.js"
 
 
 
@@ -215,6 +216,8 @@ export const importClientsFromCSV = async (req, res) => {
 
             })
             var savedClient = await newClient.save()
+
+            addEmailLog(results[i]['Email'], "Accumen portal New User Notification!", results[i]['clientName'], results[i]['companyName'])
 
             await Company.findByIdAndUpdate(
                 companyID,

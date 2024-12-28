@@ -63,6 +63,9 @@ export const addClient = async (req, res) => {
         if (email) {
             return res.status(400).json({ message: "email already exist", email })
         }
+        if (!req.file) {
+            return res.status(400).json({ message: 'LEO File is required' });
+        }
         // create user
         const nUser = new User({
             userName: req.body.email,
@@ -113,9 +116,7 @@ export const addClient = async (req, res) => {
 
 
         //add the task of the loE
-        if (!req.file) {
-            return res.status(400).json({ message: 'File is required' });
-        }
+
         const newTask = new TasksDocument({
             clientID: clientData._id,
             clientName: clientData.name,
