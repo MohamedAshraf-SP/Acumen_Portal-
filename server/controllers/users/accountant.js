@@ -52,9 +52,22 @@ export const addAccountant = async (req, res) => {
     //console.log(req);
 
 
+    if (!req.body.email) {
+      return res.status(400).json({ message: "Email is required!!" })
+    }
+    const mail = await User.findOne({ userName: req.body.email })
+
+    if (mail) {
+      return res.status(400).json({ message: "Email already exists!!" })
+    }
+    if (!req.body.department) {
+      return res.status(400).json({ message: "Department is required!!" })
+    }
+
+
     const password = Math.floor(Math.random() * 100000000000)
 
-    
+
 
     const nUser = new User({
       userName: req.body.email,
