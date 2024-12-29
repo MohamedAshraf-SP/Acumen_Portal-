@@ -80,7 +80,7 @@ const Companytable = () => {
       <div className="my-8 rounded-lg shadow-sm bg-white overflow-scroll dark:bg-secondary-dark-bg dark:text-gray-200">
         {/* Header */}
         <div className="flex justify-between items-center p-4 border-b dark:border-gray-700">
-          <h4 className="text-xl font-semibold">Clients</h4>
+          <h4 className="text-xl font-semibold">Latest Companies</h4>
           <Link
             to="/clients/add-Client"
             className="flex items-center gap-1 bg-[#1C252E] text-white px-3 py-2 rounded-md hover:shadow-lg hover:opacity-[.8] font-semibold text-[13px] transition"
@@ -159,12 +159,7 @@ const Companytable = () => {
                   width="150"
                   textAlign="Left"
                 />
-                <ColumnDirective
-                  field="phone"
-                  headerText="Company Phone"
-                  width="150"
-                  textAlign="Left"
-                />
+
                 <ColumnDirective
                   headerText="Actions"
                   width="150"

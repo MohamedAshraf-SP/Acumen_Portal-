@@ -4,11 +4,8 @@ import { addItem } from "../../services/globalService";
 const addNewData = createAsyncThunk(
   "data/addNewData", // Fixed typo in the action type name
   async ({ path, itemData }, thunkAPI) => {
-    console.log(itemData)
     try {
-
       const response = await addItem(path, itemData); // Added `await` to handle the promise
-      console.log(response)
       return response;
     } catch (error) {
       return thunkAPI.rejectWithValue(

@@ -227,8 +227,8 @@ export default function AddClientform() {
               <button
                 className={`font-thin px-10 max-w-sm mt-4 ${
                   !formik.isValid || status == "loading"
-                    ? "bg-gray-800 border-none text-white cursor-not-allowed"
-                    : "bg-[#465DFF] text-white  hover:bg-blue-900"
+                    ? "bg-[#465DFF]  text-white  border-none  cursor-not-allowed"
+                    : "bg-[#E2ECF9] text-[#a7aeb8]   hover:bg-blue-900"
                 }`}
                 type="submit"
                 disabled={

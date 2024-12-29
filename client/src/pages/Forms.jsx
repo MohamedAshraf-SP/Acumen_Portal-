@@ -89,7 +89,7 @@ export default function Forms() {
           <div
             key={item._id}
             className={`relative flex flex-col justify-center gap-4   border border-solid 
-          rounded-lg overflow-hidden items-center pb-16 pt-2 group hover:shadow-lg transition-all duration-300 ease-in-out h-full cursor-pointer ${item.color}`}
+          rounded-lg overflow-hidden items-center pb-16 pt-6 group hover:shadow-lg transition-all duration-300 ease-in-out h-full cursor-pointer ${item.color}`}
           >
             <div className="flex flex-col justify-center items-center gap-4">
               <svg
@@ -112,10 +112,10 @@ export default function Forms() {
               </svg>
 
               <div className="text-center">
-                <p className="text-[#282833] font-semibold text-[15px]">
+                <p className="text-[#282833] font-medium text-[17px] ">
                   {item?.name}
                 </p>
-                <p className="text-[#6c7691] font-medium py-2 text-[14px]">
+                <p className="text-[#6c7691] font-bold py-2 text-[14px]">
                   {item?.additionalName}
                 </p>
               </div>

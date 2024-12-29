@@ -46,7 +46,7 @@ const Accountants = () => {
   useEffect(() => {
     dispatch(FetchedItems("accountants"));
   }, [dispatch]);
-   return (
+  return (
     <>
       {deleteHintmsg && (
         <ConfirmDelete
@@ -55,7 +55,7 @@ const Accountants = () => {
         />
       )}
 
-    <div className="my-8 rounded-lg shadow-sm bg-white overflow-scroll dark:bg-secondary-dark-bg dark:text-gray-200">
+      <div className="my-8 rounded-lg shadow-sm bg-white overflow-scroll dark:bg-secondary-dark-bg dark:text-gray-200">
         {/* Header */}
         <div className="flex justify-between items-center p-4 border-b dark:border-gray-700">
           <h4 className="text-xl font-semibold">Accountants</h4>
@@ -110,36 +110,31 @@ const Accountants = () => {
               allowSorting={true}
               toolbar={["Search"]}
               width="auto"
-              pageSettings={{ pageSize: 5, currentPage: 1 }}
+              // pageSettings={{ pageSize: 5,  }}
             >
               <ColumnsDirective>
                 <ColumnDirective
                   field="name"
                   headerText="Accountant Name"
-                  width="200"
-                  textAlign="Left"
-                />
-                <ColumnDirective
-                  field="customerName"
-                  headerText="Email"
-                  width="150"
                   textAlign="Left"
                 />
                 <ColumnDirective
                   field="email"
-                  headerText="Phone"
-                  width="200"
+                  headerText="Email"
                   textAlign="Left"
                 />
                 <ColumnDirective
                   field="phone"
-                  headerText="Department"
-                  width="150"
+                  headerText="Phone"
+                  textAlign="center"
+                />
+                <ColumnDirective
+                  field="department"
+                  headerText="Department" 
                   textAlign="Left"
                 />
                 <ColumnDirective
                   headerText="Actions"
-                  width="150"
                   textAlign="Center"
                   template={(rowData) => (
                     <ul className="flex items-center justify-center space-x-2">

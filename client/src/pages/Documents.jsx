@@ -16,8 +16,10 @@ import { AiFillEyeInvisible } from "react-icons/ai";
 import { TooltipComponent } from "@syncfusion/ej2-react-popups";
 import Nodataimg from "/images/table/No data.svg";
 import { FetchedItems } from "../Rtk/slices/getAllslice";
+import axios from "axios";
 
 const Documents = () => {
+  const api = import.meta.env.VITE_API_URL;
   const dispatch = useDispatch();
   const [selectedItem, setSelectedItem] = useState(null);
   const data = useSelector((state) => state?.getall?.entities?.tasksDocuments);
@@ -53,11 +55,43 @@ const Documents = () => {
 
     return `${month}/${day}/${year}   ${hours}:${minutes}:${seconds}`;
   };
+  // handle download document
+  const handleDownload = async (documentId) => {
+    console.log(documentId);
+    try {
+      const response = await axios.get(
+        `${api}/tasksDocuments/download/${documentId}`,
+        {
+          responseType: "blob", // This is critical for handling file downloads
+        }
+      );
+      console.log(response);
+      // Create a Blob from the response data
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      // Create a link element for downloading the file
+      const link = document.createElement("a");
+      link.href = url;
+      // Set the file name (you may get it from the response headers or hardcode it)
+      const contentDisposition = response.headers["content-disposition"];
+      const filename = contentDisposition
+        ? contentDisposition.split("filename=")[1].replace(/"/g, "")
+        : `download_${documentId}.pdf`;
+
+      link.setAttribute("download", filename);
+
+      // Append the link to the body, trigger click, and remove it
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (error) {
+      alert("sorry error happened while downloading the file,try again");
+      console.error("Error downloading file:", error);
+    }
+  };
   // dispatch load content action when detect change on dispatch
   useEffect(() => {
     dispatch(FetchedItems("tasksDocuments"));
   }, [dispatch]);
- 
   return (
     <>
       {deleteHintmsg && (
@@ -117,7 +151,7 @@ const Documents = () => {
           {status === "failed" && (
             <div className="flex items-center justify-center h-64">
               <p className="text-red-600">
-                Failed to load clients. Please try again later.
+                Failed to load Documents. Please try again later.
               </p>
             </div>
           )}
@@ -142,6 +176,12 @@ const Documents = () => {
             >
               <ColumnsDirective>
                 <ColumnDirective
+                  field="clientName"
+                  headerText="client Name"
+                  width="200"
+                  textAlign="Left"
+                />
+                <ColumnDirective
                   field="companyName"
                   headerText="Company"
                   width="200"
@@ -151,7 +191,7 @@ const Documents = () => {
                   field="title"
                   headerText="Title"
                   width="150"
-                textAlign="Left"
+                  textAlign="Left"
                 />
                 <ColumnDirective
                   field="formattedDateTime"
@@ -160,10 +200,31 @@ const Documents = () => {
                   textAlign="Left"
                 />
                 <ColumnDirective
-                  field="status"
                   headerText="status"
                   width="150"
-                  textAlign="Left"
+                  textAlign="center"
+                  template={(rowData) => {
+                    // Define the colors for different statuses
+                    const statusColors = {
+                      pending: "bg-orange-100 text-amber-700",
+                      seen: "bg-green-100 text-green-500",
+                    };
+
+                    // Get the status value and handle undefined/null cases
+                    const status = rowData?.status?.toLowerCase() || "unknown";
+
+                    // Determine the appropriate class based on the status
+                    const statusClass =
+                      statusColors[status] || "bg-gray-100 text-gray-700 ";
+
+                    return (
+                      <span
+                        className={`px-2 py-1  rounded-lg text-sm font-thin ${statusClass}`}
+                      >
+                        {status}
+                      </span>
+                    );
+                  }}
                 />
 
                 <ColumnDirective
@@ -173,7 +234,7 @@ const Documents = () => {
                   template={(rowData) => (
                     <ul className="flex items-center justify-center space-x-2">
                       <ActionButton
-                        tooltip="Edit"
+                        tooltip="seen"
                         icon={<AiFillEyeInvisible />}
                         styles="bg-[#E9F7E6] text-[#19A2D6] hover:bg-[#19A2D6] hover:text-white text-xl"
                         onClick={() =>
@@ -181,12 +242,10 @@ const Documents = () => {
                         }
                       />
                       <ActionButton
-                        tooltip="Delete"
+                        tooltip="Download"
                         icon={<FaDownload />}
                         styles="bg-[#FFF2F2] text-[#FF0000] hover:bg-[#FF0000] hover:text-white text-xl"
-                        onClick={() =>
-                          handleAction("delete", "clients", rowData._id)
-                        }
+                        onClick={() => handleDownload(rowData._id)}
                       />
                     </ul>
                   )}

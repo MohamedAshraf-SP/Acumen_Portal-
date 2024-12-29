@@ -12,7 +12,7 @@ import { LuDot } from "react-icons/lu";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useNavigate, useParams } from "react-router-dom";
-import { getItem, updateItem } from "../services/globalService";
+import { getItem } from "../services/globalService";
 import Skeleton from "react-loading-skeleton";
 import { updateTargetItem } from "../Rtk/slices/updateItemSlice";
 import { useDispatch } from "react-redux";
@@ -22,7 +22,6 @@ export default function Editor() {
   const navigate = useNavigate();
   const [loading, setloading] = useState(true);
   const [content, setcontent] = useState([]);
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const routes = ["Notification", "Edit Notifications"];
   //  get id from params
   let { id } = useParams();
@@ -63,6 +62,7 @@ export default function Editor() {
       } catch (error) {
         console.log(error);
       }
+      resetForm();
       navigate("/notifications");
     },
   });

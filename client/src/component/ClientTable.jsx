@@ -8,6 +8,7 @@ import {
   Inject,
   Toolbar,
 } from "@syncfusion/ej2-react-grids";
+
 import { useDispatch, useSelector } from "react-redux";
 import ConfirmDelete from "./ConfirmDelete";
 import EditClient from "./EditClient";
@@ -27,21 +28,15 @@ import { TooltipComponent } from "@syncfusion/ej2-react-popups";
 import Nodataimg from "/images/table/No data.svg";
 
 const ClientTable = () => {
-  const data = useSelector((state) => state?.getall?.entities?.clients);
+  const data = useSelector((state) => state?.getall?.entities.accountants);
   const status = useSelector((state) => state.getall.status);
-  const { deleteHintmsg, editItemForm, ViewClient } = useSelector(
-    (state) => state.setting
-  );
+  const { deleteHintmsg } = useSelector((state) => state.setting);
   const dispatch = useDispatch();
-
   const [selectedItem, setSelectedItem] = useState(null);
-
+  // handle several actions when click
   const handleAction = (actionType, path, itemId) => {
     setSelectedItem({ actionType, path, itemId });
     if (actionType === "delete") dispatch(setdeleteHintmsg(!deleteHintmsg));
-    if (actionType === "edit") dispatch(seteditItemForm(!editItemForm));
-    if (actionType === "view") dispatch(setViewClient(!ViewClient));
- 
   };
 
   const ActionButton = ({ tooltip, onClick, icon, styles }) => (
@@ -54,12 +49,10 @@ const ClientTable = () => {
       </li>
     </TooltipComponent>
   );
-
+  // dispatch load content action when detect change on dispatch
   useEffect(() => {
-    dispatch(FetchedItems("clients"));
- 
+    dispatch(FetchedItems("accountants"));
   }, [dispatch]);
-
   return (
     <>
       {deleteHintmsg && (
@@ -68,29 +61,17 @@ const ClientTable = () => {
           deletedItemId={selectedItem?.itemId}
         />
       )}
-      {editItemForm && (
-        <EditClient
-          TargetItem={selectedItem}
-          onClose={() => dispatch(seteditItemForm(!editItemForm))}
-        />
-      )}
-      {ViewClient && (
-        <ViewClientCard
-          TargetItem={selectedItem}
-          onClose={() => dispatch(setViewClient(!ViewClient))}
-        />
-      )}
 
       <div className="my-8 rounded-lg shadow-sm bg-white overflow-scroll dark:bg-secondary-dark-bg dark:text-gray-200">
         {/* Header */}
         <div className="flex justify-between items-center p-4 border-b dark:border-gray-700">
-          <h4 className="text-xl font-semibold">Clients</h4>
+          <h4 className="text-xl font-semibold">Accountants</h4>
           <Link
-            to="/clients/add-Client"
+            to="/accontants/add-account"
             className="flex items-center gap-1 bg-[#1C252E] text-white px-3 py-2 rounded-md hover:shadow-lg hover:opacity-[.8] font-semibold text-[13px] transition"
           >
             <GoPlus className="text-lg" />
-            Add Client
+            Add Accountant
           </Link>
         </div>
 
@@ -118,48 +99,48 @@ const ClientTable = () => {
           {status === "failed" && (
             <div className="flex items-center justify-center h-64">
               <p className="text-red-600">
-                Failed to load clients. Please try again later.
+                Failed to load Accountants. Please try again later.
               </p>
             </div>
           )}
-          {status === "success" && data?.clients?.length === 0 && (
+          {status === "success" && data?.accountants?.length === 0 && (
             <div className="flex flex-col justify-center items-center h-64">
               <img src={Nodataimg} alt="No Data" className="w-32 h-32" />
               <p className="text-sm text-gray-500 font-medium mt-2">No data</p>
             </div>
           )}
-          {status === "success" && data?.clients?.length > 0 && (
+          {status === "success" && data?.accountants?.length > 0 && (
             <GridComponent
               className="transition"
-              dataSource={data?.clients}
+              dataSource={data?.accountants}
               allowPaging={true}
               allowSorting={true}
               toolbar={["Search"]}
               width="auto"
-              pageSettings={{ pageSize: 5, currentPage: 1 }}
+              // pageSettings={{ pageSize: 5,  }}
             >
               <ColumnsDirective>
                 <ColumnDirective
                   field="name"
-                  headerText="Client Name"
+                  headerText="Accountant Name"
                   width="200"
                   textAlign="Left"
                 />
                 <ColumnDirective
                   field="customerName"
-                  headerText="Account Manager"
+                  headerText="Email"
                   width="150"
                   textAlign="Left"
                 />
                 <ColumnDirective
                   field="email"
-                  headerText="Email"
+                  headerText="Phone"
                   width="200"
                   textAlign="Left"
                 />
                 <ColumnDirective
                   field="phone"
-                  headerText="Phone"
+                  headerText="Department"
                   width="150"
                   textAlign="Left"
                 />
@@ -170,27 +151,11 @@ const ClientTable = () => {
                   template={(rowData) => (
                     <ul className="flex items-center justify-center space-x-2">
                       <ActionButton
-                        tooltip="View"
-                        icon={<BiShow />}
-                        styles="bg-[#E3E7FF] text-[#465DFF] hover:bg-[#465DFF] hover:text-white"
-                        onClick={() =>
-                          handleAction("view", "clients", rowData._id)
-                        }
-                      />
-                      <ActionButton
-                        tooltip="Edit"
-                        icon={<MdOutlineModeEditOutline />}
-                        styles="bg-[#E9F7E6] text-[#19A2D6] hover:bg-[#19A2D6] hover:text-white"
-                        onClick={() =>
-                          handleAction("edit", "clients", rowData._id)
-                        }
-                      />
-                      <ActionButton
                         tooltip="Delete"
                         icon={<FaRegTrashCan />}
                         styles="bg-[#FFF2F2] text-[#FF0000] hover:bg-[#FF0000] hover:text-white"
                         onClick={() =>
-                          handleAction("delete", "clients", rowData._id)
+                          handleAction("delete", "accountants", rowData._id)
                         }
                       />
                     </ul>

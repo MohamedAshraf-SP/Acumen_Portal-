@@ -50,9 +50,12 @@ export default function AddClientform() {
         addNewData({ path: "clients", itemData: values })
       );
 
-      setalert(response.payload);
-      setalert((prevState) => ({ ...prevState, msg: response.payload }));
-      setalert((prevState) => ({ ...prevState, showmsg: true }));
+      setalert((prevState) => ({
+        ...prevState,
+        msg: response.payload,
+        showmsg: true,
+      }));
+      // setalert((prevState) => ({ ...prevState, showmsg: true }));
       resetForm();
       setFileName("");
     },
