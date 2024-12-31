@@ -10,7 +10,7 @@ import { addHelper, updateHelper, getHelpers, deleteHelper, getHelperById, check
 const helpersRoute = new Router()
 
 //check if email exits
-helpersRoute.get("/checkEmail", checkEmail)
+helpersRoute.post("/checkEmail", checkEmail)
 
 //csv import
 helpersRoute.post('/importCSV', upload.single('clients'), importClientsFromCSV)

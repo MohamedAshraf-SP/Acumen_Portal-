@@ -18,7 +18,6 @@ import Nodataimg from "/images/table/No data.svg";
 import axios from "axios";
 const Sent_Notifications = () => {
   const api = import.meta.env.VITE_API_URL;
-  const dispatch = useDispatch();
   const [status, setStatus] = useState(null);
   const [data, setdata] = useState([]);
   // const data = useSelector((state) => state?.getall?.entities?.tasksDocuments);
@@ -69,7 +68,7 @@ const Sent_Notifications = () => {
       handleFetchNotification();
     }
   }, []);
-
+  console.log(data);
   return (
     <>
       <div className="my-8 rounded-lg shadow-sm bg-white overflow-x-scroll dark:bg-secondary-dark-bg dark:text-gray-200">
@@ -138,10 +137,8 @@ const Sent_Notifications = () => {
               dataSource={formattedData}
               allowPaging={true}
               allowSorting={true}
-              allowScrolling={true}
               toolbar={["Search"]}
               width="auto"
-              scrollSettings={{ enableInfiniteScrolling: true }}
               pageSettings={{ pageSize: 5, currentPage: 1 }}
             >
               <ColumnsDirective>
@@ -157,7 +154,6 @@ const Sent_Notifications = () => {
                   //  width="150"
                   textAlign="center"
                 />
-
                 <ColumnDirective
                   field="clientName"
                   headerText="Client Name"
@@ -177,13 +173,13 @@ const Sent_Notifications = () => {
                   textAlign="center"
                 />
                 <ColumnDirective
-                  field="formattedDateTime"
+                  field={String(deadline)}
                   headerText="Deadline"
                   // width="200"
                   textAlign="center"
                 />
                 <ColumnDirective
-                  field="formattedDateTime"
+                  field="period"
                   headerText="Period"
                   // width="200"
                   textAlign="center"

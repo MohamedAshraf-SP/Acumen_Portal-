@@ -56,6 +56,9 @@ export const addClient = async (req, res) => {
     if (email) {
       return res.status(400).json({ message: "email already exist", email });
     }
+    if (!req.file) {
+      return res.status(400).json({ message: "LEO File is required" });
+    }
     // create user
     const nUser = new User({
       userName: req.body.email,
@@ -105,9 +108,7 @@ export const addClient = async (req, res) => {
     const clientData = await newClient.save();
 
     //add the task of the loE
-    if (!req.file) {
-      return res.status(400).json({ message: "File is required" });
-    }
+
     const newTask = new TasksDocument({
       clientID: clientData._id,
       clientName: clientData.name,
@@ -131,10 +132,10 @@ export const deleteClient = async (req, res) => {
     const result = await Client.findByIdAndDelete(req.params.id);
     let result1;
     if (result) {
-      result1 = await User.findByIdAndDelete(result.userID);
+      result1 = await user.findByIdAndDelete(result.userID);
     }
 
-    console.log(result, result1);
+    // console.log(result, result1)
     if (!result) {
       return res.status(404).json({ message: "Client not found" });
     }
@@ -165,7 +166,6 @@ export const getClientsCount = async (req, res) => {
   try {
     const count = await Client.countDocuments();
     res.status(200).json({ count });
-    // result1 = await User.deleteMany({ userRole: "client" });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

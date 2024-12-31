@@ -4,18 +4,19 @@ import {
   ColumnsDirective,
   ColumnDirective,
   Search,
+  Sort,
+  Scroll,
   Page,
   Inject,
   Toolbar,
 } from "@syncfusion/ej2-react-grids";
 import { useDispatch, useSelector } from "react-redux";
-
 import { Link } from "react-router-dom";
 import { GoPlus } from "react-icons/go";
 import { FaRegTrashCan } from "react-icons/fa6";
-
 import { TooltipComponent } from "@syncfusion/ej2-react-popups";
 import Nodataimg from "/images/table/No data.svg";
+
 import ConfirmDelete from "../../component/ConfirmDelete";
 import { FetchedItems } from "../../Rtk/slices/getAllslice";
 import { setdeleteHintmsg } from "../../Rtk/slices/settingSlice";
@@ -23,13 +24,16 @@ import { setdeleteHintmsg } from "../../Rtk/slices/settingSlice";
 const Accountants = () => {
   const data = useSelector((state) => state?.getall?.entities.accountants);
   const status = useSelector((state) => state.getall.status);
-  const { deleteHintmsg } = useSelector((state) => state.setting);
+  const { show, targetId } = useSelector(
+    (state) => state.setting.deleteHintmsg
+  );
   const dispatch = useDispatch();
   const [selectedItem, setSelectedItem] = useState(null);
   // handle several actions when click
   const handleAction = (actionType, path, itemId) => {
     setSelectedItem({ actionType, path, itemId });
-    if (actionType === "delete") dispatch(setdeleteHintmsg(!deleteHintmsg));
+    if (actionType === "delete")
+      dispatch(setdeleteHintmsg({ show: true, targetId: itemId }));
   };
 
   const ActionButton = ({ tooltip, onClick, icon, styles }) => (
@@ -48,7 +52,7 @@ const Accountants = () => {
   }, [dispatch]);
   return (
     <>
-      {deleteHintmsg && (
+      {show && targetId === selectedItem.itemId && (
         <ConfirmDelete
           path={selectedItem?.path}
           deletedItemId={selectedItem?.itemId}
@@ -110,7 +114,7 @@ const Accountants = () => {
               allowSorting={true}
               toolbar={["Search"]}
               width="auto"
-              // pageSettings={{ pageSize: 5,  }}
+              pageSettings={{ pageSize: 8 }}
             >
               <ColumnsDirective>
                 <ColumnDirective
@@ -130,7 +134,7 @@ const Accountants = () => {
                 />
                 <ColumnDirective
                   field="department"
-                  headerText="Department" 
+                  headerText="Department"
                   textAlign="Left"
                 />
                 <ColumnDirective
@@ -150,7 +154,7 @@ const Accountants = () => {
                   )}
                 />
               </ColumnsDirective>
-              <Inject services={[Search, Page, Toolbar]} />
+              <Inject services={[Search, Sort, Page, Scroll, Toolbar]} />
             </GridComponent>
           )}
         </div>

@@ -7,7 +7,7 @@ import * as Yup from "yup";
 import { FetchedItems } from "../Rtk/slices/getAllslice";
 import { updateTargetItem } from "../Rtk/slices/updateItemSlice";
 
-export default function EditClient({ onClose, TargetItem }) {
+export default function EditClient({ TargetItem }) {
   const cardRef = useRef();
   const dispatch = useDispatch();
   const { editItemForm } = useSelector((state) => state.setting);
@@ -19,7 +19,7 @@ export default function EditClient({ onClose, TargetItem }) {
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (cardRef.current && !cardRef.current.contains(e.target)) {
-        onClose();
+        dispatch(seteditItemForm(!editItemForm));
       }
     };
     document.addEventListener("mousedown", handleClickOutside);

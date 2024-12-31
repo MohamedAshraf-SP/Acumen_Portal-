@@ -4,6 +4,8 @@ import {
   ColumnsDirective,
   ColumnDirective,
   Search,
+  Sort,
+  Scroll,
   Page,
   Inject,
   Toolbar,
@@ -28,7 +30,7 @@ const Documents = () => {
   const routes = ["Dashboard", "Files"];
 
   // handle several actions when click
-  const handleAction = (actionType, path, itemId) => {
+  const handleDocumentsAction = (actionType, path, itemId) => {
     setSelectedItem({ actionType, path, itemId });
     if (actionType === "delete") dispatch(setdeleteHintmsg(!deleteHintmsg));
   };
@@ -225,7 +227,7 @@ const Documents = () => {
                         icon={<AiFillEyeInvisible />}
                         styles="bg-[#E9F7E6] text-[#19A2D6] hover:bg-[#19A2D6] hover:text-white text-xl"
                         onClick={() =>
-                          handleAction("edit", "clients", rowData._id)
+                          handleDocumentsAction("edit", "clients", rowData._id)
                         }
                       />
                       <ActionButton
@@ -238,7 +240,7 @@ const Documents = () => {
                   )}
                 />
               </ColumnsDirective>
-              <Inject services={[Search, Page, Toolbar]} />
+              <Inject services={[Search, Sort, Page, Scroll, Toolbar]} />
             </GridComponent>
           )}
         </div>

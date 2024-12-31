@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import axios from "axios";
+// syncfusion
 import {
   GridComponent,
   ColumnsDirective,
@@ -8,15 +10,14 @@ import {
   Inject,
   Toolbar,
 } from "@syncfusion/ej2-react-grids";
-import { useDispatch, useSelector } from "react-redux";
+import Nodataimg from "/images/table/No data.svg";
 // import icons
 import { LuDot } from "react-icons/lu";
-import { FaDownload } from "react-icons/fa6";
-import { AiFillEyeInvisible } from "react-icons/ai";
+import { BsCloudDownload } from "react-icons/bs";
+import { AiOutlineEyeInvisible } from "react-icons/ai";
 import { TooltipComponent } from "@syncfusion/ej2-react-popups";
-import Nodataimg from "/images/table/No data.svg";
+import { useDispatch, useSelector } from "react-redux";
 import { FetchedItems } from "../Rtk/slices/getAllslice";
-import axios from "axios";
 
 const Documents = () => {
   const api = import.meta.env.VITE_API_URL;
@@ -88,19 +89,14 @@ const Documents = () => {
       console.error("Error downloading file:", error);
     }
   };
+  // handle seen documents
+  const handleSeenDocument = async () => {};
   // dispatch load content action when detect change on dispatch
   useEffect(() => {
     dispatch(FetchedItems("tasksDocuments"));
   }, [dispatch]);
   return (
     <>
-      {deleteHintmsg && (
-        <ConfirmDelete
-          path={selectedItem?.path}
-          deletedItemId={selectedItem?.itemId}
-        />
-      )}
-
       <div className="my-8 rounded-lg shadow-sm bg-white overflow-scroll dark:bg-secondary-dark-bg dark:text-gray-200">
         {/* Header */}
         <div className="my-4">
@@ -216,7 +212,7 @@ const Documents = () => {
                     // Determine the appropriate class based on the status
                     const statusClass =
                       statusColors[status] || "bg-gray-100 text-gray-700 ";
-
+                    console.log(statusClass);
                     return (
                       <span
                         className={`px-2 py-1  rounded-lg text-sm font-thin ${statusClass}`}
@@ -234,18 +230,19 @@ const Documents = () => {
                   template={(rowData) => (
                     <ul className="flex items-center justify-center space-x-2">
                       <ActionButton
-                        tooltip="seen"
-                        icon={<AiFillEyeInvisible />}
-                        styles="bg-[#E9F7E6] text-[#19A2D6] hover:bg-[#19A2D6] hover:text-white text-xl"
+                        tooltip="Seen"
+                        icon={<AiOutlineEyeInvisible />}
+                        styles="bg-[#bae6fd] text-[#0284c7] hover:bg-[#19A2D6] hover:text-white text-lg"
                         onClick={() =>
                           handleAction("edit", "clients", rowData._id)
                         }
                       />
                       <ActionButton
                         tooltip="Download"
-                        icon={<FaDownload />}
-                        styles="bg-[#FFF2F2] text-[#FF0000] hover:bg-[#FF0000] hover:text-white text-xl"
+                        icon={<BsCloudDownload />}
+                        styles="bg-[#d1fae5] text-[#0d9488] hover:bg-[#86efac] hover:text-[#059669] text-lg"
                         onClick={() => handleDownload(rowData._id)}
+                        aria-label="Download document"
                       />
                     </ul>
                   )}

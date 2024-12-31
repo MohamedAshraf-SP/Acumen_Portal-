@@ -2,10 +2,9 @@ import { useDispatch } from "react-redux";
 import { deleteTargetItem } from "../Rtk/slices/deleteItemSlice";
 import { setdeleteHintmsg, setsuccessmsg } from "../Rtk/slices/settingSlice";
 import { FetchedItems } from "../Rtk/slices/getAllslice";
-import { useState } from "react";
+import React, { useState } from "react";
 
 function ConfirmDelete({ path, deletedItemId }) {
-  // Destructure props
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
 
@@ -40,12 +39,12 @@ function ConfirmDelete({ path, deletedItemId }) {
       console.error("Error deleting item:", error);
     } finally {
       // Close the delete confirmation modal
-      dispatch(setdeleteHintmsg(false));
+      dispatch(setdeleteHintmsg({ show: false, targetId: null }));
     }
   };
 
   const handleCancelDelete = () => {
-    dispatch(setdeleteHintmsg(false));
+    dispatch(setdeleteHintmsg({ show: false, targetId: null }));
   };
 
   return (

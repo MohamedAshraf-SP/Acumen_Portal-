@@ -173,7 +173,7 @@ export default function Editor() {
                 className={`font-thin px-10 max-w-sm mt-4 ${
                   !formik.isValid || status == "loading"
                     ? "bg-gray-800 border-none text-white cursor-not-allowed"
-                    : "bg-[#465DFF] text-white  hover:bg-blue-900"
+                    : "bg-blue-500 text-white  hover:bg-blue-900"
                 }`}
                 type="submit"
                 disabled={!formik.isValid || formik.isSubmitting}
@@ -198,14 +198,6 @@ export default function Editor() {
                   </svg>
                 )}
                 {status == "loading" ? "Loading..." : "Update"}
-              </button>
-
-              <button
-                type="button"
-                className=" font-thin bg-[#1C252E] text-white px-10 max-w-sm mt-4"
-                onClick={() => formik.resetForm()}
-              >
-                cancel
               </button>
             </div>
           </form>

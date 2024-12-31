@@ -32,7 +32,7 @@ const Notifications = () => {
   const redirectToEditorWithId = (id) => {
     navigate(`/editor/${id}`);
   };
- 
+
   return (
     <>
       <div className="my-8 py-4 px-4 rounded-lg shadow-sm h-full  dark:bg-secondary-dark-bg dark:text-gray-200">
@@ -95,7 +95,7 @@ const Notifications = () => {
                 >
                   <div className="flex lg:items-center lg:justify-start lg:flex-row flex-col items-start justify-center lg:gap-6 gap-2 ms-3 text-sm font-medium">
                     <span className="text-xl  ">
-                      {alert.documentType == "email" ? <MdEmail /> : <FaSms />}
+                      {alert.documentType == "EMail" ? <MdEmail /> : <FaSms />}
                     </span>
                     <Link className="font-semibold hover:underline transition w-[250px]">
                       {alert.name}

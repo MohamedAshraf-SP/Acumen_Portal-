@@ -2,8 +2,7 @@ import axios from "axios";
 const api = import.meta.env.VITE_API_URL;
 // Centralized error handling function
 const handleError = (error, action) => {
-  console.log(error);
-  throw new Error(`Sorry,${error?.response?.data?.message}`);
+  throw new Error(`Sorry,${error?.response?.data}`);
 };
 // Generic API call
 const apiCall = async (method, path, data = null, headers = {}) => {
@@ -14,10 +13,11 @@ const apiCall = async (method, path, data = null, headers = {}) => {
       data,
       headers, // Include headers here
     });
+
     return response.data;
   } catch (error) {
+    console.log(error);
     handleError(error, method);
-    throw error; // Re-throw the error for upstream handling
   }
 };
 
@@ -37,11 +37,15 @@ export const getCount = (path) => {
 // add Item
 export const addItem = (path, data) => {
   // Call the API
+  return apiCall("POST", path, data);
+};
+// add Item with form data
+export const addItemWithFiles = (path, data) => {
+  // Call the API
   return apiCall("POST", path, data, {
     "Content-Type": "multipart/form-data",
   });
 };
-
 // update Item
 export const updateItem = (path, itemId, data) => {
   return apiCall("PUT", `${path}/${itemId}`, data);

@@ -1,6 +1,6 @@
 import EmailLog from "../models/helpers/emailLogs.js"
 
-export  const addEmailLog = (emailedTo, emailSubject,  clientName,companyName, period, deadline) => {
+export const addEmailLog = (emailedTo, emailSubject, clientName, companyName, period = null, deadline =null) => {
 
     const newLog = new EmailLog({
         emailedTo,

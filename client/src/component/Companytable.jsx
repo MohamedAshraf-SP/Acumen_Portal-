@@ -4,6 +4,8 @@ import {
   ColumnsDirective,
   ColumnDirective,
   Search,
+  Sort,
+  Scroll,
   Page,
   Inject,
   Toolbar,
@@ -29,16 +31,17 @@ import Nodataimg from "/images/table/No data.svg";
 const Companytable = () => {
   const data = useSelector((state) => state?.getall?.entities?.Companies);
   const status = useSelector((state) => state.getall.status);
-  const { deleteHintmsg, editItemForm, ViewClient } = useSelector(
-    (state) => state.setting
+  const { show, targetId } = useSelector(
+    (state) => state.setting.deleteHintmsg
   );
   const dispatch = useDispatch();
 
   const [selectedItem, setSelectedItem] = useState(null);
 
-  const handleAction = (actionType, path, itemId) => {
+  const handleCompanyAction = (actionType, path, itemId) => {
     setSelectedItem({ actionType, path, itemId });
-    if (actionType === "delete") dispatch(setdeleteHintmsg(!deleteHintmsg));
+    if (actionType === "delete")
+      dispatch(setdeleteHintmsg({ show: true, targetId: itemId }));
     if (actionType === "edit") dispatch(seteditItemForm(!editItemForm));
   };
 
@@ -58,24 +61,19 @@ const Companytable = () => {
   }, [dispatch]);
   return (
     <>
-      {deleteHintmsg && (
+      {show && targetId === selectedItem?.itemId && (
         <ConfirmDelete
           path={selectedItem?.path}
           deletedItemId={selectedItem?.itemId}
         />
       )}
-      {editItemForm && (
-        <EditClient
-          TargetItem={selectedItem}
-          onClose={() => dispatch(seteditItemForm(!editItemForm))}
-        />
-      )}
-      {ViewClient && (
+
+      {/* {ViewClient && (
         <ViewClientCard
           TargetItem={selectedItem}
           onClose={() => dispatch(setViewClient(!ViewClient))}
         />
-      )}
+      )} */}
 
       <div className="my-8 rounded-lg shadow-sm bg-white overflow-scroll dark:bg-secondary-dark-bg dark:text-gray-200">
         {/* Header */}
@@ -171,7 +169,7 @@ const Companytable = () => {
                         icon={<MdOutlineModeEditOutline />}
                         styles="bg-[#E9F7E6] text-[#19A2D6] hover:bg-[#19A2D6] hover:text-white"
                         onClick={() =>
-                          handleAction("edit", "clients", rowData._id)
+                          handleCompanyAction("edit", "clients", rowData._id)
                         }
                       />
                       <ActionButton
@@ -179,14 +177,18 @@ const Companytable = () => {
                         icon={<FaRegTrashCan />}
                         styles="bg-[#FFF2F2] text-[#FF0000] hover:bg-[#FF0000] hover:text-white"
                         onClick={() =>
-                          handleAction("delete", "clients", rowData._id)
+                          handleCompanyAction(
+                            "delete",
+                            "Companies",
+                            rowData._id
+                          )
                         }
                       />
                     </ul>
                   )}
                 />
               </ColumnsDirective>
-              <Inject services={[Search, Page, Toolbar]} />
+              <Inject services={[Search, Sort, Page, Scroll, Toolbar]} />
             </GridComponent>
           )}
         </div>
@@ -195,4 +197,4 @@ const Companytable = () => {
   );
 };
 
-export default Companytable;
+export default React.memo(Companytable);

@@ -8,7 +8,10 @@ const initialState = {
     UserProfile: false,
   },
   collapsed: false,
-  deleteHintmsg: false,
+  deleteHintmsg: {
+    show: false,
+    targetId: null,
+  },
   editItemForm: false,
   ViewClient: false,
   successmsg: [],
@@ -43,7 +46,8 @@ const settingSlice = createSlice({
       state.collapsed = action.payload;
     },
     setdeleteHintmsg: (state, action) => {
-      state.deleteHintmsg = action.payload;
+      state.deleteHintmsg.show = action.payload.show;
+      state.deleteHintmsg.targetId = action.payload.targetId;
     },
     seteditItemForm: (state, action) => {
       state.editItemForm = action.payload;

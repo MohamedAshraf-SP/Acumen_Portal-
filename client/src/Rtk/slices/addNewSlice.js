@@ -2,14 +2,15 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { addItem } from "../../services/globalService";
 
 const addNewData = createAsyncThunk(
-  "data/addNewData", // Fixed typo in the action type name
+  "data/addNewData",
   async ({ path, itemData }, thunkAPI) => {
     try {
-      const response = await addItem(path, itemData); // Added `await` to handle the promise
-      return response;
+      const response = await addItem(path, itemData); // Call the service and await the response
+      return response.data; // Return the actual data if the service succeeds
     } catch (error) {
+      // Use `rejectWithValue` to pass error details to the `rejected` case
       return thunkAPI.rejectWithValue(
-        error.response?.data || error.message // Safe fallback for errors
+        error.response?.data || "Something went wrong" // Provide a fallback error message
       );
     }
   }
@@ -18,29 +19,27 @@ const addNewData = createAsyncThunk(
 const addNewDataSlice = createSlice({
   name: "addnewslice",
   initialState: {
-    status: "idle",
-    error: null,
-    data: [],
+    status: "idle", // Tracks the status: 'idle', 'loading', 'success', or 'failed'
+    error: null, // Stores error messages
+    data: [], // Holds the successfully added data
   },
   reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(addNewData.pending, (state) => {
         state.status = "loading";
-        state.error = null; // Reset error on a new request
+        state.error = null; // Clear previous errors when a new request starts
       })
       .addCase(addNewData.fulfilled, (state, action) => {
-        // Added `action` parameter
         state.status = "success";
-        state.data.push(action.payload); // Use `action.payload` correctly
+        state.data.push(action.payload); // Add the new data to the existing array
       })
       .addCase(addNewData.rejected, (state, action) => {
-        // Added `action` parameter
         state.status = "failed";
-        state.error = action.payload || action.error.message; // Handle both `rejectWithValue` and generic errors
+        state.error = action.payload || action.error.message; // Capture the error message
       });
   },
 });
 
-export { addNewData }; // Export your async thunk
-export default addNewDataSlice.reducer; // Export the reducer
+export { addNewData };
+export default addNewDataSlice.reducer;

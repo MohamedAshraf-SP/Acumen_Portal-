@@ -18,8 +18,8 @@ export const getAccountant = async (req, res) => {
 
 // Get all accountant
 export const getAccountants = async (req, res) => {
-  const page = req.query.page;
-  const limit = req.query.limit;
+  const page = req.query.page || 1;
+  const limit = req.query.limit || 10;
   const skip = (page - 1) * limit;
 
   const accountantCount = await Accountant.countDocuments();
@@ -47,6 +47,19 @@ export const getAccountants = async (req, res) => {
 export const addAccountant = async (req, res) => {
   try {
     //console.log(req);
+    console.log(req.body);
+
+    if (!req.body.email) {
+      return res.status(400).json({ message: "Email is required!!" });
+    }
+    const mail = await User.findOne({ userName: req.body.email });
+
+    if (mail) {
+      return res.status(400).json({ message: "Email already exists!!" });
+    }
+    if (!req.body.department) {
+      return res.status(400).json({ message: "Department is required!!" });
+    }
 
     const password = Math.floor(Math.random() * 100000000000);
 

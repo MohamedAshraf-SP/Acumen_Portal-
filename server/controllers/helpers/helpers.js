@@ -1,9 +1,6 @@
 import Helper from "../../models/helpers/helpers.js";
 import User from "../../models/users/user.js";
 
-
-
-
 export const checkEmail = async (req, res) => {
     try {
         //console.log(req);

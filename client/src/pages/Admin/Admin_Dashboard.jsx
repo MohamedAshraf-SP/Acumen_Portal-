@@ -14,7 +14,7 @@ export default function Admin_Dashboard() {
   const OverViewAnalysis = useMemo(() => Analysis || [], []);
   const [usersCount, setUserCount] = useState([]);
   const [error, setError] = useState(null);
-  // format displaying numbera
+  // format displaying number
   const formatNum = (num) => {
     if (num >= 1000000) {
       return (num / 1000000).toFixed(1) + "M"; // For millions
@@ -24,6 +24,7 @@ export default function Admin_Dashboard() {
       return num;
     }
   };
+  // get all counts
   const fetchUsersCount = async () => {
     try {
       const userCounts = await Promise.all(
@@ -88,7 +89,7 @@ export default function Admin_Dashboard() {
         <Suspense
           fallback={<Skeleton count={3} height="10rem" className="mt-10" />}
         >
-          {/* <ClientTable /> */}
+          <ClientTable />
           <Companytable />
           <DocumentTable />
         </Suspense>
