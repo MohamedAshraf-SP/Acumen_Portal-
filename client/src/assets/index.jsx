@@ -9,7 +9,8 @@ import { FaWpforms } from "react-icons/fa6";
 import { LiaFileInvoiceSolid } from "react-icons/lia";
 import { IoDocumentsOutline } from "react-icons/io5";
 import { PiMicrosoftExcelLogoFill } from "react-icons/pi";
-
+import { FaBuildingShield } from "react-icons/fa6";
+import { MdEmail } from "react-icons/md";
 import { IoSettingsOutline } from "react-icons/io5";
 // ------------- dashboard overciew icons
 import { FaUserTie } from "react-icons/fa6";
@@ -138,66 +139,25 @@ export const dashboardAnalytics = [
     iconColor: "#8035E6",
     titleColor: "#8035E6",
   },
-  //   {
-  //     icon: <FaBuildingShield />,
-  //     Title: "Companies",
-  //     count: "77",
-  //     bgColor: "#FFF2CC",
-  //     iconColor: "#EAA215",
-  //     titleColor: "#EBA417",
-  //   },
-  //   {
-  //     icon: <MdEmail />,
-  //     Title: "Alerts",
-  //     count: "58",
-  //     bgColor: "#FFE6D7",
-  //     iconColor: "#F26847",
-  //     titleColor: "#E3492F",
-  //   },
-  // ];
-
-  // // Documents Table Column Title
-  // export const ordersGrid = [
-  //   {
-  //     headerText: "Client Name",
-  //     textAlign: "Center",
-  //     width: "120",
-  //   },
-  //   {
-  //     field: "OrderItems",
-  //     headerText: "Companmy",
-  //     width: "150",
-  //     editType: "dropdownedit",
-  //     textAlign: "Center",
-  //   },
-  //   {
-  //     field: "CustomerName",
-  //     headerText: "Title",
-  //     width: "150",
-  //     textAlign: "Center",
-  //   },
-  //   {
-  //     field: "TotalAmount",
-  //     headerText: "Data Time",
-  //     format: "C2",
-  //     textAlign: "Center",
-  //     editType: "numericedit",
-  //     width: "150",
-  //   },
-  //   {
-  //     headerText: "Status",
-
-  //     field: "OrderItems",
-  //     textAlign: "Center",
-  //     width: "120",
-  //   },
-  //   {
-  //     field: "OrderID",
-  //     headerText: "Action",
-  //     width: "120",
-  //     textAlign: "Center",
-  //   },
+  {
+    icon: <FaBuildingShield />,
+    Title: "Companies",
+    count: "77",
+    bgColor: "#FFF2CC",
+    iconColor: "#EAA215",
+    titleColor: "#EBA417",
+  },
+  {
+    icon: <MdEmail />,
+    Title: "tasksDocuments",
+    count: "58",
+    bgColor: "#FFE6D7",
+    iconColor: "#F26847",
+    titleColor: "#E3492F",
+  },
 ];
+
+// // Documents Table Column Title
 
 // Notifications colors
 export const alertStyles = [
@@ -214,15 +174,12 @@ export const alertStyles = [
 
 // forms colors
 export const formsColors = [
-  "bg-[#fff3e0] border-[#ffcc8080]", // Soft Orange
-  "bg-[#e3f2fd] border-[#90caf980]", // Soft Blue
-  "bg-[#ede7f6] border-[#b39ddb80]", // Soft Purple
-  "bg-[#e8f5e9] border-[#a5d6a780]", // Soft Green
-  "bg-[#f3e5f5] border-[#ce93d880]", // Lavender
-  "bg-[#fbe9e7] border-[#ffab9180]", // Soft Coral
-  "bg-[#e0f7fa] border-[#80deea80]", // Soft Teal
-  "bg-[#fffde7] border-[#f8f2e7]", // Pale Yellow
+  "bg-[linear-gradient(-225deg,_#FFFEFF_0%,_#D7FFFE_100%)] border-[#a5d6a780] ", // Soft Teal
+  "bg-[linear-gradient(to_top,_#accbee_0%,_#e7f0fd_100%)] border-[#a5d6a780]  ", // Soft Blue
+  "bg-[linear-gradient(120deg,_#e0c3fc_0%,_#8ec5fc_100%)] border-[#a5d6a780]   ", // Soft Purple
+  "bg-[linear-gradient(120deg,_#a1c4fd_0%,_#c2e9fb_100%)]  border-[#a5d6a780] ", // Soft Orange
+  "bg-[linear-gradient(to_top,_#fff1eb_0%,_#ace0f9_100%)] border-[#a5d6a780]", // Soft Green
+  "bg-[linear-gradient(to_top,_#6a85b6_0%,_#bac8e0_100%)] border-[#a5d6a780]", // Lavender
+  "bg-[linear-gradient(45deg,_#93a5cf_0%,_#e4efe9_100%)] border-[#a5d6a780]", // Pale Yellow
+  "bg-[linear-gradient(to_top,_#a3bded_0%,_#6991c7_100%)] border-[#a5d6a780]", // Soft Coral
 ];
-
-
-

@@ -12,7 +12,7 @@ import { LuDot } from "react-icons/lu";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useNavigate, useParams } from "react-router-dom";
-import { getItem, updateItem } from "../services/globalService";
+import { getItem } from "../services/globalService";
 import Skeleton from "react-loading-skeleton";
 import { updateTargetItem } from "../Rtk/slices/updateItemSlice";
 import { useDispatch } from "react-redux";
@@ -22,7 +22,6 @@ export default function Editor() {
   const navigate = useNavigate();
   const [loading, setloading] = useState(true);
   const [content, setcontent] = useState([]);
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const routes = ["Notification", "Edit Notifications"];
   //  get id from params
   let { id } = useParams();
@@ -30,8 +29,8 @@ export default function Editor() {
   const getElementById = async () => {
     try {
       const response = await getItem("emailtemplates", id);
-      if (response.success === true) {
-        setcontent(response.data);
+      if (response) {
+        setcontent(response.template);
         setloading(false);
       }
     } catch (error) {
@@ -44,11 +43,11 @@ export default function Editor() {
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
-      subject: content?.name || "",
+      name: content?.name || "",
       content: content?.content || "",
     },
     validationSchema: Yup.object({
-      subject: Yup.string().required("Subject can't be empty"),
+      name: Yup.string().required("subject can't be empty"),
       content: Yup.string().required("Content can't be empty"),
     }),
     onSubmit: async (values, { resetForm }) => {
@@ -60,14 +59,13 @@ export default function Editor() {
             updatedItemData: values,
           })
         );
-        console.log(values);
       } catch (error) {
         console.log(error);
       }
+      resetForm();
       navigate("/notifications");
     },
   });
-
   return (
     <div className="p-4 md:p-10 bg-white rounded-3xl  ">
       {/* Header Section */}
@@ -121,22 +119,22 @@ export default function Editor() {
                 htmlFor="title"
                 className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 after:content-['*'] after:text-red-500 after:ml-1"
               >
-                Subject
+                subject
               </label>
               <input
                 type="text"
                 id="title"
-                name="subject"
+                name="name"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                value={formik.values.subject}
+                value={formik.values.name}
                 aria-label="Notification Title"
                 placeholder="Enter notification title"
                 className="border border-gray-300 rounded-md p-2 w-full focus:ring-1 focus:ring-slate-800 focus:outline-none bg-[#F6F7F8]"
               />
-              {formik.touched.subject && formik.errors.subject ? (
+              {formik.touched.name && formik.errors.name ? (
                 <div className="text-red-600 italic mt-1 text-[12px]">
-                  {formik.errors.subject}
+                  {formik.errors.name}
                 </div>
               ) : null}
             </div>
@@ -175,7 +173,7 @@ export default function Editor() {
                 className={`font-thin px-10 max-w-sm mt-4 ${
                   !formik.isValid || status == "loading"
                     ? "bg-gray-800 border-none text-white cursor-not-allowed"
-                    : "bg-[#465DFF] text-white  hover:bg-blue-900"
+                    : "bg-blue-500 text-white  hover:bg-blue-900"
                 }`}
                 type="submit"
                 disabled={!formik.isValid || formik.isSubmitting}
@@ -200,14 +198,6 @@ export default function Editor() {
                   </svg>
                 )}
                 {status == "loading" ? "Loading..." : "Update"}
-              </button>
-
-              <button
-                type="button"
-                className=" font-thin bg-[#1C252E] text-white px-10 max-w-sm mt-4"
-                onClick={() => formik.resetForm()}
-              >
-                cancel
               </button>
             </div>
           </form>

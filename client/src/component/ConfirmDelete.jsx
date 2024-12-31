@@ -2,16 +2,16 @@ import { useDispatch } from "react-redux";
 import { deleteTargetItem } from "../Rtk/slices/deleteItemSlice";
 import { setdeleteHintmsg, setsuccessmsg } from "../Rtk/slices/settingSlice";
 import { FetchedItems } from "../Rtk/slices/getAllslice";
-import { useState } from "react";
+import React, { useState } from "react";
 
 function ConfirmDelete({ path, deletedItemId }) {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
 
-  // Function to delete the item
-  const handleDelete = async (path) => {
+  const handleDelete = async () => {
+    // Remove path argument here
     try {
-      setLoading(!loading);
+      setLoading(true);
       const response = await dispatch(
         deleteTargetItem({ path, itemId: deletedItemId })
       );
@@ -22,8 +22,8 @@ function ConfirmDelete({ path, deletedItemId }) {
             message: "Item deleted successfully!",
           })
         );
-        setLoading(!loading);
-        // Fetch the updated list of clients after deletion
+        setLoading(false);
+        // Fetch the updated list of items after deletion
         dispatch(FetchedItems(path));
       } else {
         throw new Error("Delete action failed");
@@ -39,13 +39,12 @@ function ConfirmDelete({ path, deletedItemId }) {
       console.error("Error deleting item:", error);
     } finally {
       // Close the delete confirmation modal
-      dispatch(setdeleteHintmsg(false));
+      dispatch(setdeleteHintmsg({ show: false, targetId: null }));
     }
   };
 
-  // Function to cancel the delete action
   const handleCancelDelete = () => {
-    dispatch(setdeleteHintmsg(false));
+    dispatch(setdeleteHintmsg({ show: false, targetId: null }));
   };
 
   return (
@@ -62,7 +61,8 @@ function ConfirmDelete({ path, deletedItemId }) {
               className={`bg-red-500 text-white hover:bg-[#B71D18] py-[2px] ${
                 loading ? "cursor-not-allowed opacity-[.5]" : ""
               }`}
-              onClick={() => handleDelete(path)}
+              onClick={handleDelete} // Use handleDelete directly
+              disabled={loading}
             >
               {loading ? "Deleting..." : "Delete"}
             </button>

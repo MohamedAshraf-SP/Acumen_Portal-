@@ -4,18 +4,19 @@ import {
   ColumnsDirective,
   ColumnDirective,
   Search,
+  Sort,
+  Scroll,
   Page,
   Inject,
   Toolbar,
 } from "@syncfusion/ej2-react-grids";
 import { useDispatch, useSelector } from "react-redux";
-
 import { Link } from "react-router-dom";
 import { GoPlus } from "react-icons/go";
 import { FaRegTrashCan } from "react-icons/fa6";
-
 import { TooltipComponent } from "@syncfusion/ej2-react-popups";
 import Nodataimg from "/images/table/No data.svg";
+
 import ConfirmDelete from "../../component/ConfirmDelete";
 import { FetchedItems } from "../../Rtk/slices/getAllslice";
 import { setdeleteHintmsg } from "../../Rtk/slices/settingSlice";
@@ -23,13 +24,16 @@ import { setdeleteHintmsg } from "../../Rtk/slices/settingSlice";
 const Accountants = () => {
   const data = useSelector((state) => state?.getall?.entities.accountants);
   const status = useSelector((state) => state.getall.status);
-  const { deleteHintmsg } = useSelector((state) => state.setting);
+  const { show, targetId } = useSelector(
+    (state) => state.setting.deleteHintmsg
+  );
   const dispatch = useDispatch();
   const [selectedItem, setSelectedItem] = useState(null);
   // handle several actions when click
   const handleAction = (actionType, path, itemId) => {
     setSelectedItem({ actionType, path, itemId });
-    if (actionType === "delete") dispatch(setdeleteHintmsg(!deleteHintmsg));
+    if (actionType === "delete")
+      dispatch(setdeleteHintmsg({ show: true, targetId: itemId }));
   };
 
   const ActionButton = ({ tooltip, onClick, icon, styles }) => (
@@ -46,16 +50,16 @@ const Accountants = () => {
   useEffect(() => {
     dispatch(FetchedItems("accountants"));
   }, [dispatch]);
-   return (
+  return (
     <>
-      {deleteHintmsg && (
+      {show && targetId === selectedItem.itemId && (
         <ConfirmDelete
           path={selectedItem?.path}
           deletedItemId={selectedItem?.itemId}
         />
       )}
 
-    <div className="my-8 rounded-lg shadow-sm bg-white overflow-scroll dark:bg-secondary-dark-bg dark:text-gray-200">
+      <div className="my-8 rounded-lg shadow-sm bg-white overflow-scroll dark:bg-secondary-dark-bg dark:text-gray-200">
         {/* Header */}
         <div className="flex justify-between items-center p-4 border-b dark:border-gray-700">
           <h4 className="text-xl font-semibold">Accountants</h4>
@@ -110,36 +114,31 @@ const Accountants = () => {
               allowSorting={true}
               toolbar={["Search"]}
               width="auto"
-              pageSettings={{ pageSize: 5, currentPage: 1 }}
+              pageSettings={{ pageSize: 8 }}
             >
               <ColumnsDirective>
                 <ColumnDirective
                   field="name"
                   headerText="Accountant Name"
-                  width="200"
-                  textAlign="Left"
-                />
-                <ColumnDirective
-                  field="customerName"
-                  headerText="Email"
-                  width="150"
                   textAlign="Left"
                 />
                 <ColumnDirective
                   field="email"
-                  headerText="Phone"
-                  width="200"
+                  headerText="Email"
                   textAlign="Left"
                 />
                 <ColumnDirective
                   field="phone"
+                  headerText="Phone"
+                  textAlign="center"
+                />
+                <ColumnDirective
+                  field="department"
                   headerText="Department"
-                  width="150"
                   textAlign="Left"
                 />
                 <ColumnDirective
                   headerText="Actions"
-                  width="150"
                   textAlign="Center"
                   template={(rowData) => (
                     <ul className="flex items-center justify-center space-x-2">
@@ -155,7 +154,7 @@ const Accountants = () => {
                   )}
                 />
               </ColumnsDirective>
-              <Inject services={[Search, Page, Toolbar]} />
+              <Inject services={[Search, Sort, Page, Scroll, Toolbar]} />
             </GridComponent>
           )}
         </div>

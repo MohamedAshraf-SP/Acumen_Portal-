@@ -24,7 +24,7 @@ const Notifications = () => {
     dispatch(FetchedItems("emailtemplates"));
   }, [dispatch]);
   // atatch each Notification whith its bgcolor & textcolor
-  const attachColors = data?.data?.map((item, index) => ({
+  const attachColors = data?.templates?.map((item, index) => ({
     ...item,
     Color: alertStyles[index] || "bg-gray-100 text-gray-800",
   }));
@@ -32,7 +32,8 @@ const Notifications = () => {
   const redirectToEditorWithId = (id) => {
     navigate(`/editor/${id}`);
   };
-   return (
+
+  return (
     <>
       <div className="my-8 py-4 px-4 rounded-lg shadow-sm h-full  dark:bg-secondary-dark-bg dark:text-gray-200">
         {/* Header */}
@@ -74,13 +75,13 @@ const Notifications = () => {
               </p>
             </div>
           )}
-          {status === "success" && data?.data?.length === 0 && (
+          {status === "success" && data?.templates?.length === 0 && (
             <div className="flex flex-col justify-center items-center h-64">
               <img src={Nodataimg} alt="No Data" className="w-32 h-32" />
               <p className="text-sm text-gray-500 font-medium mt-2">No data</p>
             </div>
           )}
-          {status === "success" && data?.data?.length > 0 && (
+          {status === "success" && data?.templates?.length > 0 && (
             <div className="p-4 lg:mt-6 mt-4 bg-white rounded-md">
               <h2 className="font-semibold text-[16px] my-6 text-[#474D58]">
                 Simple Notifications
@@ -94,7 +95,7 @@ const Notifications = () => {
                 >
                   <div className="flex lg:items-center lg:justify-start lg:flex-row flex-col items-start justify-center lg:gap-6 gap-2 ms-3 text-sm font-medium">
                     <span className="text-xl  ">
-                      {alert.documentType == "email" ? <MdEmail /> : <FaSms />}
+                      {alert.documentType == "EMail" ? <MdEmail /> : <FaSms />}
                     </span>
                     <Link className="font-semibold hover:underline transition w-[250px]">
                       {alert.name}
@@ -111,7 +112,7 @@ const Notifications = () => {
                     </p>
                   </div>
                   <span
-                    onClick={() => redirectToEditorWithId(alert._id)}
+                    onClick={() => redirectToEditorWithId(alert?._id)}
                     className="text-xl cursor-pointer rounded-full border border-solid border-transparent hover:border-zinc-300 hover:bg-white w-8 h-8 flex items-center justify-center"
                   >
                     <CiEdit />

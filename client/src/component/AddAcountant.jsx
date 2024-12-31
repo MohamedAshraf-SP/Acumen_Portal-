@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import _ from "lodash";
 
 // import icons
 import { IoIosCloseCircleOutline } from "react-icons/io";
@@ -10,8 +11,10 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { addNewData } from "../Rtk/slices/addNewSlice";
 import Skeleton from "react-loading-skeleton";
+import axios from "axios";
 
 export default function AddClientform() {
+  const api = import.meta.env.VITE_API_URL;
   // List Departments
   const Departments = [
     "Annual accounts, CT and Director department",
@@ -25,6 +28,11 @@ export default function AddClientform() {
   const dispatch = useDispatch();
   const status = useSelector((state) => state.AddNew.status);
   const [alert, setalert] = useState({ msg: "", showmsg: false });
+  const [emailValidation, setEmailValidation] = useState({
+    loading: false,
+    valid: null,
+    message: "",
+  });
 
   const routes = ["Clients", "Add Client"];
   // handle formik inputs
@@ -48,13 +56,51 @@ export default function AddClientform() {
       );
 
       setalert({
-        msg: JSON.stringify(response.payload),
+        msg: JSON.stringify(response?.payload?.message),
         showmsg: true,
       });
 
       resetForm();
     },
   });
+  // handle email check while typing
+  const checkEmailAvailability = async (email) => {
+    setEmailValidation({ loading: true, valid: null, message: "" });
+    try {
+      const response = await axios.post(`${api}/helpers/checkemail`, { email });
+
+      const { status } = response;
+
+      setEmailValidation({
+        loading: false,
+        valid: status === 200,
+        message: status === 200 && "Email is available.",
+      });
+    } catch (error) {
+      console.log(error);
+      setEmailValidation({
+        loading: false,
+        valid: status === 200,
+        message: "Email already existsd.",
+      });
+    }
+  };
+
+  // Debounced email validation
+  const debouncedValidateEmail = useMemo(
+    () => _.debounce(checkEmailAvailability, 500),
+    []
+  );
+
+  const handleEmailChange = (e) => {
+    formik.handleChange(e);
+    const email = e.target.value;
+    if (email && Yup.string().email().isValidSync(email)) {
+      debouncedValidateEmail(email);
+    } else {
+      setEmailValidation({ loading: false, valid: null, message: "" });
+    }
+  };
   return (
     <div className="dark:bg-secondary-dark-bg rounded-md h-full">
       <div>
@@ -109,7 +155,7 @@ export default function AddClientform() {
       )}
       <div className="mt-8    overflow-hidden bg-white dark:bg-gray-800 rounded-lg max-w-[700px]   mx-auto border border-solid border-[#919eab33] transition">
         <div className="bg-gray-100  ">
-          <h2 className="px-4 text-lg font-semibold dark:text-gray-200 py-4">
+          <h2 className="bg-[linear-gradient(to_top,_#cfd9df_0%,_#e2ebf0_100%)] text-lg font-semibold dark:text-gray-200 p-4">
             Add Accountant
           </h2>
           <hr className="border-t border-t-solid border-[#919eab33]  " />
@@ -132,7 +178,7 @@ export default function AddClientform() {
                 name="name"
                 className="peer input block "
                 type="text"
-                placeholder=" " // Placeholder space for floating label
+                placeholder="Enter Accountant Name" // Placeholder space for floating label
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 value={formik.values.name}
@@ -151,20 +197,39 @@ export default function AddClientform() {
                 Email
               </label>
               <input
-                id="clientemail"
+                id="accountantEmail"
                 name="email"
-                className="peer input "
+                className="peer input block"
                 type="email"
-                placeholder=" " // Placeholder space for floating label
-                onChange={formik.handleChange}
+                placeholder="Enter client email"
+                onChange={handleEmailChange}
                 onBlur={formik.handleBlur}
                 value={formik.values.email}
+                aria-live="polite"
               />
-              {formik.touched.email && formik.errors.email ? (
-                <div className="text-red-600 italic mt-1 text-[12px]">
+
+              {formik.touched.email && formik.errors.email && (
+                <p className="text-red-600 italic mt-1 text-[12px]">
                   {formik.errors.email}
-                </div>
-              ) : null}
+                </p>
+              )}
+              {emailValidation.loading && (
+                <img
+                  className="w-6 h-6 animate-spin"
+                  src="https://www.svgrepo.com/show/474682/loading.svg"
+                  alt="Loading icon"
+                />
+              )}
+              {emailValidation.valid === false && (
+                <p className="text-red-600 italic mt-1 text-[12px]">
+                  {emailValidation.message}
+                </p>
+              )}
+              {emailValidation.valid === true && (
+                <p className="text-green-600 italic mt-1 text-[12px]">
+                  {emailValidation.message}
+                </p>
+              )}
             </div>
             <div className="relative w-full">
               <label
@@ -174,16 +239,17 @@ export default function AddClientform() {
                 Phone
               </label>
               <input
-                id="department"
+                id="phone"
                 name="phone"
                 className="peer input "
                 type="number"
                 min={0}
-                placeholder=" " // Placeholder space for floating label
+                placeholder="Enter Accountant Phone"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 value={formik.values.phone}
               />
+
               {formik.touched.phone && formik.errors.phone ? (
                 <div className="text-red-600 italic mt-1 text-[12px]">
                   {formik.errors.phone}
@@ -222,12 +288,14 @@ export default function AddClientform() {
                 </div>
               ) : null}
             </div>
-            <div className="flex gap-2 items-center">
+            <div className="flex justify-end gap-4 w-full">
               <button
-                className={`font-thin px-10 max-w-sm mt-4 ${
-                  !formik.isValid || status == "loading"
-                    ? "bg-gray-800 border-none text-white cursor-not-allowed"
-                    : "bg-[#465DFF] text-white  hover:bg-blue-900"
+                className={`font-thin px-10 max-w-sm mt-4 text-white hover:bg-blue-600 transition ${
+                  !formik.isValid ||
+                  status == "loading" ||
+                  emailValidation.valid === false
+                    ? "cursor-not-allowed opacity-50  bg-blue-500 "
+                    : "bg-blue-500 cursor-pointer"
                 }`}
                 type="submit"
                 disabled={
