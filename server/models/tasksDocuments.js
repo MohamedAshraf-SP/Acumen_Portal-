@@ -21,7 +21,7 @@ const tasksDocumentSchema = new mongoose.Schema({
   status: {
     type: String,
     enum: ["pending", "seen", "downloaded"], // Restricts status values
-    default: 'pending'
+    default: 'seen'
   },
   userKey: { type: String, required: true, default: "000" }, // Unique identifier for the user
   lastUpdate: { type: Date, default: Date.now }, // Tracks last updated time
@@ -29,7 +29,7 @@ const tasksDocumentSchema = new mongoose.Schema({
   action: {
     type: String,
     enum: ['pending', 'seen', 'finished'],
-    default: 'pending',// Restricts action values
+    default: 'seen',// Restricts action values
     required: true
   },
 }, { timestamps: true }); // Automatically adds createdAt and updatedAt fields
