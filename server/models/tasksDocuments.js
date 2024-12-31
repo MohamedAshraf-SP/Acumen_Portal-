@@ -20,7 +20,7 @@ const tasksDocumentSchema = new mongoose.Schema({
   dateTime: { type: Date, required: true, default: Date.now }, // Stores the date and time
   status: {
     type: String,
-    enum: ["pending", "active", "finished"], // Restricts status values
+    enum: ["pending", "seen", "downloaded"], // Restricts status values
     default: 'pending'
   },
   userKey: { type: String, required: true, default: "000" }, // Unique identifier for the user
@@ -28,7 +28,7 @@ const tasksDocumentSchema = new mongoose.Schema({
   accountantName: { type: String, required: true, default: "NONE" },
   action: {
     type: String,
-    enum: ['pending', 'seen', 'downloaded'],
+    enum: ['pending', 'seen', 'finished'],
     default: 'pending',// Restricts action values
     required: true
   },
