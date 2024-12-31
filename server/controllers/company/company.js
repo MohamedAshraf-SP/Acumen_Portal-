@@ -190,7 +190,34 @@ export const updateCompany = async (req, res) => {
 };
 
 //update duedates
+export const updateCompanyDuedates = async (req, res) => {
+    try {
+        const companyId = req.params.id
+        const company = await Company.findOne({ _id: companyId });
+        if (!company) {
+            return res.status(404).json({ message: "Due dates for this company not found or company does not exits!!" });
+        }
 
+        const dueDate = {
+            vatNumber: req.body.vatNumber,
+            vatReturnsPeriod: req.body.vatReturnsPeriod, // annual, quarterly
+            quarter1DueBy: Date.parse(req.body.quarter1DueBy),
+            quarter2DueBy: Date.parse(req.body.quarter2DueBy),
+            quarter3DueBy: Date.parse(req.body.quarter3DueBy),
+            quarter4DueBy: Date.parse(req.body.quarter4DueBy),
+            confirmationStatementDueBy: Date.parse(req.body.confirmationStatementDueBy),
+            annualVatDueBy: Date.parse(req.body.annualVatDueBy),
+
+        }
+
+        // Update company
+        await DueDate.updateOne({ companyId }, dueDate, { new: true });
+
+        res.status(200).json({ message: "Duedates updated successfully!!" });
+    } catch (error) {
+        res.status(500).json({ message: "Error updating company", error });
+    }
+};
 
 //update directers
 
