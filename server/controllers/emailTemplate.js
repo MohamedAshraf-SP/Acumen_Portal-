@@ -15,7 +15,7 @@ export const addTemplate = async (req, res) => {
 // Get all email templates
 export const getTemplates = async (req, res) => {
     try {
-        const { page = 1, limit = 10 } = req.query;
+        const { page = 1, limit = 100 } = req.query;
 
         // Convert page and limit to integers
         const pageNum = parseInt(page, 10);

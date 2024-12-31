@@ -28,12 +28,15 @@ export const getAllDirectorsOfCompany = async (req, res) => {
     try {
         const companyId = req.id
 
+        if (!companyId) {
+            return res.status(400).json({ message: "Company id is required" })
+        }
 
         const { page = 1, limit = 100 } = req.query; // Default page = 1, limit = 10
 
         // Parse page and limit to integers
         const pageNumber = parseInt(page, 10);
-        const limitNumber = parseInt(limit, 10);
+        const limitNumber = parseInt(limit, 100);
 
         // Calculate total count for pagination metadata
         const totalDirectors = await Director.countDocuments({ companyId });
@@ -43,7 +46,7 @@ export const getAllDirectorsOfCompany = async (req, res) => {
             .skip((pageNumber - 1) * limitNumber) // Skip documents for the previous pages
             .limit(limitNumber); // Limit the number of documents per page
 
-        console.log(directors.length);
+
         // Return paginated response
         res.status(200).json({
             totalDirectors: totalDirectors,

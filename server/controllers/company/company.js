@@ -79,7 +79,7 @@ export const addCompany = async (req, res) => {
 // Get all companies
 export const getCompanies = async (req, res) => {
     try {
-        const { page = 1, limit = 10 } = req.query; // Default page = 1, limit = 10
+        const { page = 1, limit = 100 } = req.query; // Default page = 1, limit = 10
 
         // Parse page and limit to integers
         const pageNumber = parseInt(page, 10);

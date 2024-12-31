@@ -3,7 +3,7 @@ import EmailLog from "../../models/helpers/emailLogs.js";
 export const getEmailLogs = async (req, res) => {
 
     const page = req.query.page || 1;
-    const limit = req.query.limit || 10;
+    const limit = req.query.limit || 100;
     const skip = (page - 1) * limit;
 
     const emailLogsCount = await EmailLog.countDocuments();

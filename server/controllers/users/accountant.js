@@ -20,7 +20,7 @@ export const getAccountant = async (req, res) => {
 export const getAccountants = async (req, res) => {
 
   const page = req.query.page || 1;
-  const limit = req.query.limit || 10;
+  const limit = req.query.limit || 100;
   const skip = (page - 1) * limit;
 
   const accountantCount = await Accountant.countDocuments();
@@ -87,20 +87,24 @@ export const addAccountant = async (req, res) => {
     });
 
 
-    await sendEmail(
+    if (! await sendEmail(
       'Accumen portal New User Notification!',
       `Hello ${req.body.name}, `,
       req.body.email,
       `
-        these are your credintials to ACCUMEN PORTAL :
-        EMAIL: ${req.body.email}
-        Password: ${password} 
+               these are your credintials to ACCUMEN PORTAL :
+               EMAIL: ${req.body.email}
+               Password: ${newUser.password} 
+   
+   
+               Thank you
+               accumen portal team.
+           `, 'reply to Accumen Portal Email'
+    )) {
+      await User.findByIdAndDelete(newUser._id)
+      return res.status(400).json({ message: "Accountant not added Check the Email!!" })
 
-
-        Thank you
-        accumen portal team.
-       `
-    )
+    }
 
     addEmailLog(req.body.email, "Accumen portal New User Notification!", req.body.name)
 

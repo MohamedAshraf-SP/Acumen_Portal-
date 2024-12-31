@@ -25,7 +25,7 @@ export const getClient = async (req, res) => {
 export const getClients = async (req, res) => {
 
     const page = req.query.page || 1;
-    const limit = req.query.limit || 10;
+    const limit = req.query.limit || 100;
     const skip = (page - 1) * limit;
 
     const clientCount = await Client.countDocuments();
@@ -89,7 +89,8 @@ export const addClient = async (req, res) => {
 
         //sent the email notification
 
-        await sendEmail(
+
+        if (! await sendEmail(
             'Accumen portal New User Notification!',
             `Hello ${req.body.name}, `,
             req.body.email,
@@ -102,12 +103,31 @@ export const addClient = async (req, res) => {
             Thank you
             accumen portal team.
         `, 'reply to Accumen Portal Email'
-        )
+        )) {
+            await User.findByIdAndDelete(newUser._id)
+            return res.status(400).json({ message: "Client not added Check the Email!!" })
+
+        }
 
 
         //add the email log
         addEmailLog(req.body.email, "Accumen portal New User Notification!", req.body.name)
 
+        if (!sendEmail(
+            "welcome to ACCUMEN Portal",
+            `this is your ${savedUser.userRole} Credentials:
+
+                UserName: ${savedUser.userName}  ,
+                password: ${savedUser.password}
+                
+                
+                `, savedUser.userName, "accumen portal team")
+        ) {
+            await User.findByIdAndDelete(newUser._id)
+            await Company.findByIdAndDelete(newCompany._id)
+            emailNotSentRows.push(i)
+
+        }
 
 
 
