@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 const directorSchema = new mongoose.Schema({
-    companyId: { type: mongoose.Schema.Types.ObjectId, ref: "Company" },
+    companyId: { type: mongoose.Schema.Types.ObjectId, ref: "Company", required: true },
     dTitle: String,
     dateOfAppointment: Date,
     dateRegistrationForSE: Date,

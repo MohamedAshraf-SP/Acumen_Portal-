@@ -12,4 +12,4 @@ const documentSchema = new mongoose.Schema({
       default: Date.now,
     },
   });
-  export default mongoose.model('Documents', documentSchema)   
+  export default mongoose.model('Document', documentSchema)   

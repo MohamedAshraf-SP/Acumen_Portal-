@@ -49,7 +49,7 @@ export const addTask = async (req, res) => {
 export const getAllTasks = async (req, res) => {
 
     const page = req.query.page || 1;
-    const limit = req.query.limit || 10;
+    const limit = req.query.limit || 100;
     const skip = (page - 1) * limit;
 
     const TasksDocumentCount = await TasksDocument.countDocuments();

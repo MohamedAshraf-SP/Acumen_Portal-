@@ -18,8 +18,9 @@ export const getAccountant = async (req, res) => {
 
 // Get all accountant
 export const getAccountants = async (req, res) => {
+
   const page = req.query.page || 1;
-  const limit = req.query.limit || 10;
+  const limit = req.query.limit || 100;
   const skip = (page - 1) * limit;
 
   const accountantCount = await Accountant.countDocuments();
@@ -28,8 +29,9 @@ export const getAccountants = async (req, res) => {
   const pagesCount = Math.ceil(accountantCount / limit) || 0;
 
   try {
-    const accountants = await Accountant.find({})
-      .populate("userID")
+    const accountants = await Accountant.find(
+      {}
+    ).populate('userID')
       .skip(skip)
       .limit(limit); // Skip the specified number of documents.limit(limit);;
     res.status(200).json({
@@ -43,31 +45,36 @@ export const getAccountants = async (req, res) => {
   }
 };
 
+
 // Add a new accountant
 export const addAccountant = async (req, res) => {
   try {
     //console.log(req);
-    console.log(req.body);
+
 
     if (!req.body.email) {
-      return res.status(400).json({ message: "Email is required!!" });
+      return res.status(400).json({ message: "Email is required!!" })
     }
-    const mail = await User.findOne({ userName: req.body.email });
+    const mail = await User.findOne({ userName: req.body.email })
 
     if (mail) {
-      return res.status(400).json({ message: "Email already exists!!" });
+      return res.status(400).json({ message: "Email already exists!!" })
     }
     if (!req.body.department) {
-      return res.status(400).json({ message: "Department is required!!" });
+      return res.status(400).json({ message: "Department is required!!" })
     }
 
-    const password = Math.floor(Math.random() * 100000000000);
+
+    const password = Math.floor(Math.random() * 100000000000)
+
+
 
     const nUser = new User({
       userName: req.body.email,
       password: password,
-      userRole: "accountant",
-    });
+      userRole: 'accountant'
+
+    })
     const newUser = await nUser.save();
 
     const newAccountant = new Accountant({
@@ -75,29 +82,31 @@ export const addAccountant = async (req, res) => {
       name: req.body.name,
       email: req.body.email,
       phone: req.body.phone,
-      department: req.body.department,
+      department: req.body.department
+
     });
 
-    await sendEmail(
-      "Accumen portal New User Notification!",
+
+    if (! await sendEmail(
+      'Accumen portal New User Notification!',
       `Hello ${req.body.name}, `,
       req.body.email,
       `
-        these are your credintials to ACCUMEN PORTAL :
-        EMAIL: ${req.body.email}
-        Password: ${password} 
+               these are your credintials to ACCUMEN PORTAL :
+               EMAIL: ${req.body.email}
+               Password: ${newUser.password} 
+   
+   
+               Thank you
+               accumen portal team.
+           `, 'reply to Accumen Portal Email'
+    )) {
+      await User.findByIdAndDelete(newUser._id)
+      return res.status(400).json({ message: "Accountant not added Check the Email!!" })
 
+    }
 
-        Thank you
-        accumen portal team.
-       `
-    );
-
-    addEmailLog(
-      req.body.email,
-      "Accumen portal New User Notification!",
-      req.body.name
-    );
+    addEmailLog(req.body.email, "Accumen portal New User Notification!", req.body.name)
 
     const ans = await newAccountant.save();
 
@@ -111,7 +120,7 @@ export const addAccountant = async (req, res) => {
 export const deleteAccountant = async (req, res) => {
   try {
     const result = await Accountant.findByIdAndDelete(req.params.id);
-    let result1;
+    let result1
     if (result) {
       result1 = await User.findByIdAndDelete(result.userID);
     }
@@ -144,7 +153,7 @@ export const updateAccountant = async (req, res) => {
 // Get the number of accountant
 export const getAccountantsCount = async (req, res) => {
   try {
-    const count = await Accountant.countDocuments();
+    const count = (await Accountant.countDocuments());
     res.status(200).json({ count });
   } catch (error) {
     res.status(500).json({ error: error.message });

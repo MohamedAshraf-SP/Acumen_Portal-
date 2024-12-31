@@ -1,19 +1,24 @@
 import express from "express";
 import {
     addDirector,
-    getAllDirectors,
+    getAllDirectorsOfCompany,
     getDirectorById,
     updateDirector,
     deleteDirector,
+    getCompanyDirectorsCount,
 } from "../../controllers/company/director.js";
 
-const directorRouter = express.Router();
+export const directorRouter = express.Router();
+export const directorRouterWithCID = express.Router();
 
 // CRUD routes
-directorRouter.post("/", addDirector); // Create
-directorRouter.get("/", getAllDirectors); // Read all
+directorRouterWithCID.post("/", addDirector); // Create
+directorRouterWithCID.get("/count", getCompanyDirectorsCount); // Read all
+directorRouterWithCID.get("/", getAllDirectorsOfCompany); // Read all
+
 directorRouter.get("/:id", getDirectorById); // Read one
 directorRouter.put("/:id", updateDirector); // Update
 directorRouter.delete("/:id", deleteDirector); // Delete
 
-export default directorRouter;
+
+
