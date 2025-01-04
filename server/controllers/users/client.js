@@ -186,52 +186,83 @@ export const getClientsCount = async (req, res) => {
     }
 };
 
+// export const getClientCompanies = async (req, res) => {
+
+//     const page = req.query.page || 1;
+//     const limit = req.query.limit || 10;
+//     const skip = (page - 1) * limit;
+
+
+//     // console.log(clientCount)
+
+
+//     try {
+//         const client = JSON.parse(JSON.stringify(await Client.findById(
+//             req.params.id
+//         ).populate('companies')
+//             .skip(skip)
+//             .limit(limit)));
+
+//         console.log(client)
+
+//         const companyCount = client.companies.length
+//         const pagesCount = Math.ceil(companyCount / limit) || 0;
+//         // Skip the specified number of documents.limit(limit);;
+//         res.status(200).json({
+//             currentPage: page,
+//             pagesCount,
+//             companies: client.companies,
+//             companyCount,
+//         });
+//     } catch (error) {
+//         res.status(500).json({ error: error.message });
+//     }
+// };
 export const getClientCompanies = async (req, res) => {
-
-    const page = req.query.page || 1;
-    const limit = req.query.limit || 10;
-    const skip = (page - 1) * limit;
-
-
-    // console.log(clientCount)
-
-
     try {
-        const client = JSON.parse(JSON.stringify(await Client.findById(
-            req.params.id
-        ).populate('companies')
-            .skip(skip)
-            .limit(limit)));
+        const clientID = req.params.id || null
+        const { page = 1, limit = 10 } = req.query; // Default page = 1, limit = 10
 
-        console.log(client)
+        // Parse page and limit to integers
+        const pageNumber = parseInt(page, 10);
+        const limitNumber = parseInt(limit, 10);
 
-        const companyCount = client.companies.length
-        const pagesCount = Math.ceil(companyCount / limit) || 0;
-        // Skip the specified number of documents.limit(limit);;
+        // Calculate total count for pagination metadata
+        const totalCompanies = await Company.countDocuments({ clientID });
+
+        // Fetch companies with pagination
+        const companies = await Company.find({ clientID })
+            .populate({ path: "Client", strictPopulate: false })
+            .select({
+                companyName: 1,
+                clientName: 1,
+                email: 1,
+                telephone: 1
+            })
+            .skip((pageNumber - 1) * limitNumber) // Skip documents for the previous pages
+            .limit(limitNumber); // Limit the number of documents per page
+
+        // Return paginated response
         res.status(200).json({
-            currentPage: page,
-            pagesCount,
-            companies: client.companies,
-            companyCount,
+            TotalCompanies: totalCompanies,
+            CurrentPage: pageNumber,
+            TotalPages: Math.ceil(totalCompanies / limitNumber),
+            companies,
         });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+       // console.log(error)
+        res.status(500).json({ message: "Error retrieving companies!!", error });
     }
 };
 
 
 export const getDepartmentClients = async (req, res) => {
 
-    const page = req.query.page || 1;
-    const limit = req.query.limit || 10;
-    const skip = (page - 1) * limit;
-
-
-    // console.log(clientCount)
-
-
-
     try {
+        const page = req.query.page || 1;
+        const limit = req.query.limit || 10;
+        const skip = (page - 1) * limit;
+
         const clients = await Client.find(
             { department: req.body.department }
         ).skip(skip)

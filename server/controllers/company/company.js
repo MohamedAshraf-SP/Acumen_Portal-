@@ -113,6 +113,7 @@ export const getCompanies = async (req, res) => {
 
 export const getCompaniesAbstracted = async (req, res) => {
     try {
+
         const { page = 1, limit = 10 } = req.query; // Default page = 1, limit = 10
 
         // Parse page and limit to integers
@@ -131,7 +132,6 @@ export const getCompaniesAbstracted = async (req, res) => {
                 email: 1,
                 telephone: 1
             })
-
             .skip((pageNumber - 1) * limitNumber) // Skip documents for the previous pages
             .limit(limitNumber); // Limit the number of documents per page
 
@@ -143,7 +143,7 @@ export const getCompaniesAbstracted = async (req, res) => {
             companies,
         });
     } catch (error) {
-        console.log(error)
+        //console.log(error)
         res.status(500).json({ message: "Error retrieving companies!!", error });
     }
 };
