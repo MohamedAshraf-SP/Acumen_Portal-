@@ -3,14 +3,15 @@ import { lazy, Suspense } from "react";
 import MainLayout from "../Layouts/MainLayout"; // Import your layout
 import NotFind from "../pages/NotFind"; // 404 Page Component
 import Loader from "../component/Loader"; // Loading component
-import AddAcountant from "../component/AddAcountant";
+// import AddAcountant from "../component/AddAcountant";
 import Editor from "../pages/Editor";
+import AddacountantForm from "../component/addAcountantForm";
+import DisplayUsersCompany from "../pages/DisplayUsersCompany";
 
 // Lazy Load Pages
 // -------------Admin --------------
 const AdminDashboard = lazy(() => import("../pages/Admin/Admin_Dashboard"));
 const AdminAccounts = lazy(() => import("../pages/Admin/Accountants"));
-const Addaccountant = lazy(() => import("../component/AddAcountant"));
 const AddClient = lazy(() => import("../component/AddClientform"));
 const AdminClients = lazy(() => import("../pages/Admin/Clients"));
 const AdminCompaines = lazy(() => import("../pages/Admin/Compaines"));
@@ -21,7 +22,6 @@ const ImportClients = lazy(() => import("../pages/Admin/Import_clients"));
 const SentNotifications = lazy(() =>
   import("../pages/Admin/sent_Notifications")
 );
-
 // ---------------client ---------
 const ClientDashboard = lazy(() => import("../pages/Client/Client_Dashboard"));
 const AddCompany = lazy(() => import("../pages/Client/Add_Company"));
@@ -31,7 +31,7 @@ const Editorpage = lazy(() => import("../pages/Editor"));
 const Forms = lazy(() => import("../pages/Forms"));
 const Invoices = lazy(() => import("../pages/Invoices"));
 const Documents = lazy(() => import("../pages/Documents"));
-
+// const uersCompanies = lazy(() => import("../pages/DisplayUsersCompany"));
 // Suspense wrapper for lazy-loaded components
 const withSuspense = (children) => (
   <Suspense fallback={<Loader />}>{children}</Suspense>
@@ -59,17 +59,24 @@ const AppRouter = () => {
               <Route
                 path="/accountants"
                 element={withSuspense(<AdminAccounts />)}
-              >
-                <Route
-                  path="add-accountant"
-                  element={withSuspense(<Addaccountant />)}
-                />
-              </Route>
+              />
+              <Route
+                path="/accountants/add-account"
+                element={withSuspense(<AddacountantForm />)}
+              />
               <Route path="editor/:id" element={withSuspense(<Editorpage />)} />
               <Route path="/clients" element={withSuspense(<AdminClients />)} />
               <Route
+                path="clients/add-client"
+                element={withSuspense(<AddClient />)}
+              />
+              <Route
                 path="/companies"
                 element={withSuspense(<AdminCompaines />)}
+              />
+              <Route
+                path="/companies/:itemId"
+                element={withSuspense(<DisplayUsersCompany />)}
               />
               <Route
                 path="/notifications"
@@ -90,14 +97,6 @@ const AppRouter = () => {
               <Route
                 path="/sent-notification"
                 element={withSuspense(<SentNotifications />)}
-              />
-              <Route
-                path="accontants/add-account"
-                element={withSuspense(<AddAcountant />)}
-              />
-              <Route
-                path="clients/add-Client"
-                element={withSuspense(<AddClient />)}
               />
             </>
           )}
@@ -136,7 +135,6 @@ const AppRouter = () => {
         </Route>
 
         {/* Catch-all route for non-existent pages */}
-
         <Route path="*" element={<NotFind />} />
       </Routes>
     </BrowserRouter>

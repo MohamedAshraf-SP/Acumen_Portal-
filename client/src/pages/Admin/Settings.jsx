@@ -5,17 +5,18 @@ import { CiCircleCheck } from "react-icons/ci";
 // import components
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
-import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+
+import React, { useEffect, useState } from "react";
 
 import axios from "axios";
+const EditSettings = React.lazy(() => import("../../component/EditSettings"));
+
 export default function Settings() {
   const api = import.meta.env.VITE_API_URL;
-  const routes = ["settings", "display settings"];
-  const navigate = useNavigate();
+  const routes = ["settings", "display Signatures"];
+  const [targetForm, setTargetForm] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
   const [data, setData] = useState([]);
   // handle get email  Signature forms
   const handleGetemailSignature = async () => {
@@ -32,10 +33,9 @@ export default function Settings() {
       setLoading(false); // Ensure loading stops
     }
   };
+  // load all forms
   useEffect(() => {
-    if (data.length === 0) {
-      handleGetemailSignature();
-    }
+    handleGetemailSignature();
   }, []);
   // attach background colors to each form
   const getBackgroundColor = (index) => {
@@ -46,11 +46,22 @@ export default function Settings() {
     return colors[index % colors.length];
   };
   // handle redirect to editor page
-  const redirectToEditorWithId = (id) => {
-    navigate(`/editor/${id}`);
+  const openEditorWithId = (id) => {
+    setTargetForm(id);
   };
+
   return (
     <div>
+      {/* editor settings */}
+      {targetForm && (
+        <React.Suspense>
+          <EditSettings
+            Formid={targetForm}
+            onClose={() => setTargetForm(null)}
+          />
+        </React.Suspense>
+      )}
+
       <div className="my-10">
         <h1 className="text-xl font-semibold leading-[1.5] dark:text-white text-[#1C252E]  ">
           Settings
@@ -77,6 +88,9 @@ export default function Settings() {
 
       {/* display settings */}
       <div className="grid grid-cols-1 lg:grid-cols-2   gap-4 ">
+        {!loading && data?.length === 0 && (
+          <p className="text-gray-500">No email signatures available.</p>
+        )}
         {loading &&
           Array.from({ length: 2 }).map((_, index) => (
             <div key={index}>
@@ -91,39 +105,23 @@ export default function Settings() {
           data?.map((item, index) => (
             <div
               key={index}
-              className={`relative flex flex-col gap-4 justify-between   text-white p-8 rounded-xl shadow-lg  overflow-hidden transition-transform transform hover:scale-[1.02] ${getBackgroundColor(
-                index
-              )}`}
+              className={`relative flex flex-col gap-4 p-8  text-white  rounded-xl shadow-lg   overflow-hidden    
+                ${getBackgroundColor(index)}`}
             >
               {/* Top badge */}
-              <div className="flex items-center gap-2 bg-[#ffffff33] rounded-lg px-4 py-2 text-sm font-medium backdrop-blur-md w-fit">
+              <div className="flex items-center gap-2 bg-[#0e0d0d50]   rounded-lg px-4 py-2 text-sm font-medium backdrop-blur-md w-fit">
                 <CiCircleCheck className="text-xl" />
                 <p>{item?.name}</p>
               </div>
 
               {/* Main content */}
-              <div className="flex md:flex-row md:items-center flex-col items-start justify-between ">
-                <div>
-                  <span className="font-semibold  ">
-                    {item?.value
-                      ?.replace(/<b\s*\/?>/gi, " ") // Replace <b> tags
-                      .replace(/<\/b>/gi, " ") // Replace </b> tags
-                      .replace(/<br\s*\/?>/gi, " ") // Replace <br> tags
-                      .split(" ") // Split into words
-                      .slice(0, item?.value.length) // Take the first 16 words
-                      .join(" ")}
-                  </span>
-
-                  {/* <p className="text-sm opacity-80 capitalize  ">
-                    this is the current email form You can Update it if you want
-                  </p> */}
-                </div>
-                <div
-                  className="w-[40px] h-[40px] p-2 mt-6 rounded-full bg-gray-300 text-slate-700 flex items-center justify-center cursor-pointer shadow-lg z-20 transition-all hover:bg-[#4359fc] hover:text-white hover:shadow-xl"
-                  onClick={() => redirectToEditorWithId(item?._id)}
-                >
-                  <CiEdit className="text-2xl font-bold " />
-                </div>
+              <div dangerouslySetInnerHTML={{ __html: item?.value }} />
+              {/* edit icon */}
+              <div
+                className="flex lg:items-start justify-end "
+                onClick={() => openEditorWithId(item?._id)}
+              >
+                <CiEdit className=" w-[40px] h-[40px] p-2 text-2xl font-bold rounded-full bg-gray-300 text-slate-700  cursor-pointer  z-20 transition-all hover:bg-[#4359fc] hover:text-white " />
               </div>
 
               {/* Decorative background image */}
@@ -136,7 +134,11 @@ export default function Settings() {
               </div>
             </div>
           ))}
-        {error && <p>{error}</p>}
+        {error && (
+          <p className="text-red-500 text-sm">
+            {error} Please try refreshing the page or contact support.
+          </p>
+        )}
       </div>
     </div>
   );

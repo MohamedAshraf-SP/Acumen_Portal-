@@ -102,9 +102,10 @@ const Notifications = () => {
                     </Link>
                     <p className="text-xs lg:ml-4">
                       {alert?.content
-                        ?.replace(/<b\s*\/?>/gi, " ") // Replace <b> tags
-                        .replace(/<\/b>/gi, " ") // Replace </b> tags
-                        .replace(/<br\s*\/?>/gi, " ") // Replace <br> tags
+                        ?.replace(/<b\s*\/?>/gi, "") // Remove <b> tags
+                        .replace(/<\/b>/gi, "") // Remove </b> tags
+                        .replace(/<br\s*\/?>/gi, " ") // Replace <br> tags with space
+                        .replace(/<\/?[^>]+(>|$)/g, "") // Remove all other HTML tags
                         .split(" ") // Split into words
                         .slice(0, 16) // Take the first 16 words
                         .join(" ")}

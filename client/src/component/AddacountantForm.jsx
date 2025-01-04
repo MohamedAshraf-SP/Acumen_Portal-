@@ -13,7 +13,7 @@ import { addNewData } from "../Rtk/slices/addNewSlice";
 import Skeleton from "react-loading-skeleton";
 import axios from "axios";
 
-export default function AddClientform() {
+export default function AddacountantForm() {
   const api = import.meta.env.VITE_API_URL;
   // List Departments
   const Departments = [
@@ -288,9 +288,9 @@ export default function AddClientform() {
                 </div>
               ) : null}
             </div>
-            <div className="flex justify-end gap-4 w-full">
+            <div className="flex md:flex-row flex-col  justify-end md:gap-4 gap-2  w-full">
               <button
-                className={`font-thin px-10 max-w-sm mt-4 text-white hover:bg-blue-600 transition ${
+                className={`font-thin px-10 max-w-sm   text-white hover:bg-blue-600 transition ${
                   !formik.isValid ||
                   status == "loading" ||
                   emailValidation.valid === false
@@ -326,7 +326,7 @@ export default function AddClientform() {
 
               <button
                 type="button"
-                className=" font-thin bg-[#1C252E] text-white px-10 max-w-sm mt-4"
+                className=" font-thin bg-[#1C252E] text-white px-10 max-w-sm "
                 onClick={() => formik.resetForm()}
               >
                 cancel

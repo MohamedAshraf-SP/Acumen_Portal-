@@ -9,7 +9,7 @@ import { store } from "./Rtk/store/store.js";
 // Register Syncfusion license key
 
 registerLicense(
-  "Ngo9BigBOggjHTQxAR8/V1NMaF5cXmBCf0xyWmFZfVtgdl9EZ1ZSRGY/P1ZhSXxXd0dhUX5acnNWRmZcUE0="
+  "Ngo9BigBOggjHTQxAR8/V1NMaF5cXmBCfEx1WmFZfVtgfV9GYlZTQmYuP1ZhSXxWdkRjXX9XcHZWQmhYUUI="
 );
 
 createRoot(document.getElementById("root")).render(

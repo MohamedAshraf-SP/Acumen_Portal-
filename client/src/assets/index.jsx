@@ -127,37 +127,35 @@ export const dashboardAnalytics = [
     icon: <FaUserTie />,
     Title: "Clients",
     count: "77",
-    bgColor: "#C7F6DB",
+    bgColor: "#A1E3BA",
     iconColor: "#10A374",
-    titleColor: "#0B9D71",
+    titleColor: "#262D3B",
   },
   {
     icon: <MdManageAccounts />,
     Title: "Accountants",
     count: "11",
-    bgColor: "#EED8FF",
+    bgColor: "#CCA8FA",
     iconColor: "#8035E6",
-    titleColor: "#8035E6",
+    titleColor: "#262D3B",
   },
   {
     icon: <FaBuildingShield />,
     Title: "Companies",
     count: "77",
-    bgColor: "#FFF2CC",
+    bgColor: "#F9D894",
     iconColor: "#EAA215",
-    titleColor: "#EBA417",
+    titleColor: "#262D3B",
   },
   {
     icon: <MdEmail />,
     Title: "tasksDocuments",
     count: "58",
-    bgColor: "#FFE6D7",
+    bgColor: "#F9B6A7",
     iconColor: "#F26847",
-    titleColor: "#E3492F",
+    titleColor: "#262D3B",
   },
 ];
-
-// // Documents Table Column Title
 
 // Notifications colors
 export const alertStyles = [
