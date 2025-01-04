@@ -7,7 +7,6 @@ import {
   sidebarLayouts,
   sidebarLayoutsColors,
 } from "../assets";
-import { useStateContext } from "../Contexts/ContextProvider";
 import ToggleButton from "./ToggleButton";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -66,7 +65,7 @@ export default function SettingsPannel() {
       navColor: color,
     }));
   };
-
+  console.log(settings);
   // set App colors
   const handleAppColor = (maincolor, primarycolor) => {
     setSettings((prev) => ({
@@ -75,7 +74,6 @@ export default function SettingsPannel() {
       primaryColor: primarycolor,
     }));
   };
-
   return (
     <div
       className={`z-50 fixed top-0 right-0 w-[300px] h-screen transition-all duration-500 pb-10 border-l border-solid border-[#919eab1f] bg-[linear-gradient(120deg,#fdfbfb_0%,#fff_100%)] backdrop-blur-3xl dark:bg-secondary-dark-bg ease-in-out overflow-y-auto    ${
@@ -95,19 +93,21 @@ export default function SettingsPannel() {
       </div>
       {/* Mode settings */}
       <div className="px-2 pt-2">
-        <div className="flex flex-row items-center  gap-1 px-1 py-2">
+        <div className="flex flex-row items-center justify-center  gap-2 px-1 py-2">
           <span
             className=" px-[16px] text-[13px] rounded-[176px] text-white
             leading-[22px]   items-center inline-flex font-bold bg-[#1c252e] opacity-90"
           >
             Mode
           </span>
-          <hr className="block w-full   border-t border-solid border-[#cfd4d81f]" />
+          <span className="block w-full border-t border-solid border-[#34465517]"></span>
         </div>
+
+        {/* --------------- display mode choices */}
         <div className="grid grid-cols-2 gap-4 px-2  my-2 ">
           {AppModes?.map((mode) => (
-            <div className="relative  " key={mode.name}>
-              <div className="px-[16px] pt-[10px] pb-[20px] rounded-[16px] cursor-pointer flex-col items-start  border border-solid border-[#919eab1f] space-y-3 hover:bg-[#f3f1f327] group">
+            <div className="relative" key={mode.name}>
+              <div className="px-[16px] pt-[10px] pb-[20px] rounded-[16px] cursor-pointer flex-col items-start  border border-solid border-[#919eab1f] space-y-3 hover:bg-[#f3f1f327] group ">
                 <div className="flex flex-row items-center justify-between">
                   <img
                     src={mode.icon}
@@ -128,28 +128,29 @@ export default function SettingsPannel() {
       </div>
       {/* Sidebar prefrences */}
       <div className="py-4 px-2">
-        <div className="flex flex-row items-center  gap-1 px-1">
+        <div className="flex flex-row justify-center items-center  gap-1 px-1">
           <span
             className=" px-[16px] text-[13px] rounded-[176px] text-white
             leading-[22px]   items-center inline-flex font-bold bg-[#1c252e] opacity-90"
           >
             Nav
           </span>
-          <hr className="block w-full   border-t border-solid border-[#cfd4d81f]" />
+          <span className="block w-full border-t border-solid border-[#34465517]"></span>
         </div>
+        {/* -------------display nav prefrences choices */}
         <div className="grid grid-cols-2 gap-4 px-2 py-4  ">
           {sidebarLayouts?.map((mode) => (
             <div
-              className="relative w-20 h-20 flex items-center justify-center  "
+              className={`relative flex items-center justify-center rounded-lg py-2 ${
+                settings.navView == mode.value ? "bg-[#CDD0CB]" : ""
+              }`}
               key={mode.value}
             >
               <div
-                className={`rounded-[16px] cursor-pointer flex-col items-center justify-center   hover:bg-[#c7c5c527] group ${
-                  settings.navView == mode.value ? "bg-[#CDD0CB]" : ""
-                }`}
+                className={`rounded-[16px] cursor-pointer flex-col items-center justify-center   hover:bg-[#c7c5c527] group  `}
                 onClick={() => handleNavView(mode.value)}
               >
-                <div className=" w-20 h-20 flex items-center justify-center ">
+                <div className=" w-15 h-15 flex items-center justify-center overflow-hidden ">
                   <img
                     src={mode.icon}
                     alt={mode.icon}
@@ -163,15 +164,16 @@ export default function SettingsPannel() {
       </div>
       {/* Sidebar bgColors */}
       <div className="pb-6 pt-2 px-2 ">
-        <div className="flex flex-row items-center  gap-1 px-1">
+        <div className="flex flex-row justify-center items-center  gap-1 px-1">
           <span
             className=" px-[16px] text-[13px] rounded-[176px] text-white
             leading-[22px]   items-center inline-flex font-bold bg-[#1c252e] opacity-90"
           >
             Color
           </span>
-          <hr className="block w-full   border-t border-solid border-[#cfd4d81f]" />
+          <span className="block w-full border-t border-solid border-[#34465517]"></span>
         </div>
+        {/* ------------- display colors */}
         <div className="grid grid-cols-2 gap-4 px-2    ">
           {sidebarLayoutsColors?.map((mode) => (
             <div className="relative  mt-2" key={mode.name}>
@@ -198,15 +200,16 @@ export default function SettingsPannel() {
       </div>
       {/* Sidebar bgColors */}
       <div className="py-4 px-2">
-        <div className="flex flex-row items-center  gap-1 px-1">
+        <div className="flex flex-row items-center justify-center  gap-1 px-1">
           <span
             className=" px-[16px] text-[13px] rounded-[176px] text-white
             leading-[22px]   items-center inline-flex font-bold bg-[#1c252e] opacity-90"
           >
             Presets
           </span>
-          <hr className="block w-full   border-t border-solid border-[#cfd4d81f]" />
+          <span className="block w-full border-t border-solid border-[#34465517]"></span>
         </div>
+        {/* -----------display Sidebar colors */}
         <div className="grid grid-cols-3 gap-4 px-2 pt-4    ">
           {AppColors?.map((mode, index) => (
             <div className="relative" key={index}>

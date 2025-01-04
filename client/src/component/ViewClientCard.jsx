@@ -37,7 +37,7 @@ export default function ViewClientCard({ item }) {
             <h3 className="font-semibold text-lg text-gray-800">
               Miron Mahmud
             </h3>
-            <p className="text-sm text-gray-500">@mironcoder</p>
+            <p className="text-sm text-gray-500">@ {item?.companyName}</p>
           </div>
         </div>
         <div className="relative">
