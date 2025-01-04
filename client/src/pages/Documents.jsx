@@ -6,6 +6,8 @@ import {
   ColumnsDirective,
   ColumnDirective,
   Search,
+  Sort,
+  Scroll,
   Page,
   Inject,
   Toolbar,
@@ -22,17 +24,11 @@ import { FetchedItems } from "../Rtk/slices/getAllslice";
 const Documents = () => {
   const api = import.meta.env.VITE_API_URL;
   const dispatch = useDispatch();
-  const [selectedItem, setSelectedItem] = useState(null);
+  const [seenDocument, setSeenDocument] = useState("");
   const data = useSelector((state) => state?.getall?.entities?.tasksDocuments);
   const status = useSelector((state) => state.getall.status);
   const { deleteHintmsg } = useSelector((state) => state.setting);
   const routes = ["Dashboard", "Files"];
-
-  // handle several actions when click
-  const handleAction = (actionType, path, itemId) => {
-    setSelectedItem({ actionType, path, itemId });
-    if (actionType === "delete") dispatch(setdeleteHintmsg(!deleteHintmsg));
-  };
 
   const ActionButton = ({ tooltip, onClick, icon, styles }) => (
     <TooltipComponent content={tooltip} position="TopCenter">
@@ -90,7 +86,21 @@ const Documents = () => {
     }
   };
   // handle seen documents
-  const handleSeenDocument = async () => {};
+  const handleSeenDocument = async (documentId) => {
+    setSeenDocument(documentId);
+
+    try {
+      const response = await axios.put(`${api}/tasksDocuments/${documentId}`, {
+        status: "seen",
+      });
+      dispatch(FetchedItems("tasksDocuments"));
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setSeenDocument("");
+    }
+  };
   // dispatch load content action when detect change on dispatch
   useEffect(() => {
     dispatch(FetchedItems("tasksDocuments"));
@@ -193,7 +203,7 @@ const Documents = () => {
                   field="formattedDateTime"
                   headerText="Date Time"
                   width="200"
-                  textAlign="Left"
+                  textAlign="center"
                 />
                 <ColumnDirective
                   headerText="status"
@@ -202,8 +212,8 @@ const Documents = () => {
                   template={(rowData) => {
                     // Define the colors for different statuses
                     const statusColors = {
-                      pending: "bg-orange-100 text-amber-700",
-                      seen: "bg-green-100 text-green-500",
+                      pending: "bg-[#FFE9D5] text-[#B76E00] px-2 text-sm",
+                      seen: "bg-[#D3FCD2] text-[#118D57] px-2 text-sm font-thin",
                     };
 
                     // Get the status value and handle undefined/null cases
@@ -212,7 +222,7 @@ const Documents = () => {
                     // Determine the appropriate class based on the status
                     const statusClass =
                       statusColors[status] || "bg-gray-100 text-gray-700 ";
-                    console.log(statusClass);
+
                     return (
                       <span
                         className={`px-2 py-1  rounded-lg text-sm font-thin ${statusClass}`}
@@ -232,11 +242,12 @@ const Documents = () => {
                       <ActionButton
                         tooltip="Seen"
                         icon={<AiOutlineEyeInvisible />}
-                        styles="bg-[#bae6fd] text-[#0284c7] hover:bg-[#19A2D6] hover:text-white text-lg"
-                        onClick={() =>
-                          handleAction("edit", "clients", rowData._id)
-                        }
+                        styles={`bg-[#bae6fd] text-[#0284c7] hover:bg-[#19A2D6] hover:text-white text-lg ${
+                          seenDocument == rowData._id ? "hidden" : ""
+                        }`}
+                        onClick={() => handleSeenDocument(rowData._id)}
                       />
+
                       <ActionButton
                         tooltip="Download"
                         icon={<BsCloudDownload />}
@@ -248,7 +259,7 @@ const Documents = () => {
                   )}
                 />
               </ColumnsDirective>
-              <Inject services={[Search, Page, Toolbar]} />
+              <Inject services={[Search, Sort, Page, Scroll, Toolbar]} />
             </GridComponent>
           )}
         </div>

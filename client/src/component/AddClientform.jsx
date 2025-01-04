@@ -190,7 +190,7 @@ export default function AddClientForm() {
               name="name"
               className="peer input block"
               type="text"
-              placeholder="Enter client name"
+              placeholder=""
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               value={formik.values.name}
@@ -215,7 +215,7 @@ export default function AddClientForm() {
               name="email"
               className="peer input block"
               type="email"
-              placeholder="Enter client email"
+              placeholder=""
               onChange={handleEmailChange}
               onBlur={formik.handleBlur}
               value={formik.values.email}
@@ -296,10 +296,10 @@ export default function AddClientForm() {
           </div>
 
           {/* Submit Button */}
-          <div className="flex justify-end gap-4">
+          <div className="flex justify-end md:flex-row flex-col md:gap-4 gap-2">
             <button
               type="submit"
-              className={`font-thin px-10 max-w-sm mt-4 text-white   py-2 rounded-lg hover:bg-blue-600 transition ${
+              className={`font-thin px-10 max-w-sm   text-white   py-2 rounded-lg hover:bg-blue-600 transition ${
                 emailValidation.valid === false ||
                 !formik.isValid ||
                 status == "loading"
@@ -312,7 +312,7 @@ export default function AddClientForm() {
             </button>
             <button
               type="button"
-              className=" font-thin bg-[#1C252E] text-white px-10 max-w-sm mt-4"
+              className=" font-thin bg-[#1C252E] text-white px-10 max-w-sm "
               onClick={() => formik.resetForm()}
             >
               cancel

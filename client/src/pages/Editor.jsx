@@ -40,6 +40,8 @@ export default function Editor() {
   useEffect(() => {
     getElementById();
   }, [id]);
+  // handle formik
+
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
@@ -67,13 +69,13 @@ export default function Editor() {
     },
   });
   return (
-    <div className="p-4 md:p-10 bg-white rounded-3xl  ">
+    <div className="p-4 md:p-10 bg-white rounded-3xl">
       {/* Header Section */}
-      <div className="flex lg:flex-row flex-col items-center justify-between ">
+      <div className="flex lg:flex-row flex-col  items-center justify-between ">
         <div>
           <h1 className="text-xl font-semibold leading-[1.5] dark:text-white text-[#1C252E]">
-            Notification Template{" "}
-            <span className="bg-red-500 capitalize px-4 text-sm font-thin py-1 text-white rounded-full">
+            Notification Template
+            <span className="bg-red-500 capitalize ml-4 px-4 text-sm font-thin py-1 text-white rounded-full">
               {content?.documentType}
             </span>
           </h1>
@@ -146,7 +148,6 @@ export default function Editor() {
                 className="block relative  text-sm font-medium text-gray-700 dark:text-gray-300 mb-2   after:content-['*'] after:text-red-500 after:ml-1"
               >
                 Content
-                {/* <span className="text-red-500"> *</span> */}
               </label>
 
               <RichTextEditorComponent

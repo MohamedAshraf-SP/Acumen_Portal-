@@ -14,14 +14,9 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import ConfirmDelete from "./ConfirmDelete";
 import EditClient from "./EditClient";
-import ViewClientCard from "./ViewClientCard";
 import { FetchedItems } from "../Rtk/slices/getAllslice";
-import {
-  setdeleteHintmsg,
-  seteditItemForm,
-  setViewClient,
-} from "../Rtk/slices/settingSlice";
-import { Link } from "react-router-dom";
+import { setdeleteHintmsg, seteditItemForm } from "../Rtk/slices/settingSlice";
+import { Link, useNavigate } from "react-router-dom";
 import { GoPlus } from "react-icons/go";
 import { FaRegTrashCan } from "react-icons/fa6";
 import { BiShow } from "react-icons/bi";
@@ -30,6 +25,7 @@ import { TooltipComponent } from "@syncfusion/ej2-react-popups";
 import Nodataimg from "/images/table/No data.svg";
 
 const ClientTable = () => {
+  const navigate = useNavigate();
   const data = useSelector((state) => state?.getall?.entities.clients);
   const status = useSelector((state) => state.getall.status);
   const { show, targetId } = useSelector(
@@ -45,8 +41,9 @@ const ClientTable = () => {
     if (actionType === "delete")
       dispatch(setdeleteHintmsg({ show: true, targetId: itemId }));
     if (actionType === "edit") dispatch(seteditItemForm(true));
-    if (actionType === "show")
-      dispatch(setdeleteHintmsg({ show: true, targetId: itemId }));
+    if (actionType === "show") {
+      navigate(`/companies/${itemId}`);
+    }
   };
 
   const ActionButton = ({ tooltip, onClick, icon, styles }) => (
@@ -72,13 +69,8 @@ const ClientTable = () => {
           deletedItemId={selectedItem.itemId}
         />
       )}
-      {editItemForm && (
-        <EditClient
-          TargetItem={selectedItem}
-          // onClose={dispatch(seteditItemForm(false))}
-        />
-      )}
-
+      {editItemForm && <EditClient TargetItem={selectedItem} />}
+      {/* <ViewClientCard />  */}
       <div className="my-8 rounded-lg shadow-sm bg-white overflow-scroll dark:bg-secondary-dark-bg dark:text-gray-200">
         {/* Header */}
         <div className="flex justify-between items-center p-4 border-b dark:border-gray-700">
@@ -134,36 +126,36 @@ const ClientTable = () => {
               allowSorting={true}
               toolbar={["Search"]}
               width="auto"
-              pageSettings={{ pageSize: 8,  }}
+              pageSettings={{ pageSize: 8 }}
             >
               <ColumnsDirective>
                 <ColumnDirective
                   field="name"
                   headerText="Client Name"
-                  width="200"
+                  // width="200"
                   textAlign="Left"
                 />
                 <ColumnDirective
                   field="customerName"
                   headerText="Accountant Manager"
-                  width="150"
+                  // width="150"
                   textAlign="Left"
                 />
                 <ColumnDirective
                   field="email"
                   headerText="Email"
-                  width="200"
+                  //width="200"
                   textAlign="Left"
                 />
                 <ColumnDirective
                   field="phone"
                   headerText="phone"
-                  width="150"
+                  // width="150"
                   textAlign="Left"
                 />
                 <ColumnDirective
                   headerText="Actions"
-                  width="150"
+                  // width="150"
                   textAlign="Center"
                   template={(rowData) => (
                     <ul className="flex items-center justify-center space-x-2 text-[14px]">

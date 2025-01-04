@@ -68,7 +68,7 @@ const Sent_Notifications = () => {
       handleFetchNotification();
     }
   }, []);
-  console.log(data);
+
   return (
     <>
       <div className="my-8 rounded-lg shadow-sm bg-white overflow-x-scroll dark:bg-secondary-dark-bg dark:text-gray-200">
@@ -173,7 +173,7 @@ const Sent_Notifications = () => {
                   textAlign="center"
                 />
                 <ColumnDirective
-                  field={String(deadline)}
+                  field="deadline"
                   headerText="Deadline"
                   // width="200"
                   textAlign="center"
