@@ -10,9 +10,17 @@ import {
 import { useStateContext } from "../Contexts/ContextProvider";
 import ToggleButton from "./ToggleButton";
 import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  removeClick,
+  setActiveMenu,
+  setCollapsed,
+} from "../Rtk/slices/settingSlice";
 
 export default function SettingsPannel() {
-  const { removeClick, isClicked } = useStateContext();
+  // const { removeClick, isClicked } = useStateContext();
+  const dispatch = useDispatch();
+  const { isClicked, collapsed } = useSelector((state) => state.setting);
   const [settings, setSettings] = useState(() => {
     const savedSettings = localStorage.getItem("appSettings");
     return savedSettings
@@ -45,6 +53,7 @@ export default function SettingsPannel() {
   };
   // set nav view
   const handleNavView = (view) => {
+    dispatch(setCollapsed(!collapsed));
     setSettings((prev) => ({
       ...prev,
       navView: view,
@@ -79,7 +88,7 @@ export default function SettingsPannel() {
         </h2>
         <span
           className="text-[#637381] text-2xl p-2 hover:bg-[#e6f0f33f]  rounded-full cursor-pointer"
-          onClick={() => removeClick("Settings")}
+          onClick={() => dispatch(removeClick("Settings"))}
         >
           <IoCloseOutline />
         </span>
@@ -128,20 +137,23 @@ export default function SettingsPannel() {
           </span>
           <hr className="block w-full   border-t border-solid border-[#cfd4d81f]" />
         </div>
-        <div className="grid grid-cols-2 gap-4 px-2  my-2 ">
+        <div className="grid grid-cols-2 gap-4 px-2 py-4  ">
           {sidebarLayouts?.map((mode) => (
-            <div className="relative  " key={mode.value}>
+            <div
+              className="relative w-20 h-20 flex items-center justify-center  "
+              key={mode.value}
+            >
               <div
-                className={`px-[16px] pt-[10px] pb-[20px] rounded-[16px] cursor-pointer flex-col items-start space-y-3 hover:bg-[#c7c5c527] group ${
-                  settings.navView == mode.value ? "bg-[#d6dcdf46]" : ""
+                className={`rounded-[16px] cursor-pointer flex-col items-center justify-center   hover:bg-[#c7c5c527] group ${
+                  settings.navView == mode.value ? "bg-[#CDD0CB]" : ""
                 }`}
                 onClick={() => handleNavView(mode.value)}
               >
-                <div className="flex flex-row items-center justify-between">
+                <div className=" w-20 h-20 flex items-center justify-center ">
                   <img
                     src={mode.icon}
                     alt={mode.icon}
-                    className="filter grayscale group-hover:grayscale-0 transition duration-200 rounded-lg bg-[#ff3030]"
+                    className="filter grayscale group-hover:grayscale-0 transition duration-200 rounded-lg bg-[#ff3030] w-full h-full"
                   />
                 </div>
               </div>
@@ -201,7 +213,7 @@ export default function SettingsPannel() {
               <div
                 className={`px-[16px] rounded-[10px] cursor-pointer flex items-center  justify-center group hover:bg-[#e7e5e5a6] py-3  ${
                   settings.primaryColor == mode.SecondColor
-                    ? "bg-[#d6dcdf54]"
+                    ? "bg-[#CDD0CB]"
                     : ""
                 }`}
                 onClick={() => handleAppColor(mode.mainColor, mode.SecondColor)}

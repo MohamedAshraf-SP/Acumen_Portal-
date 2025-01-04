@@ -14,27 +14,37 @@ export default function Admin_Dashboard() {
   const OverViewAnalysis = useMemo(() => Analysis || [], []);
   const [usersCount, setUserCount] = useState([]);
   const [error, setError] = useState(null);
-
+  // format displaying number
+  const formatNum = (num) => {
+    if (num >= 1000000) {
+      return (num / 1000000).toFixed(1) + "M"; // For millions
+    } else if (num >= 1000) {
+      return (num / 1000).toFixed(1) + "k"; // For thousnads
+    } else {
+      return num;
+    }
+  };
+  // get all counts
+  const fetchUsersCount = async () => {
+    try {
+      const userCounts = await Promise.all(
+        OverViewAnalysis.map(async (category) => {
+          const { count } = await getCount(category.Title);
+          return { count };
+        })
+      );
+      setUserCount(userCounts);
+    } catch (error) {
+      setError("Failed to load user counts");
+      console.error("Error fetching user counts:", error);
+    }
+  };
   useEffect(() => {
-    const fetchUsersCount = async () => {
-      try {
-        const userCounts = await Promise.all(
-          OverViewAnalysis.map(async (category) => {
-            const { count } = await getCount(category.Title);
-            return { count };
-          })
-        );
-        setUserCount(userCounts);
-      } catch (error) {
-        setError("Failed to load user counts");
-        console.error("Error fetching user counts:", error);
-      }
-    };
     fetchUsersCount();
   }, [OverViewAnalysis]);
 
   return (
-    <div className="mt-4">
+    <div className="mt-2">
       <div className="flex flex-row items-center gap-1">
         <h3 className="text-2xl font-semibold">Hi, Welcome back </h3>
         <div className="w-12 h-12 overflow-hidden mb-2">
@@ -66,7 +76,7 @@ export default function Admin_Dashboard() {
                   iconColor={block.iconColor || "text-gray-500"}
                   titleColor={block.titleColor || "text-gray-700"}
                   Title={block.Title || "Unknown"}
-                  count={countData?.count || 0}
+                  count={formatNum(countData?.count) || 0}
                   icon={block.icon || "default-icon"}
                 />
               );
@@ -76,7 +86,9 @@ export default function Admin_Dashboard() {
       {error && <p className="text-red-500">Error: {error}</p>}
 
       <div className="container overflow-hidden">
-        <Suspense fallback={<Skeleton count={3} height="10rem" className="mt-10"/>}>
+        <Suspense
+          fallback={<Skeleton count={3} height="10rem" className="mt-10" />}
+        >
           <ClientTable />
           <Companytable />
           <DocumentTable />

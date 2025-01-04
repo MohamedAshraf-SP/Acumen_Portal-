@@ -3,9 +3,10 @@ import notfoundImg from "/images/Not found/notFound.svg";
 export default function NotFind() {
   return (
     <div className="flex items-center justify-center h-screen">
-      <div className="flex flex-col justify-center items-center space-y-14">
+      <div className="flex flex-col justify-center items-center space-y-10">
         <div className="text-center mx-auto   md:max-w-96 max-w-80">
-          <h2 className="font-bold text-3xl text-black py-6">
+          <h1 className="text-4xl font-bold text-slate-700">Opps!!!</h1>
+          <h2 className="font-bold text-3xl  text-slate-500  py-4">
             Sorry, page not found ⚠️
           </h2>
           <p className="text-paragraphColor font-thin">

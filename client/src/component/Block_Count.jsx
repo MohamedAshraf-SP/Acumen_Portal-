@@ -17,7 +17,7 @@ export default function Block_Count({
       {/* Icon Section */}
       <div className="flex flex-col items-start gap-3">
         <div
-          className="w-[48px] h-[48px] overflow-hidden text-4xl flex justify-center items-center z-10"
+          className="w-[48px] h-[50px]   text-4xl flex justify-center items-center z-10 bg-[#FFFFFF] overflow-hidden rounded-xl"
           style={{ color: iconColor }}
         >
           {icon}
@@ -26,8 +26,8 @@ export default function Block_Count({
         {/* Title Section */}
         <div>
           <h4
-            className="mb-[2px] font-medium text-md leading-[1.57143]"
-            style={{ color: titleColor }}
+            className="mb-[2px] font-semibold text-lg leading-[1.57143] text-[#434956]   px-2 py-1 rounded-full"
+            // style={{ color: titleColor }}
           >
             {Title}
           </h4>
@@ -35,15 +35,13 @@ export default function Block_Count({
 
         {/* Count Section */}
         <div>
-          <p className="text-2xl font-semibold" style={{ color: titleColor }}>
-            {count}
-          </p>
+          <p className="  font-semibold text-3xl text-gray-700">{count}</p>
         </div>
       </div>
 
       {/* Background Shape */}
       <span
-        className="absolute bottom-0  left-0 w-full h-full opacity-[0.14] bg-no-repeat bg-cover -z-0 inline-flex "
+        className="absolute top-0 left-0    w-full h-full opacity-[0.2] bg-no-repeat bg-cover  inline-flex "
         style={{
           backgroundImage: `url( ${shape})`,
           backgroundColor: bgColor,

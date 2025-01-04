@@ -2,10 +2,62 @@
 import { LuDot } from "react-icons/lu";
 import { FaDownload } from "react-icons/fa6";
 import { formsColors } from "../assets";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect, useMemo } from "react";
+import { FetchedItems } from "../Rtk/slices/getAllslice";
+import axios from "axios";
 
 export default function Forms() {
+  const dispatch = useDispatch();
+  const api = import.meta.env.VITE_API_URL;
   const routes = ["Forms", "display Forms"];
-  const bgColors = [];
+  const data = useSelector((state) => state?.getall?.entities?.forms);
+  const status = useSelector((state) => state.getall.status);
+  //  make dispatch action to get all forms
+  useEffect(() => {
+    dispatch(FetchedItems("forms"));
+  }, [dispatch]);
+  //  add color to each form block
+  const attachColors = useMemo(
+    () =>
+      data?.map((form, index) => ({
+        ...form,
+        color: formsColors[index],
+      })),
+    [data, formsColors]
+  );
+  //  create download Func
+  const handleDownload = async (formId) => {
+    try {
+      const response = await axios.get(`${api}/forms/download/${formId}`, {
+        responseType: "blob", // This is critical for handling file downloads
+      });
+
+      // Create a Blob from the response data
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+
+      // Create a link element for downloading the file
+      const link = document.createElement("a");
+      link.href = url;
+
+      // Set the file name (you may get it from the response headers or hardcode it)
+      const contentDisposition = response.headers["content-disposition"];
+      const filename = contentDisposition
+        ? contentDisposition.split("filename=")[1].replace(/"/g, "")
+        : `download_${formId}.pdf`;
+
+      link.setAttribute("download", filename);
+
+      // Append the link to the body, trigger click, and remove it
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (error) {
+      alert("sorry error happened while downloading the file,try again");
+      console.error("Error downloading file:", error);
+    }
+  };
+
   return (
     <div>
       <div>
@@ -33,11 +85,11 @@ export default function Forms() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 mt-8 gap-6">
-        {formsColors.map((item) => (
+        {attachColors?.map((item) => (
           <div
-            key={item}
+            key={item._id}
             className={`relative flex flex-col justify-center gap-4   border border-solid 
-          rounded-lg overflow-hidden items-center pb-16 pt-2 group hover:shadow-lg transition-all duration-300 ease-in-out h-full cursor-pointer ${item}`}
+          rounded-lg overflow-hidden items-center pb-16 pt-6 group hover:shadow-lg transition-all duration-300 ease-in-out h-full cursor-pointer ${item.color}`}
           >
             <div className="flex flex-col justify-center items-center gap-4">
               <svg
@@ -60,13 +112,18 @@ export default function Forms() {
               </svg>
 
               <div className="text-center">
-                <p className="text-[#282833] font-semibold text-[15px]">AD01</p>
-                <p className="text-[#8492b5] font-medium text-[12px]">
-                  Change of Registered Office Address
+                <p className="text-[#282833] font-medium text-[17px] ">
+                  {item?.name}
+                </p>
+                <p className="text-[#6c7691] font-bold py-2 text-[14px]">
+                  {item?.additionalName}
                 </p>
               </div>
             </div>
-            <span className="absolute bottom-0    opacity-0 transform translate-y-full group-hover:opacity-100 group-hover:translate-y-0 flex items-center justify-center text-blue-500 bg-white rounded-full w-12 h-12 cursor-pointer transition-all duration-300 ease-in-out mb-2 hover:bg-blue-500 hover:text-white">
+            <span
+              className="absolute bottom-0    opacity-0 transform translate-y-full group-hover:opacity-100 group-hover:translate-y-0 flex items-center justify-center text-blue-500 bg-white rounded-full w-12 h-12 cursor-pointer transition-all duration-300 ease-in-out mb-2 hover:bg-blue-500 hover:text-white"
+              onClick={() => handleDownload(item._id)}
+            >
               <FaDownload />
             </span>
           </div>

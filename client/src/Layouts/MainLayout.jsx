@@ -1,11 +1,10 @@
 import { Outlet } from "react-router-dom";
 import SideBar from "../component/SideBar";
 import Navbar from "../component/Navbar";
-import { useStateContext } from "../Contexts/ContextProvider";
+import { useSelector } from "react-redux";
 
 export default function MainLayout() {
-  const { collapsed, activeMenu } = useStateContext();
-
+  const { collapsed, activeMenu } = useSelector((state) => state.setting);
   return (
     <div className="flex h-screen w-full  dark:bg-gray-900">
       {/* Sidebar */}
@@ -13,7 +12,7 @@ export default function MainLayout() {
       <div
         className={`fixed z-10 overflow-x-hidden ${
           activeMenu ? "translate-x-0" : "-translate-x-full"
-        } ${collapsed ? "w-20 " : "w-60"} transition-all duration-300`}
+        } ${collapsed ? "w-20 " : "w-64"} transition-all duration-300`}
       >
         <SideBar />
       </div>
@@ -21,7 +20,7 @@ export default function MainLayout() {
       {/* Main Content Area */}
       <div
         className={`flex-1 flex flex-col transition-all duration-300 ${
-          collapsed ? "md:ml-20" : "md:ml-60"
+          collapsed ? "md:ml-20" : "md:ml-64"
         }`}
       >
         {/* Navbar */}

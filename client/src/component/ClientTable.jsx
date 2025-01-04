@@ -4,21 +4,19 @@ import {
   ColumnsDirective,
   ColumnDirective,
   Search,
+  Sort,
+  Scroll,
   Page,
   Inject,
   Toolbar,
 } from "@syncfusion/ej2-react-grids";
+
 import { useDispatch, useSelector } from "react-redux";
 import ConfirmDelete from "./ConfirmDelete";
 import EditClient from "./EditClient";
-import ViewClientCard from "./ViewClientCard";
 import { FetchedItems } from "../Rtk/slices/getAllslice";
-import {
-  setdeleteHintmsg,
-  seteditItemForm,
-  setViewClient,
-} from "../Rtk/slices/settingSlice";
-import { Link } from "react-router-dom";
+import { setdeleteHintmsg, seteditItemForm } from "../Rtk/slices/settingSlice";
+import { Link, useNavigate } from "react-router-dom";
 import { GoPlus } from "react-icons/go";
 import { FaRegTrashCan } from "react-icons/fa6";
 import { BiShow } from "react-icons/bi";
@@ -27,21 +25,25 @@ import { TooltipComponent } from "@syncfusion/ej2-react-popups";
 import Nodataimg from "/images/table/No data.svg";
 
 const ClientTable = () => {
-  const data = useSelector((state) => state?.getall?.entities?.clients);
+  const navigate = useNavigate();
+  const data = useSelector((state) => state?.getall?.entities.clients);
   const status = useSelector((state) => state.getall.status);
-  const { deleteHintmsg, editItemForm, ViewClient } = useSelector(
-    (state) => state.setting
+  const { show, targetId } = useSelector(
+    (state) => state.setting.deleteHintmsg
   );
+  const { editItemForm } = useSelector((state) => state.setting);
   const dispatch = useDispatch();
+  const [selectedItem, setSelectedItem] = useState("");
 
-  const [selectedItem, setSelectedItem] = useState(null);
-
+  // handle several actions when click
   const handleAction = (actionType, path, itemId) => {
     setSelectedItem({ actionType, path, itemId });
-    if (actionType === "delete") dispatch(setdeleteHintmsg(!deleteHintmsg));
-    if (actionType === "edit") dispatch(seteditItemForm(!editItemForm));
-    if (actionType === "view") dispatch(setViewClient(!ViewClient));
- 
+    if (actionType === "delete")
+      dispatch(setdeleteHintmsg({ show: true, targetId: itemId }));
+    if (actionType === "edit") dispatch(seteditItemForm(true));
+    if (actionType === "show") {
+      navigate(`/companies/${itemId}`);
+    }
   };
 
   const ActionButton = ({ tooltip, onClick, icon, styles }) => (
@@ -54,43 +56,31 @@ const ClientTable = () => {
       </li>
     </TooltipComponent>
   );
-
+  // dispatch load content action when detect change on dispatch
   useEffect(() => {
     dispatch(FetchedItems("clients"));
- 
   }, [dispatch]);
 
   return (
     <>
-      {deleteHintmsg && (
+      {show && targetId === selectedItem.itemId && (
         <ConfirmDelete
-          path={selectedItem?.path}
-          deletedItemId={selectedItem?.itemId}
+          path={selectedItem.path}
+          deletedItemId={selectedItem.itemId}
         />
       )}
-      {editItemForm && (
-        <EditClient
-          TargetItem={selectedItem}
-          onClose={() => dispatch(seteditItemForm(!editItemForm))}
-        />
-      )}
-      {ViewClient && (
-        <ViewClientCard
-          TargetItem={selectedItem}
-          onClose={() => dispatch(setViewClient(!ViewClient))}
-        />
-      )}
-
+      {editItemForm && <EditClient TargetItem={selectedItem} />}
+      {/* <ViewClientCard />  */}
       <div className="my-8 rounded-lg shadow-sm bg-white overflow-scroll dark:bg-secondary-dark-bg dark:text-gray-200">
         {/* Header */}
         <div className="flex justify-between items-center p-4 border-b dark:border-gray-700">
-          <h4 className="text-xl font-semibold">Clients</h4>
+          <h4 className="text-xl font-semibold">clients</h4>
           <Link
             to="/clients/add-Client"
             className="flex items-center gap-1 bg-[#1C252E] text-white px-3 py-2 rounded-md hover:shadow-lg hover:opacity-[.8] font-semibold text-[13px] transition"
           >
             <GoPlus className="text-lg" />
-            Add Client
+            Add client
           </Link>
         </div>
 
@@ -118,7 +108,7 @@ const ClientTable = () => {
           {status === "failed" && (
             <div className="flex items-center justify-center h-64">
               <p className="text-red-600">
-                Failed to load clients. Please try again later.
+                Failed to load Accountants. Please try again later.
               </p>
             </div>
           )}
@@ -136,68 +126,68 @@ const ClientTable = () => {
               allowSorting={true}
               toolbar={["Search"]}
               width="auto"
-              pageSettings={{ pageSize: 5, currentPage: 1 }}
+              pageSettings={{ pageSize: 8 }}
             >
               <ColumnsDirective>
                 <ColumnDirective
                   field="name"
                   headerText="Client Name"
-                  width="200"
+                  // width="200"
                   textAlign="Left"
                 />
                 <ColumnDirective
                   field="customerName"
-                  headerText="Account Manager"
-                  width="150"
+                  headerText="Accountant Manager"
+                  // width="150"
                   textAlign="Left"
                 />
                 <ColumnDirective
                   field="email"
                   headerText="Email"
-                  width="200"
+                  //width="200"
                   textAlign="Left"
                 />
                 <ColumnDirective
                   field="phone"
-                  headerText="Phone"
-                  width="150"
+                  headerText="phone"
+                  // width="150"
                   textAlign="Left"
                 />
                 <ColumnDirective
                   headerText="Actions"
-                  width="150"
+                  // width="150"
                   textAlign="Center"
                   template={(rowData) => (
-                    <ul className="flex items-center justify-center space-x-2">
+                    <ul className="flex items-center justify-center space-x-2 text-[14px]">
                       <ActionButton
-                        tooltip="View"
+                        tooltip="show"
                         icon={<BiShow />}
-                        styles="bg-[#E3E7FF] text-[#465DFF] hover:bg-[#465DFF] hover:text-white"
+                        styles="bg-[#D6F4F9] text-[#1A7DA7] hover:bg-[#1A7DA7] hover:text-white"
                         onClick={() =>
-                          handleAction("view", "clients", rowData._id)
+                          handleAction("show", "clients", rowData?._id)
                         }
                       />
                       <ActionButton
                         tooltip="Edit"
                         icon={<MdOutlineModeEditOutline />}
-                        styles="bg-[#E9F7E6] text-[#19A2D6] hover:bg-[#19A2D6] hover:text-white"
+                        styles="bg-[#D6F1E8] text-[#027968] hover:bg-[#027968] hover:text-white text-[14px]"
                         onClick={() =>
-                          handleAction("edit", "clients", rowData._id)
+                          handleAction("edit", "clients", rowData?._id)
                         }
                       />
                       <ActionButton
                         tooltip="Delete"
                         icon={<FaRegTrashCan />}
-                        styles="bg-[#FFF2F2] text-[#FF0000] hover:bg-[#FF0000] hover:text-white"
+                        styles="bg-[#FFF2F2] text-[#FF0000] hover:bg-[#FF0000] hover:text-white text-[14px]"
                         onClick={() =>
-                          handleAction("delete", "clients", rowData._id)
+                          handleAction("delete", "clients", rowData?._id)
                         }
                       />
                     </ul>
                   )}
                 />
               </ColumnsDirective>
-              <Inject services={[Search, Page, Toolbar]} />
+              <Inject services={[Search, Sort, Page, Scroll, Toolbar]} />
             </GridComponent>
           )}
         </div>
