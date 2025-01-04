@@ -105,6 +105,7 @@ export const addClient = async (req, res) => {
         `, 'reply to Accumen Portal Email'
         )) {
             await User.findByIdAndDelete(newUser._id)
+            await Company.findByIdAndDelete(newCompany._id)
             return res.status(400).json({ message: "Client not added Check the Email!!" })
 
         }
@@ -113,21 +114,7 @@ export const addClient = async (req, res) => {
         //add the email log
         addEmailLog(req.body.email, "Accumen portal New User Notification!", req.body.name)
 
-        if (!sendEmail(
-            "welcome to ACCUMEN Portal",
-            `this is your ${savedUser.userRole} Credentials:
 
-                UserName: ${savedUser.userName}  ,
-                password: ${savedUser.password}
-                
-                
-                `, savedUser.userName, "accumen portal team")
-        ) {
-            await User.findByIdAndDelete(newUser._id)
-            await Company.findByIdAndDelete(newCompany._id)
-            emailNotSentRows.push(i)
-
-        }
 
 
 
