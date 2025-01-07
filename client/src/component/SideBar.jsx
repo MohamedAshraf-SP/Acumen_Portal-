@@ -7,11 +7,13 @@ import { useStateContext } from "../Contexts/ContextProvider";
 import { useSelector } from "react-redux";
 import { setActiveMenu } from "../Rtk/slices/settingSlice";
 export default function SideBar() {
+  const SideBarRef = useRef(null); //get ref from sidebar
   const { screenSize, collapsed, activeMenu } = useSelector(
     (state) => state.setting
   );
-  const SideBarRef = useRef(null);
-
+  // get LocalStorage Values
+  const { navColor, navView } = JSON.parse(localStorage.getItem("appSettings"));
+  console.log(`bg-[${navColor}]`);
   // Close the sidebar on clicking outside
   useEffect(() => {
     const handleOutsideClick = (event) => {
@@ -33,6 +35,7 @@ export default function SideBar() {
       window.removeEventListener("click", handleOutsideClick);
     };
   }, [screenSize]);
+  // put links styles
   const activeLink = `flex items-center flex-row gap-5 py-3 rounded-md bg-[#ECF6FE] text-[#45a9f2] text-[.8rem] font-medium tracking-wide pl-2 w-full ${
     collapsed
       ? "justify-center  pl-1 px-1 flex-col flex-col  text-[8px] gap-1"
@@ -49,7 +52,8 @@ export default function SideBar() {
     <>
       <div
         ref={SideBarRef}
-        className={`transition-all duration-300 overflow-auto md:hover:overflow-y-auto overflow-x-hidden pb-4 px-2 border-r border-solid border-[#919eab1f]    dark:bg-secondary-dark-bg h-screen  `}
+        className={`transition-all duration-300 overflow-auto md:hover:overflow-y-auto overflow-x-hidden pb-4 px-2 border-r border-solid border-[#919eab1f]    dark:bg-secondary-dark-bg h-screen 
+         bg-[${navColor}]  `}
       >
         {/* Sidebar Header */}
         <div className="flex items-center justify-between px-4 py-4 sticky top-0 left-0   overflow-hidden border-[#919eab1f] w-full z-40   mb-4 ">
