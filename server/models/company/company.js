@@ -10,7 +10,7 @@ import Client from "../users/clients.js";
 
 const companySchema = new mongoose.Schema({
   //client Data
-  clientID: { type: mongoose.Types.ObjectId, ref: "Client",required:true },
+  clientID: { type: mongoose.Types.ObjectId, ref: "Client" },
   clientName: String,
 
   companyName: String,

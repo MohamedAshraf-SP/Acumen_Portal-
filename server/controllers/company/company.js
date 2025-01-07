@@ -38,9 +38,20 @@ export const addCompany = async (req, res) => {
             phone,
             registrationDate,
             registrationNumber,
-            status
+            status,
+            businessAddress,
+            registeredOfficeAddress,
+            telephone,
+            email,
+            website,
+            bName,
+            accountNumber,
+            accountHolder,
+            sortCode
         } = req.body;
-
+        if ((!clientID) || !(await Client.findById(clientID))) {
+            return res.status(400).json({ message: "Company Client  not Found !!" })
+        }
 
         // Create the company
         const company = new Company({
@@ -56,7 +67,6 @@ export const addCompany = async (req, res) => {
             companyName,
             contactName,
             corporationTax_UTR,
-
             employerPAYEReference,
             entryDate,
             incorporationDate,
@@ -64,11 +74,23 @@ export const addCompany = async (req, res) => {
             phone,
             registrationDate,
             registrationNumber,
-            status
+            status,
+            businessAddress,
+            registeredOfficeAddress,
+            telephone,
+            email,
+            website,
+            bName,
+            accountNumber,
+            accountHolder,
+            sortCode
         });
+        const savedCompanyID = (await company.save())._id;
+
+        await Client.findByIdAndUpdate(clientID, { $push: { companies: savedCompanyID } })
 
 
-        await company.save();
+
         res.status(201).json({ message: "Company added successfully" });
     } catch (error) {
         console.log(error);

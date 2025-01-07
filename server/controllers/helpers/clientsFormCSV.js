@@ -47,7 +47,15 @@ export const importClientsFromCSV = async (req, res) => {
         for (let i = start; i <= end; i++) {
             console.log(i);
 
-            let newCompany = new Company({})
+            let newClient = new Client({
+                name: results[i]['clientName'] || "",
+                department: results[i]['clientDepartment'] || "",
+                email: results[i]['Email'] || "",
+                notification: 1,
+            })
+            const clientID = (await newClient.save())._id
+
+            let newCompany = new Company({ clientID })
             const companyID = (await newCompany.save())._id
 
             const emailExist = await User.findOne({ userName: results[i]['Email'] })
@@ -77,6 +85,7 @@ export const importClientsFromCSV = async (req, res) => {
                 `, savedUser.userName, "accumen portal team")
             ) {
                 await User.findByIdAndDelete(newUser._id)
+                await Client.findByIdAndDelete(clientID._id)
                 await Company.findByIdAndDelete(newCompany._id)
                 emailNotSentRows.push(i)
 
@@ -206,16 +215,15 @@ export const importClientsFromCSV = async (req, res) => {
             ).populate()
 
 
-            const newClient = new Client({
-                userID: newUser._id,
-                name: results[i]['clientName'] || "",
-                department: results[i]['clientDepartment'] || "",
-                email: results[i]['Email'] || "",
-                notification: 1,
-                companies: [savedCompany]
 
-            })
-            var savedClient = await newClient.save()
+            const savedClient = await Client.findByIdAndUpdate(
+                clientID,
+                {
+                    userID: newUser._id,
+                    companies: [savedCompany]
+
+                })
+
 
             addEmailLog(results[i]['Email'], "Accumen portal New User Notification!", results[i]['clientName'], results[i]['companyName'])
 
