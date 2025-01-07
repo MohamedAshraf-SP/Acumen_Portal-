@@ -1,7 +1,7 @@
 import User from "../../models/users/user.js";
 import Client from "../../models/users/clients.js"; // Import the Client model
 import { sendEmail } from "../../helpers/emailSender.js";
-import company from "../../models/company/company.js";
+
 import { Company } from "../../models/company/index.js";
 import user from "../../models/users/user.js";
 import { addEmailLog } from "../../helpers/emailLogs.js";
@@ -61,10 +61,10 @@ export const addClient = async (req, res) => {
     try {
         const email = await User.findOne({ userName: req.body.email })
         if (email) {
-            return res.status(400).json({ message: "email already exist", email })
+            return res.status(400).json({ message: "Email already exist!!" })
         }
         if (!req.file) {
-            return res.status(400).json({ message: 'LEO File is required' });
+            return res.status(400).json({ message: 'LEO File is required!!' });
         }
         // create user
         const nUser = new User({
@@ -74,6 +74,7 @@ export const addClient = async (req, res) => {
         const newUser = await nUser.save();
         //create default company
         const company = new Company({
+
             companyName: `default company `
         })
         const newCompany = await company.save();
@@ -228,29 +229,35 @@ export const getClientCompanies = async (req, res) => {
         const limitNumber = parseInt(limit, 10);
 
         // Calculate total count for pagination metadata
-        const totalCompanies = await Company.countDocuments({ clientID });
+
 
         // Fetch companies with pagination
-        const companies = await Company.find({ clientID })
-            .populate({ path: "Client", strictPopulate: false })
-            .select({
-                companyName: 1,
-                clientName: 1,
-                email: 1,
-                telephone: 1
-            })
-            .skip((pageNumber - 1) * limitNumber) // Skip documents for the previous pages
-            .limit(limitNumber); // Limit the number of documents per page
+        const companies = await Client.findById(clientID)
+            .select({ _id: 0, companies: 1 })
+            .populate("companies", "companyName clientName email telephone")
+
+
+        const totalCompanies = companies.companies.length
+        // .select({
+        //     companyName: 1,
+        //     clientName: 1,
+        //     email: 1,
+        //     telephone: 1
+        // })
+        // .skip((pageNumber - 1) * limitNumber) // Skip documents for the previous pages
+        // .limit(limitNumber);
+
+        // Limit the number of documents per page
 
         // Return paginated response
         res.status(200).json({
             TotalCompanies: totalCompanies,
-            CurrentPage: pageNumber,
-            TotalPages: Math.ceil(totalCompanies / limitNumber),
+            // CurrentPage: pageNumber,
+            // TotalPages: Math.ceil(totalCompanies / limitNumber),
             companies,
         });
     } catch (error) {
-       // console.log(error)
+        console.log(error)
         res.status(500).json({ message: "Error retrieving companies!!", error });
     }
 };
