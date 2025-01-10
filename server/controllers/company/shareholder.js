@@ -1,4 +1,5 @@
-import Shareholder from "../../models/company/shareholder.js";
+import { Shareholder } from "../../models/company/index.js";
+
 
 // Create a new Shareholder
 export const addShareholder = async (req, res) => {
@@ -61,9 +62,9 @@ export const getAllShareholdersOfCompany = async (req, res) => {
 // Get a single Shareholder by ID
 export const getShareholderById = async (req, res) => {
     try {
-        const Shareholder = await Shareholder.findById(req.params.id).populate("companyId");
-        if (!Shareholder) return res.status(404).json({ message: "Shareholder not found!!" });
-        res.status(200).json(Shareholder);
+        const resultShareholder = await Shareholder.findById(req.params.id);
+        if (!resultShareholder) return res.status(404).json({ message: "Shareholder not found!!" });
+        res.status(200).json(resultShareholder);
     } catch (error) {
         res.status(500).json({ message: "Error fetching Shareholder!!" });
     }
@@ -72,19 +73,21 @@ export const getShareholderById = async (req, res) => {
 // Update a Shareholder by ID
 export const updateShareholder = async (req, res) => {
     try {
-        const Shareholder = await Shareholder.findByIdAndUpdate(req.params.id, req.body, { new: true });
-        if (!Shareholder) return res.status(404).json({ message: "Shareholder not found!!" });
+
+        const updatedShareholder = await Shareholder.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        if (!updatedShareholder) return res.status(404).json({ message: "Shareholder not found!!" });
         res.status(200).json({ message: "Shareholder updated successfully!!" });
     } catch (error) {
-        res.status(500).json({ message: "Error updating Shareholder!!" });
+        console.log(error);
+        res.status(500).json({ message: "Error updating Shareholder!!", error });
     }
 };
 
 // Delete a Shareholder by ID
 export const deleteShareholder = async (req, res) => {
     try {
-        const Shareholder = await Shareholder.findByIdAndDelete(req.params.id);
-        if (!Shareholder) return res.status(404).json({ message: "Shareholder not found!!" });
+        const deletedShareholder = await Shareholder.findByIdAndDelete(req.params.id);
+        if (!deletedShareholder) return res.status(404).json({ message: "Shareholder not found!!" });
         res.status(200).json({ message: "Shareholder deleted successfully!!" });
     } catch (error) {
         res.status(500).json({ message: "Error deleting Shareholder!!" });
