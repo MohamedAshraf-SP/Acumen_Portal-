@@ -65,7 +65,7 @@ export default function SettingsPannel() {
       navColor: color,
     }));
   };
-  console.log(settings);
+
   // set App colors
   const handleAppColor = (maincolor, primarycolor) => {
     setSettings((prev) => ({

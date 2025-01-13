@@ -54,13 +54,18 @@ export default function AddacountantForm() {
       const response = await dispatch(
         addNewData({ path: "accountants", itemData: values })
       );
-
+      console.log(response);
       setalert({
-        msg: JSON.stringify(response?.payload?.message),
+        msg: "adding accountannt success",
         showmsg: true,
       });
 
       resetForm();
+      setEmailValidation({
+        loading: false,
+        valid: null,
+        message: "",
+      });
     },
   });
   // handle email check while typing
@@ -178,7 +183,7 @@ export default function AddacountantForm() {
                 name="name"
                 className="peer input block "
                 type="text"
-                placeholder="Enter Accountant Name" // Placeholder space for floating label
+                placeholder=" " // Placeholder space for floating label
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 value={formik.values.name}
@@ -201,7 +206,7 @@ export default function AddacountantForm() {
                 name="email"
                 className="peer input block"
                 type="email"
-                placeholder="Enter client email"
+                placeholder=" "
                 onChange={handleEmailChange}
                 onBlur={formik.handleBlur}
                 value={formik.values.email}
@@ -244,7 +249,7 @@ export default function AddacountantForm() {
                 className="peer input "
                 type="number"
                 min={0}
-                placeholder="Enter Accountant Phone"
+                placeholder=""
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 value={formik.values.phone}

@@ -17,21 +17,23 @@ function ConfrmMessage() {
 
   // Automatically hide message after 4 seconds
   useEffect(() => {
-    if (successmsg) {
-      const timer = setTimeout(() => {
-        dispatch(clearSuccessMsg()); // Clear the message after 2 seconds
-      }, 2000); // Auto-clear the message after 2000ms (2 seconds)
+    if (successmsg.length > 0) {
+      const timer = setInterval(() => {
+        dispatch(clearSuccessMsg());
+      }, 2000);
+
+      // Auto-clear the message after 2000ms (2 seconds)
 
       // Cleanup the timer when the effect is cleaned up (new message or unmount)
-      return () => clearTimeout(timer);
+      return () => clearInterval(timer);
     }
-  }, []); // Only run when `successmsg` or `dispatch` changes
+  }, [successmsg]); // Only run when `successmsg` or `dispatch` changes
 
   return (
     <div className={`absolute top-0 right-0 z-50 w-fit h-fit rounded-lg`}>
       {successmsg.map((msg, index) => (
         <div
-          className="mx-2 my-4 bg-white dark:bg-[#1C252E] p-[8px] [box-shadow:rgba(0,_0,_0,_0.24)_0px_3px_8px] rounded-lg animate-fade"
+          className="mx-2 my-4 bg-white dark:bg-[#1C252E] p-[8px] [box-shadow:rgba(0,_0,_0,_0.24)_0px_3px_8px] rounded-lg animate-fade-in-out"
           key={index}
         >
           <div className="flex flex-row items-start">
@@ -53,7 +55,7 @@ function ConfrmMessage() {
                   <RiLoader3Line className="animate-spin" />
                 )}
               </span>
-              <p className="text-gray-700 text-[13px] pr-20 pl-2 font-semibold">
+              <p className="text-gray-700 text-[15px] pr-20 pl-2 font-normal">
                 {msg && msg.message ? msg.message : "Loading..."}
               </p>
             </div>

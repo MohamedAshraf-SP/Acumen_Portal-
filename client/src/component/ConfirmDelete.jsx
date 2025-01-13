@@ -76,4 +76,4 @@ function ConfirmDelete({ path, deletedItemId }) {
   );
 }
 
-export default ConfirmDelete;
+export default React.memo(ConfirmDelete);

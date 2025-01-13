@@ -110,12 +110,20 @@ export default function AddClientForm() {
         const response = await dispatch(
           addNewData({ path: "clients", itemData: formData })
         ).unwrap();
-        setAlert({ msg: response, showmsg: true });
-        resetForm();
+        console.log(response);
+        setAlert({ msg: "client added successfully", showmsg: true });
         setEmailValidation({ loading: false, valid: null, message: "" });
         setFileName("");
       } catch (error) {
-        setAlert({ msg: "Failed to add client.", showmsg: true });
+        setAlert({ msg: "Failed to add client.Try again", showmsg: true });
+      } finally {
+        resetForm();
+        setFileName("");
+        setEmailValidation({
+          loading: false,
+          valid: null,
+          message: "",
+        });
       }
     },
   });
@@ -269,7 +277,8 @@ export default function AddClientForm() {
                   />
                 </svg>
                 <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
-                  <span className="font-semibold">Click to upload</span> Your Item here
+                  <span className="font-semibold">Click to upload</span> Your
+                  Item here
                 </p>
                 <p className="text-xs text-gray-500 dark:text-gray-400">
                   PDF (Max: 15MB)

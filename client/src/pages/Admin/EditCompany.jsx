@@ -11,19 +11,22 @@ const Shareholder = lazy(() =>
 );
 const Directors = lazy(() => import("../../component/Edit_Company/Directors"));
 const Address = lazy(() => import("../../component/Edit_Company/Address"));
+const CompanyDocuments = lazy(() =>
+  import("../../component/Edit_Company/Company_Documents")
+);
 const BankDetails = lazy(() =>
   import("../../component/Edit_Company/BankDetails")
 );
 const Contact = lazy(() => import("../../component/Edit_Company/Contact"));
 
 const EditCompany = () => {
-  const routes = ["user Company", "edit Company"]; // Displayed routes
+  const routes = ["User Company", "Edit Company"]; // Displayed routes
   const [openedForm, setOpenedForm] = useState("Company");
 
   const renderComponent = () => {
     switch (openedForm) {
       case "Company":
-      // return <Company />;
+        return <Company />;
       case "due dates":
         return <Due_Dates />;
       case "Shareholdes":
@@ -32,6 +35,8 @@ const EditCompany = () => {
         return <Directors />;
       case "Address":
         return <Address />;
+      case "documents":
+        return <CompanyDocuments />;
       case "bank details":
         return <BankDetails />;
       case "contact":
@@ -40,8 +45,7 @@ const EditCompany = () => {
         return null;
     }
   };
-  const date = " 1990-01-06T22:00:00.000Z";
-  console.log(date.toString());
+
   return (
     <div className="py-4">
       {/* Display Routes */}
@@ -50,7 +54,7 @@ const EditCompany = () => {
           {routes.map((route, index) => (
             <li
               key={index}
-              className={`flex flex-row items-center ${
+              className={`flex flex-row items-center text-md ${
                 index === routes.length - 1
                   ? "text-gray-400"
                   : "text-slate-900 dark:text-gray-200"

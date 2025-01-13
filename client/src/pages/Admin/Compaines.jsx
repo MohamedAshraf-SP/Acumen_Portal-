@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
   GridComponent,
@@ -24,30 +24,30 @@ import {
 import { GoPlus } from "react-icons/go";
 import { FaRegTrashCan } from "react-icons/fa6";
 import { MdOutlineModeEditOutline } from "react-icons/md";
+import { LuDot } from "react-icons/lu";
 // import component
 import Nodataimg from "/images/table/No data.svg";
 import ConfirmDelete from "../../component/ConfirmDelete";
-import EditClient from "../../component/EditClient";
 
 const Compaines = () => {
-  const data = useSelector((state) => state?.getall?.entities);
-  const status = useSelector((state) => state.getall.status);
-  const [companies, setCompanies] = useState([]);
-  const { show, targetId } = useSelector(
-    (state) => state.setting.deleteHintmsg
-  );
-  const { editItemForm } = useSelector((state) => state.setting);
+  const Navigate = useNavigate();
   const dispatch = useDispatch();
-  const [selectedItem, setSelectedItem] = useState("");
+  const data = useSelector((state) => state?.getall?.entities); // get all data
+  const status = useSelector((state) => state.getall.status); // get Fetching status
+  const { show, targetId } = useSelector(
+    (state) => state.setting.deleteHintmsg //send to deleteItem Component
+  );
+  const [companies, setCompanies] = useState([]); //  get all companies from response
+  const [selectedItem, setSelectedItem] = useState(""); //get selected Company to Update
 
   // handle several actions when click
-  const handleAction = (actionType, path, itemId) => {
-    setSelectedItem({ actionType, path, itemId });
+  const handleAction = (actionType, path, companyId) => {
+    setSelectedItem({ actionType, path, companyId });
     if (actionType === "delete")
-      dispatch(setdeleteHintmsg({ show: true, targetId: itemId }));
-    if (actionType === "edit") dispatch(seteditItemForm(true));
-    if (actionType === "show")
-      dispatch(setdeleteHintmsg({ show: true, targetId: itemId }));
+      dispatch(setdeleteHintmsg({ show: true, targetId: companyId }));
+    if (actionType === "edit") {
+      Navigate(`/companies/editcompany/${companyId}`);
+    }
   };
 
   const ActionButton = ({ tooltip, onClick, icon, styles }) => (
@@ -73,10 +73,10 @@ const Compaines = () => {
 
   return (
     <>
-      {show && targetId === selectedItem.itemId && (
+      {show && targetId === selectedItem.companyId && (
         <ConfirmDelete
           path={selectedItem.path}
-          deletedItemId={selectedItem.itemId}
+          deletedItemId={selectedItem.companyId}
         />
       )}
 

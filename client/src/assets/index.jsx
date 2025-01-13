@@ -127,33 +127,33 @@ export const dashboardAnalytics = [
     icon: <FaUserTie />,
     Title: "Clients",
     count: "77",
-    bgColor: "#A1E3BA",
-    iconColor: "#10A374",
-    titleColor: "#262D3B",
+    bgColor: "#D6F1E3",
+    iconColor: "#aaacad",
+    titleColor: "#1C1C1C",
   },
   {
     icon: <MdManageAccounts />,
     Title: "Accountants",
     count: "11",
-    bgColor: "#CCA8FA",
-    iconColor: "#8035E6",
-    titleColor: "#262D3B",
+    bgColor: "#E5ECF6",
+    iconColor: "#aaacad",
+    titleColor: "#1C1C1C",
   },
   {
     icon: <FaBuildingShield />,
     Title: "Companies",
     count: "77",
-    bgColor: "#F9D894",
-    iconColor: "#EAA215",
-    titleColor: "#262D3B",
+    bgColor: "#E2E1DE",
+    iconColor: "#aaacad",
+    titleColor: "#1C1C1C",
   },
   {
     icon: <MdEmail />,
     Title: "tasksDocuments",
     count: "58",
-    bgColor: "#F9B6A7",
-    iconColor: "#F26847",
-    titleColor: "#262D3B",
+    bgColor: "#EBE4FF",
+    iconColor: "#aaacad",
+    titleColor: "#1C1C1C",
   },
 ];
 
@@ -180,4 +180,17 @@ export const formsColors = [
   "bg-[linear-gradient(to_top,_#6a85b6_0%,_#bac8e0_100%)] border-[#a5d6a780]", // Lavender
   "bg-[linear-gradient(45deg,_#93a5cf_0%,_#e4efe9_100%)] border-[#a5d6a780]", // Pale Yellow
   "bg-[linear-gradient(to_top,_#a3bded_0%,_#6991c7_100%)] border-[#a5d6a780]", // Soft Coral
+];
+
+// edit company Links
+export const editCompanyLinks = [
+  { name: "Company", Link: "" },
+  { name: "due dates", Link: "" },
+  { name: "Shareholdes", Link: "" },
+  { name: "Directors", Link: "" },
+  { name: "Address", Link: "" },
+  { name: "documents", Link: "" },
+  { name: "bank details", Link: "" },
+  { name: "contact", Link: "" },
+  // { name: "RM", Link: "" },
 ];

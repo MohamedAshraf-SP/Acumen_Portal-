@@ -7,6 +7,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 // Import icons
 import { LuDot } from "react-icons/lu";
+import { IoCloudUpload } from "react-icons/io5";
 
 const Import_clients = () => {
   const api = import.meta.env.VITE_API_URL;
@@ -74,6 +75,7 @@ const Import_clients = () => {
           error.response?.data?.message ||
             "Failed to upload the file. Please try again."
         );
+        console.log(error);
       } finally {
         // Reset the form, including the file input
         resetForm();
@@ -224,18 +226,21 @@ const Import_clients = () => {
               <div className="grid lg:grid-cols-2 gap-4 w-full my-4">
                 <button
                   type="submit"
-                  className={`blackbutton !bg-indigo-600 ${
+                  className={`blackbutton  ${
                     status === "loading"
                       ? "opacity-50 cursor-not-allowed"
                       : "cursor-pointer"
                   }`}
                   disabled={status === "loading"}
                 >
-                  {status === "loading" ? "Importing..." : "Import"}
+                  {status != "loading" && (
+                    <IoCloudUpload className="mr-2" size={16} />
+                  )}
+                  {status === "loading" ? "Importing..." : "import"}
                 </button>
                 <button
                   type="button"
-                  className="blackbutton"
+                  className="bg-[#efeff0] px-4 font-normal rounded-md"
                   onClick={() => formik.resetForm()}
                 >
                   Cancel

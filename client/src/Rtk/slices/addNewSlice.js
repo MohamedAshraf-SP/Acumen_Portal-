@@ -6,6 +6,7 @@ const addNewData = createAsyncThunk(
   async ({ path, itemData }, thunkAPI) => {
     try {
       const response = await addItem(path, itemData); // Call the service and await the response
+ 
       return response.data; // Return the actual data if the service succeeds
     } catch (error) {
       // Use `rejectWithValue` to pass error details to the `rejected` case

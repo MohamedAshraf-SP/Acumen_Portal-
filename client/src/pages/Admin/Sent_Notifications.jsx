@@ -139,7 +139,7 @@ const Sent_Notifications = () => {
               allowSorting={true}
               toolbar={["Search"]}
               width="auto"
-              pageSettings={{ pageSize: 5, currentPage: 1 }}
+              pageSettings={{ pageSize: 10, currentPage: 1 }}
             >
               <ColumnsDirective>
                 <ColumnDirective

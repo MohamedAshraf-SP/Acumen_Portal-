@@ -13,6 +13,7 @@ const DocumentTable = lazy(() => import("../../component/DocumentTable"));
 export default function Admin_Dashboard() {
   const OverViewAnalysis = useMemo(() => Analysis || [], []);
   const [usersCount, setUserCount] = useState([]);
+  const [todayDate, settodayDate] = useState("");
   const [error, setError] = useState(null);
   // format displaying number
   const formatNum = (num) => {
@@ -24,6 +25,7 @@ export default function Admin_Dashboard() {
       return num;
     }
   };
+
   // get all counts
   const fetchUsersCount = async () => {
     try {
@@ -39,22 +41,30 @@ export default function Admin_Dashboard() {
       console.error("Error fetching user counts:", error);
     }
   };
+
   useEffect(() => {
     fetchUsersCount();
   }, [OverViewAnalysis]);
-
+  // set date when component render
+  useEffect(() => {
+    const date = new Date();
+    settodayDate(date.toDateString());
+  }, []);
   return (
     <div className="mt-2">
-      <div className="flex flex-row items-center gap-1">
-        <h3 className="text-2xl font-semibold">Hi, Welcome back </h3>
-        <div className="w-12 h-12 overflow-hidden mb-2">
-          <img
-            src={wavingImg}
-            alt="Animated wavy Img"
-            loading="lazy"
-            className="w-full h-full"
-          />
+      <div className="flex flex-col items-start mb-6">
+        <div className="flex flex-row items-center gap-1">
+          <h1 className="text-2xl font-semibold">Hi, Welcome back </h1>
+          <div className="w-12 h-12 overflow-hidden  ">
+            <img
+              src={wavingImg}
+              alt="Animated wavy Img"
+              loading="lazy"
+              className="w-full h-full"
+            />
+          </div>
         </div>
+        <p className="text-[#989999] ">Today is : {todayDate} 😊</p>
       </div>
 
       <div className="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-4 mt-4">

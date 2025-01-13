@@ -22,6 +22,7 @@ const ImportClients = lazy(() => import("../pages/Admin/Import_clients"));
 const SentNotifications = lazy(() =>
   import("../pages/Admin/sent_Notifications")
 );
+const EditUserCompany = lazy(() => import("../pages/Admin/EditCompany"));
 // ---------------client ---------
 const ClientDashboard = lazy(() => import("../pages/Client/Client_Dashboard"));
 const AddCompany = lazy(() => import("../pages/Client/Add_Company"));
@@ -77,6 +78,10 @@ const AppRouter = () => {
               <Route
                 path="/companies/:itemId"
                 element={withSuspense(<DisplayUsersCompany />)}
+              />
+              <Route
+                path="/companies/editcompany/:companyId"
+                element={withSuspense(<EditUserCompany />)}
               />
               <Route
                 path="/notifications"

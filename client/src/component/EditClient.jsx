@@ -90,6 +90,7 @@ export default function EditClient({ TargetItem }) {
         // Handle any errors here (e.g., show an alert)
         console.error("Error updating the client: ", error);
       }
+          resetForm();
     },
   });
 
