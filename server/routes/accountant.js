@@ -7,7 +7,8 @@ import {
   deleteAccountant,
   addAccountant,
 } from "../controllers/users/accountant.js";
-import { authMiddleware, roleMiddleware } from "../middlewares/Middlewares.js";
+import { authMiddleware, roleMiddleware } from "../middlewares/autherization.js";
+
 export const accountantRoute = express.Router();
 
 accountantRoute.get("/count", getAccountantsCount);

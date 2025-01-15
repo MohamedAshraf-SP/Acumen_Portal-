@@ -1,6 +1,6 @@
 
 import { Router } from "express";
-import { upload } from "../config/multer.js";
+import { upload } from "../middlewares/multer.js";
 import { addForm, updateForm, deleteForm, downloadFile, getFormById, getForms, getFormsCount } from "../controllers/formsFiles.js"
 
 export const formsRoute = Router();

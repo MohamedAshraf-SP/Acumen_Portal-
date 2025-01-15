@@ -2,6 +2,7 @@ import User from "../../models/users/user.js";
 import Accountant from "../../models/users/accountants.js"; // Import the Accountant model
 import { sendEmail } from "../../helpers/emailSender.js";
 import { addEmailLog } from "../../helpers/emailLogs.js";
+import { checkIfEmailExist, generateRandomPassword, hashPassword } from "../../Services/auth/authentication.js";
 
 // Get a Accountant by ID
 export const getAccountant = async (req, res) => {
@@ -49,23 +50,17 @@ export const getAccountants = async (req, res) => {
 // Add a new accountant
 export const addAccountant = async (req, res) => {
   try {
-    //console.log(req);
-
-
-    if (!req.body.email) {
-      return res.status(400).json({ message: "Email is required!!" })
+    if (!req.body.email || !req.body.department) {
+      return res.status(400).json({ message: "Email and Department are required!!" })
     }
-    const mail = await User.findOne({ userName: req.body.email })
 
-    if (mail) {
+    if (await checkIfEmailExist(req.body.email)) {
       return res.status(400).json({ message: "Email already exists!!" })
     }
-    if (!req.body.department) {
-      return res.status(400).json({ message: "Department is required!!" })
-    }
 
 
-    const password = Math.floor(Math.random() * 100000000000)
+    const plainPassword = generateRandomPassword()
+    const hashedPassword = await hashPassword(plainPassword)
 
 
 
@@ -93,8 +88,8 @@ export const addAccountant = async (req, res) => {
       req.body.email,
       `
                these are your credintials to ACCUMEN PORTAL :
-               EMAIL: ${req.body.email}
-               Password: ${newUser.password} 
+               Email: ${req.body.email}
+               Password: ${plainPassword}  
    
    
                Thank you
@@ -112,6 +107,7 @@ export const addAccountant = async (req, res) => {
 
     res.status(201).json({ message: "New Accountant added successfully!!" });
   } catch (error) {
+    console.log(error);
     res.status(400).json({ error: error.message });
   }
 };

@@ -3,6 +3,7 @@ import Document from '../../models/company/companyDocs.js';
 import path from "path"
 import { deleteFileWithPath } from "../../helpers/deleteFile.js"
 import fs from "fs"
+import { countDocuments } from '../../services/public/countDocuments.js';
 
 
 const __filename = fileURLToPath(import.meta.url); ///Users/john/app/index.mjs
@@ -36,13 +37,13 @@ export const addDocument = async (req, res) => {
 // READ - Get all documents
 export const getAllDocumentsOfCompany = async (req, res) => {
     try {
-       
+
 
         // const documents = await Document.find({ companyId });
         // res.status(200).json(documents);
 
         const companyId = req.id
-        
+
         if (!companyId) {
             return res.status(400).json({ message: "Company id is required" })
         }
@@ -62,7 +63,7 @@ export const getAllDocumentsOfCompany = async (req, res) => {
             .skip((pageNumber - 1) * limitNumber) // Skip documents for the previous pages
             .limit(limitNumber); // Limit the number of documents per page
 
-  
+
         // Return paginated response
         res.status(200).json({
             totalDocuments: totalDocuments,
@@ -157,9 +158,6 @@ export const downloadFile = async (req, res) => {
             return res.status(404).send("File Not Found!!")
         }
 
-
-
-
         var file = fs.readFileSync(__dirname + "\\..\\..\\" + document.path, 'binary');
 
         res.setHeader('Content-Length', file.length);
@@ -177,8 +175,7 @@ export const downloadFile = async (req, res) => {
 export const getDocumentsCount = async (req, res) => {
 
     try {
-        const count = await Document.countDocuments()
-        res.json({ count })
+        res.status(200).json({ count: (await countDocuments(Document)) });
     } catch (e) {
         res.status(500).json(e.message)
     }

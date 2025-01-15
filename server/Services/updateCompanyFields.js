@@ -1,4 +1,0 @@
-const updateCompanyFields =(id,data)=>{
-    
-
-}

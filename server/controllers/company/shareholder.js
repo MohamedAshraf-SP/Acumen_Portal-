@@ -1,4 +1,5 @@
 import { Shareholder } from "../../models/company/index.js";
+import { countDocuments } from "../../services/public/countDocuments.js";
 
 
 // Create a new Shareholder
@@ -97,8 +98,9 @@ export const deleteShareholder = async (req, res) => {
 
 export const getCompanyShareholdersCount = async (req, res) => {
     try {
-        const count = (await Shareholder.countDocuments({ companyId: req.id }));
-        res.status(200).json({ count });
+
+        res.status(200).json({ count: (await countDocuments(Shareholder, { companyId: req.id })) });
+
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

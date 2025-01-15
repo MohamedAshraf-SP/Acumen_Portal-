@@ -1,4 +1,5 @@
 import Director from "../../models/company/director.js";
+import { countDocuments } from "../../services/public/countDocuments.js";
 
 // Create a new director
 export const addDirector = async (req, res) => {
@@ -96,8 +97,7 @@ export const deleteDirector = async (req, res) => {
 
 export const getCompanyDirectorsCount = async (req, res) => {
     try {
-        const count = (await Director.countDocuments({ companyId: req.id }));
-        res.status(200).json({ count });
+        res.status(200).json({ count: (await countDocuments(Director, { companyId: req.id })) });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

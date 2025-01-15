@@ -9,18 +9,18 @@ import {
     getClientCompanies,
     getDepartmentClients
 } from "../controllers/users/client.js";
-import { upload } from "../config/multer.js";
-import { authMiddleware, roleMiddleware } from "../middlewares/Middlewares.js";
+import { upload } from "../middlewares/multer.js";
+import { authMiddleware, roleMiddleware } from "../middlewares/autherization.js";
 export const clientRoute = express.Router();
 
-clientRoute.get("/:id/companies", getClientCompanies);
-clientRoute.get("/count", getClientsCount);
-clientRoute.get("/ofdepartment", getDepartmentClients);
-clientRoute.get("/:id", getClient);
-clientRoute.get("/", getClients);
-clientRoute.post("/", upload.single('LOEfile'), addClient);
-clientRoute.put("/:id", updateClient);
-clientRoute.delete("/:id", deleteClient);
+clientRoute.get("/:id/companies", roleMiddleware(["admin", "accountant", "client"]), getClientCompanies);
+clientRoute.get("/count", roleMiddleware(["admin"]), getClientsCount);
+clientRoute.get("/ofdepartment", roleMiddleware(["admin", "accountant"]), getDepartmentClients);
+clientRoute.get("/:id", roleMiddleware(["admin", "accountant"]), getClient);
+clientRoute.get("/", roleMiddleware(["admin"]), getClients);
+clientRoute.post("/", roleMiddleware(["admin", "accountant"]), upload.single('LOEfile'), addClient);
+clientRoute.put("/:id", roleMiddleware(["admin", "accountant"]), updateClient);
+clientRoute.delete("/:id", roleMiddleware(["admin", "accountant"]), deleteClient);
 
 
 export default clientRoute;

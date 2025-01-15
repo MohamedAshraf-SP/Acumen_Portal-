@@ -2,22 +2,21 @@ import express from "express";
 import router from "./routes/router.js";
 import cors from "cors";
 import dotenv from "dotenv";
-
 import { run } from "./config/databaseConnection.js";
+
+
+/*
 import path from 'path';
-import { sendEmail } from "./helpers/emailSender.js";
-import { readCSV, readCsvAsync } from "./helpers/importFormCSV.js";
-//import { fileURLToPath } from 'url';
-
-// Get the filename and directory
-//const __filename = fileURLToPath(import.meta.url);
-
-//const __dirname = path.dirname(__filename);
+import { fileURLToPath } from 'url';
+Get the filename and directory
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+*/
 
 dotenv.config();
 
-const port = process.env.PORT || 3000; // Default to 3000 if not set
-const host = process.env.HOST || 'localhost'; // Default to 'localhost' if not set
+const port = process.env.PORT || 3000;
+const host = process.env.HOST || 'localhost';
 const ORIGIN = process.env.ORIGIN;
 const dbURI = process.env.DB_URI;
 
@@ -46,17 +45,8 @@ try {
 // Set up body parsers for handling JSON and URL-encoded data
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-
-
-//sendEmail("mo",'01255',"mohamed.ashrafsp@gmail.com","helloworld")
-
-//readCSV('./documents/clientsToImport.csv')
-
-//const results =await readCsvAsync('./documents/clientsToImport.csv')
-
-
 app.use("/api", router);
-// /api/v1/Students/Count
+
 
 
 app.listen(port, host, (req, res) => {

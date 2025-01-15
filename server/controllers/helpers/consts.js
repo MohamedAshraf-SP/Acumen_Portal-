@@ -8,11 +8,11 @@ export const checkEmail = async (req, res) => {
     try {
         //console.log(req);
 
-        const email = await User.find({ userName: req.body.email })
-        if (email.length != 0) {
-            return res.status(400).json({ message: "email already exist" })
+        const email = await User.findOne({ userName: req.body.email })
+        if (email) {
+            return res.status(400).json({ message: "Email already exist!!" })
         }
-        return res.status(200).json({ message: "Email is Okey" })
+        return res.status(200).json({ message: "Email is Okey!!" })
     } catch (error) {
         res.status(400).json({ error: error.message });
     }
@@ -64,8 +64,8 @@ export const updateHelper = async (req, res) => {
         const { id } = req.params;
         const { name, value } = req.body;
         const helper = await Helper.findByIdAndUpdate(id, { name, value }, { new: true, runValidators: true });
-        if (!helper) return res.status(404).json({ error: 'Helper not found' });
-        res.status(200).json(helper);
+        if (!helper) return res.status(404).json({ error: 'Helper not found!!' });
+        res.status(200).json({ message: 'Data updated successfully!!' });
     } catch (error) {
         res.status(400).json({ error: error.message });
     }
@@ -77,7 +77,7 @@ export const deleteHelper = async (req, res) => {
         const { id } = req.params;
         const helper = await Helper.findByIdAndDelete(id);
         if (!helper) return res.status(404).json({ error: 'Helper not found' });
-        res.status(200).json({ message: 'Helper deleted successfully' });
+        res.status(200).json({ message: 'Data deleted successfully!!' });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

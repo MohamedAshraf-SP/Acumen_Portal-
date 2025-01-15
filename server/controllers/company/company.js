@@ -11,6 +11,7 @@ import {
 } from "../../models/company/index.js";
 import Client from "../../models/users/clients.js";
 import User from "../../models/users/user.js";
+import { countDocuments } from "../../services/public/countDocuments.js";
 
 
 
@@ -279,8 +280,7 @@ export const deleteCompany = async (req, res) => {
 
 export const getCompaniesCount = async (req, res) => {
     try {
-        const count = (await Company.countDocuments());
-        res.status(200).json({ count });
+        res.status(200).json({ count: (await countDocuments(Company)) });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

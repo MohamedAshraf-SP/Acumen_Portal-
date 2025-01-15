@@ -7,6 +7,7 @@ import user from "../../models/users/user.js";
 import { addEmailLog } from "../../helpers/emailLogs.js";
 import mongoose from "mongoose";
 import TasksDocument from "../../models/tasksDocuments.js";
+import { checkIfEmailExist, generateRandomPassword, hashPassword } from "../../Services/auth/authentication.js";
 
 // Get a Client by ID
 export const getClient = async (req, res) => {
@@ -51,24 +52,24 @@ export const getClients = async (req, res) => {
     }
 };
 
-
-
-
-
-
 // Add a new client
 export const addClient = async (req, res) => {
     try {
-        const email = await User.findOne({ userName: req.body.email })
-        if (email) {
-            return res.status(400).json({ message: "Email already exist!!" })
-        }
         if (!req.file) {
             return res.status(400).json({ message: 'LEO File is required!!' });
         }
-        // create user
+
+        if (await checkIfEmailExist(req.body.email)) {
+            return res.status(400).json({ message: "Email already exists!!" })
+        }
+
+
+        const plainPassword = generateRandomPassword()
+        const hashedPassword = await hashPassword(plainPassword)
+
         const nUser = new User({
             userName: req.body.email,
+            password: hashedPassword,
             userRole: 'client'
         })
         const newUser = await nUser.save();
@@ -97,8 +98,8 @@ export const addClient = async (req, res) => {
             req.body.email,
             `
             these are your credintials to ACCUMEN PORTAL :
-            EMAIL: ${req.body.email}
-            Password: ${newUser.password} 
+            Email: ${req.body.email}
+            Password: ${plainPassword} 
 
 
             Thank you
@@ -187,38 +188,7 @@ export const getClientsCount = async (req, res) => {
     }
 };
 
-// export const getClientCompanies = async (req, res) => {
 
-//     const page = req.query.page || 1;
-//     const limit = req.query.limit || 10;
-//     const skip = (page - 1) * limit;
-
-
-//     // console.log(clientCount)
-
-
-//     try {
-//         const client = JSON.parse(JSON.stringify(await Client.findById(
-//             req.params.id
-//         ).populate('companies')
-//             .skip(skip)
-//             .limit(limit)));
-
-//         console.log(client)
-
-//         const companyCount = client.companies.length
-//         const pagesCount = Math.ceil(companyCount / limit) || 0;
-//         // Skip the specified number of documents.limit(limit);;
-//         res.status(200).json({
-//             currentPage: page,
-//             pagesCount,
-//             companies: client.companies,
-//             companyCount,
-//         });
-//     } catch (error) {
-//         res.status(500).json({ error: error.message });
-//     }
-// };
 export const getClientCompanies = async (req, res) => {
     try {
         const clientID = req.params.id || null
@@ -289,3 +259,36 @@ export const getDepartmentClients = async (req, res) => {
     }
 };
 
+
+// export const getClientCompanies = async (req, res) => {
+
+//     const page = req.query.page || 1;
+//     const limit = req.query.limit || 10;
+//     const skip = (page - 1) * limit;
+
+
+//     // console.log(clientCount)
+
+
+//     try {
+//         const client = JSON.parse(JSON.stringify(await Client.findById(
+//             req.params.id
+//         ).populate('companies')
+//             .skip(skip)
+//             .limit(limit)));
+
+//         console.log(client)
+
+//         const companyCount = client.companies.length
+//         const pagesCount = Math.ceil(companyCount / limit) || 0;
+//         // Skip the specified number of documents.limit(limit);;
+//         res.status(200).json({
+//             currentPage: page,
+//             pagesCount,
+//             companies: client.companies,
+//             companyCount,
+//         });
+//     } catch (error) {
+//         res.status(500).json({ error: error.message });
+//     }
+// };

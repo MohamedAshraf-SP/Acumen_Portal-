@@ -8,7 +8,7 @@ import {
     getDocumentsCount,
     downloadFile
 } from "../../controllers/company/document.js";
-import { upload } from "../../config/multer.js"
+import { upload } from "../../middlewares/multer.js"
 
 export const documentRouter = express.Router();
 export const documentRouterWithCID = express.Router();
