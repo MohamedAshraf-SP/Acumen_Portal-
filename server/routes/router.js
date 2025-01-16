@@ -23,15 +23,15 @@ router.use("/v1/auth", authRoute);
 
 router.use(authMiddleware)
 
-router.use("/v1/accountants",roleMiddleware(["admin"]), accountantRoute);
+router.use("/v1/accountants", accountantRoute);
 router.use("/v1/clients", clientRouter);
-router.use("/v1",roleMiddleware(["admin"]), usersRoute);
-router.use("/v1/emailsender",roleMiddleware(["admin","accountant","client"]), emailSenderRouter);
+router.use("/v1/emailsender", emailSenderRouter);
 router.use("/v1/helpers", helpersRoute);
-router.use("/v1/forms",roleMiddleware(["admin"]), formsRoute);
-router.use("/v1/tasksDocuments",roleMiddleware(["admin","accountant","client"]), tasksRouter);
-router.use("/v1/emailtemplates",roleMiddleware(["admin"]), templatesRouter);
+router.use("/v1/forms", formsRoute);
+router.use("/v1/tasksDocuments", tasksRouter);
+router.use("/v1/emailtemplates", templatesRouter);
 router.use("/v1/companies", companyRouter);
+router.use("/v1", usersRoute);
 
 // /v1/Students/Count
 

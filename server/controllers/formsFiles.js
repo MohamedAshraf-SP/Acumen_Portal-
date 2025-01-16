@@ -121,7 +121,7 @@ export const downloadFile = async (req, res) => {
         const form = await Form.findById(id)
 
         if (!form) {
-            return res.status(404).send("File Not Found!!")
+            return res.status(404).json({ message: "File Not Found!!" })
         }
 
 

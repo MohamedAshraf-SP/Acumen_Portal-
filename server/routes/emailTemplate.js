@@ -7,13 +7,17 @@ import {
     deleteTemplate,
     getTemplatesCount,
 } from "../controllers/emailTemplate.js";
+import { roleMiddleware } from "../middlewares/autherization.js";
 
 const templatesRouter = Router();
 
+
+templatesRouter.use(roleMiddleware(["admin"]))
 // Create a new template
 templatesRouter.post("/", addTemplate);
 
 templatesRouter.get("/", getTemplates);
+
 templatesRouter.get("/count", getTemplatesCount);
 
 templatesRouter.get("/:id", getTemplateById);

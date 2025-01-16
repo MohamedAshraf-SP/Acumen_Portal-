@@ -24,8 +24,15 @@ export const authMiddleware = (req, res, next) => {
 
 export const roleMiddleware = (requiredRoles) => {
     return (req, res, next) => {
+        console.log(requiredRoles);
+        console.log(req.user.role);
+        console.log(requiredRoles.includes(req.user.role));
         if (!requiredRoles.includes(req.user.role)) {
-            return res.status(403).json({ message: 'Forbidden: You do not have the required permissions!!' });
+
+            return res.status(403).json({
+                message: 'Forbidden: You do not have the required permissions!!',
+                path: `${req.path}`
+            });
         }
         next();
     };

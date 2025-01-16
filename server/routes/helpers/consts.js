@@ -12,21 +12,19 @@ const helpersRoute = new Router()
 
 //check if email exits
 helpersRoute.post("/checkEmail", roleMiddleware(["admin", "accountant", "client"]), checkEmail)
-
-//csv import
 helpersRoute.post('/importCSV', roleMiddleware(["admin", "accountant"]), upload.single('clients'), importClientsFromCSV)
 
 //email logs
-
-helpersRoute.get("/email/logs", roleMiddleware(["admin", "accountant"]), getEmailLogs)
 helpersRoute.get("/email/logs/count", roleMiddleware(["admin", "accountant"]), getLogsCount)
+helpersRoute.get("/email/logs", roleMiddleware(["admin", "accountant"]), getEmailLogs)
+
 
 
 //helpers
-helpersRoute.post('/consts', roleMiddleware(["admin"]), addHelper);          // CREATE
-helpersRoute.get('/consts', roleMiddleware(["admin"]), getHelpers);            // READ all
-helpersRoute.get('/consts/:id', roleMiddleware(["admin"]), getHelperById);     // READ by ID
-helpersRoute.put('/consts/:id', roleMiddleware(["admin"]), updateHelper);      // UPDATE
+helpersRoute.get('/consts/:id', roleMiddleware(["admin"]), getHelperById);          
+helpersRoute.get('/consts', roleMiddleware(["admin"]), getHelpers);  
+helpersRoute.post('/consts', roleMiddleware(["admin"]), addHelper);          
+helpersRoute.put('/consts/:id', roleMiddleware(["admin"]), updateHelper);     
 helpersRoute.delete('/consts/:id', roleMiddleware(["admin"]), deleteHelper);
 
 

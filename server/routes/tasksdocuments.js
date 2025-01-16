@@ -9,16 +9,22 @@ import {
     downloadTaskById,
     getTasksCount
 } from '../controllers/tasksDocuments.js';
+import { roleMiddleware } from '../middlewares/autherization.js';
 
 const tasksRouter = express.Router();
 
+
+
 // Routes
-tasksRouter.post('/', upload.single('file'), addTask);
-tasksRouter.get('/count', getTasksCount);
-tasksRouter.get('', getAllTasks);
-tasksRouter.get('/:id', getTaskById);
-tasksRouter.get('/download/:id', downloadTaskById);
-tasksRouter.put('/:id', upload.single('file'), updateTask);
-tasksRouter.delete('/:id', deleteTask);
+
+
+
+tasksRouter.get('/count',roleMiddleware(["admin"]), getTasksCount)
+tasksRouter.get('/',roleMiddleware(["admin","accountant"]), getAllTasks);
+tasksRouter.get('/:id',roleMiddleware(["admin","accountant","client"]), getTaskById);
+tasksRouter.get('/download/:id',roleMiddleware(["admin","accountant","client"]), downloadTaskById);
+tasksRouter.post('/',roleMiddleware(["admin","accountant","client"]), upload.single('file'), addTask);
+tasksRouter.put('/:id',roleMiddleware(["admin","accountant"]), upload.single('file'), updateTask);
+tasksRouter.delete('/:id',roleMiddleware(["admin"]), deleteTask);
 
 export default tasksRouter;
