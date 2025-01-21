@@ -21,7 +21,7 @@ const Notifications = () => {
 
   // dispatch load content action when detect change on dispatch
   useEffect(() => {
-    dispatch(FetchedItems("emailtemplates"));
+    dispatch(FetchedItems({ path: "emailtemplates" }));
   }, [dispatch]);
   // atatch each Notification whith its bgcolor & textcolor
   const attachColors = data?.templates?.map((item, index) => ({

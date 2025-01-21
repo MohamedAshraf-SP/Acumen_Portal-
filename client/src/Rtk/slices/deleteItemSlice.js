@@ -6,6 +6,7 @@ const deleteTargetItem = createAsyncThunk(
   async ({ path, itemId }, thunkAPI) => {
     try {
       const response = await deleteItem(path, itemId);
+
       return response;
     } catch (error) {
       return thunkAPI.rejectWithValue(

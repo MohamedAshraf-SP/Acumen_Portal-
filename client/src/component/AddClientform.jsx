@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import _ from "lodash";
 import { IoIosCloseCircleOutline } from "react-icons/io";
@@ -10,29 +10,23 @@ import Skeleton from "react-loading-skeleton";
 import axios from "axios";
 
 export default function AddClientForm() {
+  const routes = ["Clients", "Add Client"];
   const api = import.meta.env.VITE_API_URL;
   const dispatch = useDispatch();
-  const status = useSelector((state) => state.AddNew.status);
-
-  const [alert, setAlert] = useState({ msg: "", showmsg: false });
-  const [note, setNote] = useState(true);
+  const status = useSelector((state) => state.AddNew.status); // check adding status
+  const [alert, setAlert] = useState({ msg: "", showmsg: false }); // toggle show or hide alert
   const [emailValidation, setEmailValidation] = useState({
     loading: false,
     valid: null,
     message: "",
-  });
-  const [fileName, setFileName] = useState("");
-
-  const routes = ["Clients", "Add Client"];
-
+  }); // state handle email validation
+  const [fileName, setFileName] = useState(""); //carry uploaded file name
   // Helper to check email availability
   const checkEmailAvailability = async (email) => {
     setEmailValidation({ loading: true, valid: null, message: "" });
     try {
       const response = await axios.post(`${api}/helpers/checkemail`, { email });
-
       const { status, data } = response;
-
       setEmailValidation({
         loading: false,
         valid: status === 200,
@@ -52,6 +46,11 @@ export default function AddClientForm() {
     () => _.debounce(checkEmailAvailability, 500),
     []
   );
+  // clear debouncedValidateEmail
+  useEffect(() => {
+    return () => debouncedValidateEmail.cancel();
+  }, [debouncedValidateEmail]);
+
   // -----Detect changing in input
   const handleEmailChange = (e) => {
     formik.handleChange(e);
@@ -72,6 +71,10 @@ export default function AddClientForm() {
       setFileName("");
     }
   };
+
+  // add new client function
+
+  // Formik setup
   const formik = useFormik({
     initialValues: {
       name: "",
@@ -105,20 +108,22 @@ export default function AddClientForm() {
       formData.append("notification", values.notification);
       formData.append("department", values.department);
       formData.append("LOEfile", values.LOEfile);
-
       try {
         const response = await dispatch(
           addNewData({ path: "clients", itemData: formData })
-        ).unwrap();
-        console.log(response);
-        setAlert({ msg: "client added successfully", showmsg: true });
-        setEmailValidation({ loading: false, valid: null, message: "" });
-        setFileName("");
-      } catch (error) {
-        setAlert({ msg: "Failed to add client.Try again", showmsg: true });
-      } finally {
+        );
+
         resetForm();
-        setFileName("");
+        if (status === "success") {
+          setAlert({ msg: "adding client success", showmsg: true });
+        }
+      } catch (error) {
+        console.log(error);
+        if (status === "failed") {
+          setAlert({ msg: "adding client Failed", showmsg: true });
+          resetForm();
+        }
+      } finally {
         setEmailValidation({
           loading: false,
           valid: null,
@@ -127,6 +132,7 @@ export default function AddClientForm() {
       }
     },
   });
+ 
 
   return (
     <div className="dark:bg-secondary-dark-bg rounded-md h-full">
@@ -242,13 +248,12 @@ export default function AddClientForm() {
                 alt="Loading icon"
               />
             )}
-            {emailValidation.valid === false && (
-              <p className="text-red-600 italic mt-1 text-[12px]">
-                {emailValidation.message}
-              </p>
-            )}
-            {emailValidation.valid === true && (
-              <p className="text-green-600 italic mt-1 text-[12px]">
+            {emailValidation.message && (
+              <p
+                className={`text-xs italic mt-1 ${
+                  emailValidation.valid ? "text-green-600" : "text-red-600"
+                }`}
+              >
                 {emailValidation.message}
               </p>
             )}

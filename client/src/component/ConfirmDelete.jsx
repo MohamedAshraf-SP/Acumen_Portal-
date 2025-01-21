@@ -24,9 +24,7 @@ function ConfirmDelete({ path, deletedItemId }) {
         );
         setLoading(false);
         // Fetch the updated list of items after deletion
-        dispatch(FetchedItems(path));
-      } else {
-        throw new Error("Delete action failed");
+        dispatch(FetchedItems({ path }));
       }
     } catch (error) {
       dispatch(

@@ -1,8 +1,9 @@
 import { createRoot } from "react-dom/client";
+// for prime react
+
+// for syncfusion
 import { registerLicense } from "@syncfusion/ej2-base";
-
 import "./index.css";
-
 import App from "./App.jsx";
 import { Provider } from "react-redux";
 import { ContextProvider } from "./Contexts/ContextProvider.jsx";

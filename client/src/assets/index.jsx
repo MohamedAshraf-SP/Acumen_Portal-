@@ -12,6 +12,11 @@ import { PiMicrosoftExcelLogoFill } from "react-icons/pi";
 import { FaBuildingShield } from "react-icons/fa6";
 import { MdEmail } from "react-icons/md";
 import { IoSettingsOutline } from "react-icons/io5";
+// cliets icons
+import { BiSolidAddToQueue } from "react-icons/bi";
+import { MdDocumentScanner } from "react-icons/md";
+import { IoDocuments } from "react-icons/io5";
+
 // ------------- dashboard overciew icons
 import { FaUserTie } from "react-icons/fa6";
 import { MdManageAccounts } from "react-icons/md";
@@ -73,15 +78,70 @@ export const menuItems = {
   Accountant: [
     {
       path: "accountant/dashboard",
-      label: "Finance Dashboard",
-      icon: <MdOutlineManageAccounts />,
+      label: "Dashboard",
+      icon: <LuLayoutDashboard />,
+    },
+    {
+      path: "accountant/Clients",
+      label: "clients",
+      icon: <MdOutlineAccountCircle />,
+    },
+    {
+      path: "accountant/Companies",
+      label: "Companies",
+      icon: <BsBuildings />,
+    },
+    {
+      path: "accountant/History",
+      label: "History",
+      icon: <MdHistoryToggleOff />,
+    },
+    {
+      path: "accountant/Forms",
+      label: "Forms",
+      icon: <FaWpforms />,
+    },
+    {
+      path: "accountant/Invoices",
+      label: "Invoices",
+      icon: <LiaFileInvoiceSolid />,
+    },
+    {
+      path: "accountant/Documents",
+      label: "Documents",
+      icon: <IoDocumentsOutline />,
     },
   ],
   Client: [
     {
-      path: "client/profile",
-      label: "Profile",
+      path: "client/dashboard",
+      label: "Dashboard",
+      icon: <LuLayoutDashboard />,
+    },
+    {
+      path: "client/add_Company",
+      label: "Add Company",
       icon: <MdOutlineManageAccounts />,
+    },
+    {
+      path: "client/engagement",
+      label: "Engagement",
+      icon: <MdOutlineManageAccounts />,
+    },
+    {
+      path: "client/Forms",
+      label: "Forms",
+      icon: <FaWpforms />,
+    },
+    {
+      path: "client/Invoices",
+      label: "invoices",
+      icon: <LiaFileInvoiceSolid />,
+    },
+    {
+      path: "client/Documents",
+      label: "Documents",
+      icon: <IoDocuments />,
     },
   ],
 };
@@ -126,6 +186,7 @@ export const dashboardAnalytics = [
   {
     icon: <FaUserTie />,
     Title: "Clients",
+    endpoint: "Clients",
     count: "77",
     bgColor: "#D6F1E3",
     iconColor: "#aaacad",
@@ -134,6 +195,7 @@ export const dashboardAnalytics = [
   {
     icon: <MdManageAccounts />,
     Title: "Accountants",
+    endpoint: "Accountants",
     count: "11",
     bgColor: "#E5ECF6",
     iconColor: "#aaacad",
@@ -142,6 +204,7 @@ export const dashboardAnalytics = [
   {
     icon: <FaBuildingShield />,
     Title: "Companies",
+    endpoint: "Companies",
     count: "77",
     bgColor: "#E2E1DE",
     iconColor: "#aaacad",
@@ -149,7 +212,8 @@ export const dashboardAnalytics = [
   },
   {
     icon: <MdEmail />,
-    Title: "tasksDocuments",
+    Title: "Alerts",
+    endpoint: "helpers/email/logs",
     count: "58",
     bgColor: "#EBE4FF",
     iconColor: "#aaacad",

@@ -13,16 +13,16 @@ import { updateTargetItem } from "../../Rtk/slices/updateItemSlice";
 const Shareholder = () => {
   const dispatch = useDispatch();
   const api = import.meta.env.VITE_API_URL;
-  const { companyId } = useParams();
+  const { companyId } = useParams(); //get company id from params
   const deletestatus = useSelector((state) => state.deleteItem.status);
   const { show, targetId } = useSelector(
     (state) => state.setting.deleteHintmsg
   );
-  const [loadingStatus, setLoadingStatus] = useState("idle"); // for fetching shareholders
-  const [data, setData] = useState([]);
-  const [selectedShareHolderId, setSelectedShareHolder] = useState({});
-  const [editedShareholder, setEditedShareHolderId] = useState({});
-  const [NewShareholders, setnewshareHolder] = useState(null);
+  const [loadingStatus, setLoadingStatus] = useState("idle"); // for fetching shareholders status
+  const [data, setData] = useState([]); // store data after fetching all shareholders data
+  const [selectedShareHolderId, setSelectedShareHolder] = useState([]); // for delete shareholder
+  const [editedShareholder, setEditedShareHolderId] = useState({}); // git id when select shareholder to update
+  const [NewShareholders, setnewshareHolder] = useState(null); // for add new shareholder
   // Add new shareholder
   const AddNewShareHolder = () => {
     setnewshareHolder({
@@ -43,7 +43,6 @@ const Shareholder = () => {
         `${api}/Companies/${companyId}/shareholders`,
         NewShareholders
       );
-      console.log(response);
       if (response.status === 201) {
         setLoadingStatus("success");
         setnewshareHolder("");
@@ -56,7 +55,7 @@ const Shareholder = () => {
   // Delete Selected ShareHolder
   const DeleteSelectedShareHolder = async (shareholderId) => {
     setSelectedShareHolder({
-      id: shareholderId,
+      shareholderId,
       path: "Companies/shareholders",
     });
     dispatch(setdeleteHintmsg({ show: true, targetId: shareholderId }));
@@ -126,13 +125,19 @@ const Shareholder = () => {
       get_User_Share_Holders();
     }
   }, [companyId]);
-
+  // Load data again after delete item
+  useEffect(() => {
+    if (deletestatus === "success" || !show) {
+      get_User_Share_Holders(); // Refresh UI after deletion
+    }
+  }, [deletestatus, show]);
   return (
     <div className="my-4 py-4 px-6 rounded-[16px] bg-[#f9f9fa] animate-fade">
-      {show && targetId === selectedShareHolderId.id && (
+      {/* Delete component */}
+      {show && targetId === selectedShareHolderId.shareholderId && (
         <ConfirmDelete
           path={selectedShareHolderId.path}
-          deletedItemId={selectedShareHolderId.id}
+          deletedItemId={selectedShareHolderId.shareholderId}
         />
       )}
       <div className="py-2 flex flex-row items-center justify-between">
@@ -155,13 +160,13 @@ const Shareholder = () => {
             <form
               onSubmit={formik.handleSubmit}
               className="border-b border-solid last:border-transparent border-slate-300 py-4"
-              key={shareholder.id}
+              key={shareholder._id}
             >
               <div>
                 <h1>shareholder {index + 1}</h1>
                 <div
                   className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 my-6"
-                  key={shareholder.id}
+                  key={shareholder._id}
                 >
                   <TextInput
                     label="Shareholder Name"

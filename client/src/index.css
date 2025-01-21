@@ -1,4 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+ 
 
 body {
   margin: 0;
@@ -63,11 +64,20 @@ button {
   animation: fade 0.5s ease-out;
 }
 
-
 @keyframes fade-in-out {
-  0% { opacity: 0; transform: translateY(-10px); }
-  10%, 90% { opacity: 1; transform: translateY(0); }
-  100% { opacity: 0; transform: translateY(-10px); }
+  0% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  10%,
+  90% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
 }
 
 .animate-fade-in-out {
@@ -87,3 +97,4 @@ button {
 /* Add shadow to table */
 
 /* Optional: Highlight header row on hover */
+ 

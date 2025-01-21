@@ -1,13 +1,13 @@
 import { useDispatch, useSelector } from "react-redux";
 import { seteditItemForm, setsuccessmsg } from "../Rtk/slices/settingSlice";
-import { useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { getItem } from "../services/globalService";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { FetchedItems } from "../Rtk/slices/getAllslice";
 import { updateTargetItem } from "../Rtk/slices/updateItemSlice";
 
-export default function EditClient({ TargetItem }) {
+function EditClient({ TargetItem }) {
   const cardRef = useRef();
   const dispatch = useDispatch();
   const { editItemForm } = useSelector((state) => state.setting);
@@ -77,7 +77,7 @@ export default function EditClient({ TargetItem }) {
         dispatch(seteditItemForm(!editItemForm));
 
         // Fetch updated items (clients)
-        dispatch(FetchedItems("clients"));
+        dispatch(FetchedItems({ path: "clients" }));
         dispatch(
           setsuccessmsg({
             success: true,
@@ -90,7 +90,7 @@ export default function EditClient({ TargetItem }) {
         // Handle any errors here (e.g., show an alert)
         console.error("Error updating the client: ", error);
       }
-          resetForm();
+      resetForm();
     },
   });
 
@@ -259,3 +259,4 @@ export default function EditClient({ TargetItem }) {
     </>
   );
 }
+export default React.memo(EditClient);

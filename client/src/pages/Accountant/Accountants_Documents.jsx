@@ -1,21 +1,20 @@
-import React, { useEffect, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { Table, Pagination, Empty } from "antd"; // Ant Design components
 // readux actions
-import { FetchedItems } from "../Rtk/slices/getAllslice";
-import { setdeleteHintmsg, seteditItemForm } from "../Rtk/slices/settingSlice";
+import { FetchedItems } from "../../Rtk/slices/getAllslice";
+import { setdeleteHintmsg, seteditItemForm } from "../../Rtk/slices/settingSlice";
 // import icons
-import { LuDot } from "react-icons/lu";
+
 import { RiDownloadCloud2Line } from "react-icons/ri";
 import { AiOutlineEyeInvisible } from "react-icons/ai";
 
 // import images
 import Nodataimg from "/images/table/No data.svg";
-import { formatDate, handleDownloadPdf } from "../Utils";
+import { formatDate, handleDownloadPdf } from "../../Utils";
 
-const DocumentTable = () => {
-  const routes = ["Dashboard", "Documents"];
+const Accountants_Documents = memo(() => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -130,30 +129,12 @@ const DocumentTable = () => {
 
   return (
     <>
-      <div className="  rounded-lg  shadow-sm  bg-white overflow-hidden">
+      <div className="my-20 rounded-lg  shadow-sm  bg-white overflow-hidden">
         {/* Header */}
-        <div className="my-4">
-          <h1 className="text-xl font-semibold leading-[1.5] dark:text-white text-[#1C252E]">
-            Files
-          </h1>
-
-          <ul className="flex flex-row items-center space-x-1 text-sm py-2">
-            {routes.map((route, index) => (
-              <li
-                key={index}
-                className={`flex flex-row items-center ${
-                  index === routes.length - 1
-                    ? "text-gray-400"
-                    : "text-slate-900 dark:text-gray-200"
-                }`}
-              >
-                {index > 0 && (
-                  <LuDot className="text-lg text-gray-400 font-bold" />
-                )}
-                {route}
-              </li>
-            ))}
-          </ul>
+        <div className="flex justify-between items-center p-2 border-b  ">
+          <h4 className="text-xl font-semibold text-gray-800">
+            Recent Uploaded Files
+          </h4>
         </div>
 
         {/* Table */}
@@ -217,6 +198,6 @@ const DocumentTable = () => {
       </div>
     </>
   );
-};
+});
 
-export default React.memo(DocumentTable);
+export default React.memo(Accountants_Documents);

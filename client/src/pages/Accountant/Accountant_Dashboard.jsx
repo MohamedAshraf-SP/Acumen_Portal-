@@ -12,7 +12,7 @@ const ClientTable = lazy(() => import("../../component/ClientTable"));
 const CompanyTable = lazy(() => import("../../component/Companytable"));
 const DocumentTable = lazy(() => import("../../component/DocumentTable"));
 
-export default function Admin_Dashboard() {
+export default function Accountant_Dashboard() {
   const OverViewAnalysis = useMemo(() => Analysis || [], []);
   const [usersCount, setUserCount] = useState([]);
   const [todayDate, setTodayDate] = useState("");

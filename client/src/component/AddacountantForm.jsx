@@ -35,39 +35,7 @@ export default function AddacountantForm() {
   });
 
   const routes = ["Clients", "Add Client"];
-  // handle formik inputs
-  const formik = useFormik({
-    initialValues: {
-      name: "",
-      email: "",
-      phone: "",
-      department: "Finance department",
-    },
-    validationSchema: Yup.object({
-      name: Yup.string().required("Please enter client name."),
-      email: Yup.string()
-        .email("Invalid email")
-        .required("Please enter a valid Email."),
-      phone: Yup.number().required("phone is required"),
-    }),
-    onSubmit: async (values, { resetForm }) => {
-      const response = await dispatch(
-        addNewData({ path: "accountants", itemData: values })
-      );
-      console.log(response);
-      setalert({
-        msg: "adding accountannt success",
-        showmsg: true,
-      });
 
-      resetForm();
-      setEmailValidation({
-        loading: false,
-        valid: null,
-        message: "",
-      });
-    },
-  });
   // handle email check while typing
   const checkEmailAvailability = async (email) => {
     setEmailValidation({ loading: true, valid: null, message: "" });
@@ -94,7 +62,7 @@ export default function AddacountantForm() {
   // Debounced email validation
   const debouncedValidateEmail = useMemo(
     () => _.debounce(checkEmailAvailability, 500),
-    []
+    [checkEmailAvailability]
   );
 
   const handleEmailChange = (e) => {
@@ -106,6 +74,52 @@ export default function AddacountantForm() {
       setEmailValidation({ loading: false, valid: null, message: "" });
     }
   };
+  // handle formik inputs
+  const formik = useFormik({
+    initialValues: {
+      name: "",
+      email: "",
+      phone: "",
+      department: "Finance department",
+    },
+    validationSchema: Yup.object({
+      name: Yup.string().required("Please enter client name."),
+      email: Yup.string()
+        .email("Invalid email")
+        .required("Please enter a valid Email."),
+      phone: Yup.number().required("phone is required"),
+    }),
+    onSubmit: async (values, { resetForm }) => {
+      try {
+        const response = await dispatch(
+          addNewData({ path: "accountants", itemData: values })
+        );
+ 
+        if (status === "success") {
+          setalert({
+            msg: "adding accountannt success",
+            showmsg: true,
+          });
+          //resetForm();
+        }
+      } catch (error) {
+        console.log(error);
+        if (status === "failed") {
+          setalert({
+            msg: "adding accountannt failed",
+            showmsg: true,
+          });
+          resetForm();
+        }
+      } finally {
+        setEmailValidation({
+          loading: false,
+          valid: null,
+          message: "",
+        });
+      }
+    },
+  });
   return (
     <div className="dark:bg-secondary-dark-bg rounded-md h-full">
       <div>
@@ -141,7 +155,7 @@ export default function AddacountantForm() {
           ) : (
             <div
               className={`p-4 mb-4 text-sm  rounded-xl  font-normal flex flex-row items-center justify-between  ${
-                status == "success"
+                status === "success"
                   ? "text-green-700  bg-green-100"
                   : "bg-red-50 text-red-500"
               }`}

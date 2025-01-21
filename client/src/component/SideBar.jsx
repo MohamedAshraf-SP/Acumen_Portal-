@@ -71,7 +71,7 @@ export default function SideBar() {
       <div
         ref={SideBarRef}
         style={{ backgroundColor: sidebBarSettings?.navColor }}
-        className="transition-all duration-300 overflow-auto md:hover:overflow-y-auto overflow-x-hidden pb-4 px-2 border-r border-solid border-[#E2E7EC] dark:bg-secondary-dark-bg h-screen"
+        className=" after:transition-all duration-300 overflow-auto md:hover:overflow-y-auto overflow-x-hidden pb-4 px-2 border-r border-solid border-[#E2E7EC] dark:bg-secondary-dark-bg h-screen"
       >
         {/* Sidebar Header */}
         <div className="flex items-center justify-between px-4 py-4 sticky top-0 left-0 overflow-hidden border-[#919eab1f] w-full z-40 mb-4">
@@ -89,7 +89,7 @@ export default function SideBar() {
 
         {/* Sidebar Links */}
         <div className="flex flex-col items-start">
-          {menuItems?.Admin?.map((link) => (
+          {menuItems?.Accountant?.map((link) => (
             <NavLink
               key={link.label}
               to={`/${link.path}`}
