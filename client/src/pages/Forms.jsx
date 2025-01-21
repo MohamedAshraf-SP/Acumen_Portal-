@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useMemo } from "react";
 import { FetchedItems } from "../Rtk/slices/getAllslice";
 import axios from "axios";
+import { handleDownloadPdf } from "../Utils";
 
 export default function Forms() {
   const dispatch = useDispatch();
@@ -15,7 +16,7 @@ export default function Forms() {
   const status = useSelector((state) => state.getall.status);
   //  make dispatch action to get all forms
   useEffect(() => {
-    dispatch(FetchedItems("forms"));
+    dispatch(FetchedItems({ path: "forms" }));
   }, [dispatch]);
   //  add color to each form block
   const attachColors = useMemo(
@@ -26,37 +27,6 @@ export default function Forms() {
       })),
     [data, formsColors]
   );
-  //  create download Func
-  const handleDownload = async (formId) => {
-    try {
-      const response = await axios.get(`${api}/forms/download/${formId}`, {
-        responseType: "blob", // This is critical for handling file downloads
-      });
-
-      // Create a Blob from the response data
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-
-      // Create a link element for downloading the file
-      const link = document.createElement("a");
-      link.href = url;
-
-      // Set the file name (you may get it from the response headers or hardcode it)
-      const contentDisposition = response.headers["content-disposition"];
-      const filename = contentDisposition
-        ? contentDisposition.split("filename=")[1].replace(/"/g, "")
-        : `download_${formId}.pdf`;
-
-      link.setAttribute("download", filename);
-
-      // Append the link to the body, trigger click, and remove it
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    } catch (error) {
-      alert("sorry error happened while downloading the file,try again");
-      console.error("Error downloading file:", error);
-    }
-  };
 
   return (
     <div>
@@ -89,7 +59,7 @@ export default function Forms() {
           <div
             key={item._id}
             className={`relative flex flex-col justify-center gap-4   border border-solid 
-          rounded-lg overflow-hidden items-center pb-16 pt-6 group hover:shadow-lg transition-all duration-300 ease-in-out h-full cursor-pointer ${item.color}`}
+          rounded-lg overflow-hidden items-center pb-4  pt-6 group hover:shadow-lg transition-all duration-300 ease-in-out h-full cursor-pointer ${item.color}`}
           >
             <div className="flex flex-col justify-center items-center gap-4">
               <svg
@@ -121,8 +91,8 @@ export default function Forms() {
               </div>
             </div>
             <span
-              className="absolute bottom-0    opacity-0 transform translate-y-full group-hover:opacity-100 group-hover:translate-y-0 flex items-center justify-center text-blue-500 bg-white rounded-full w-12 h-12 cursor-pointer transition-all duration-300 ease-in-out mb-2 hover:bg-blue-500 hover:text-white"
-              onClick={() => handleDownload(item._id)}
+              className="  flex items-center justify-center text-blue-500 border border-solid border-slate-300 bg-white rounded-full w-12 h-12 cursor-pointer transition-all duration-300 ease-in-out mb-2 hover:bg-blue-500 hover:text-white"
+              onClick={() => handleDownloadPdf(item._id,'forms')}
             >
               <FaDownload />
             </span>

@@ -1,8 +1,12 @@
 import { useSelector, useDispatch } from "react-redux";
-import { CiMenuFries } from "react-icons/ci";
-import { MdOutlineSettingsSuggest, MdKeyboardArrowDown } from "react-icons/md";
-import userimg from "/images/user/avatar-25.webp";
 import { useEffect, useRef, useState } from "react";
+import { MdOutlineSettingsSuggest, MdKeyboardArrowDown } from "react-icons/md";
+import { CiMenuFries } from "react-icons/ci";
+import { CiDark } from "react-icons/ci";
+import { CiLight } from "react-icons/ci";
+
+import { GoSidebarExpand } from "react-icons/go";
+import userimg from "/images/user/avatar-25.webp";
 import { TooltipComponent } from "@syncfusion/ej2-react-popups";
 import {
   setActiveMenu,
@@ -10,9 +14,12 @@ import {
   setIsClicked,
   setScreenSize,
 } from "../Rtk/slices/settingSlice";
+import { useLocation } from "react-router-dom";
 
 export default function Navbar() {
   const [MobileScreen, setMobileScreen] = useState(false);
+  const [routes, showRoutes] = useState(false);
+  const location = useLocation();
   const dispatch = useDispatch();
   const { screenSize, collapsed, activeMenu } = useSelector(
     (state) => state.setting
@@ -24,7 +31,6 @@ export default function Navbar() {
 
   const handleActiveMenu = () => {
     dispatch(setActiveMenu(!activeMenu));
- 
   };
 
   useEffect(() => {
@@ -55,17 +61,43 @@ export default function Navbar() {
       </span>
     </TooltipComponent>
   );
-
+  //  check loacation to hide or show Dashboard /  Home;
+  useEffect(() => {
+    if (location.pathname == "/dashboard") {
+      showRoutes(true);
+    } else {
+      showRoutes(false);
+    }
+  }, [location.pathname]);
   return (
-    <div className="sticky top-0 z-10 backdrop-blur-xl bg-white/60 dark:bg-secondary-dark-bg px-2 py-3 flex items-center justify-between">
-      <span
-        className="cursor-pointer bg-white"
-        onClick={MobileScreen ? handleActiveMenu : handleCollapse}
-      >
-        <CiMenuFries className="w-10 h-10 p-2 transition rounded-full border border-solid hover:border-gray-400" />
-      </span>
-
+    <div className="sticky top-0 z-10 backdrop-blur-xl bg-white/60 dark:bg-secondary-dark-bg px-2 py-3 flex items-center justify-between   ">
+      <div className="flex flex-row items-center justify-start gap-2">
+        <span
+          className="cursor-pointer bg-white"
+          onClick={MobileScreen ? handleActiveMenu : handleCollapse}
+        >
+          {MobileScreen ? (
+            <CiMenuFries className="w-10 h-10 p-2 transition rounded-full border border-solid hover:border-gray-400" />
+          ) : (
+            <GoSidebarExpand
+              size={40}
+              className=" p-2  transition rounded-full font-thin   hover:bg-gray-200"
+            />
+          )}
+        </span>
+        {routes && (
+          <div className="text-[15px] font-normal flex flex-row items-center gap-2">
+            <span className="text-[#979797]">Dashboard&nbsp;/</span> Home
+          </div>
+        )}
+      </div>
       <div className="flex flex-row items-center gap-2 justify-end w-full">
+        <NavButton
+          Title="Dark Mode"
+          // CustomFunc={() => dispatch(setIsClicked("Settings"))}
+          icon={<CiDark />}
+        />
+        {/* CiLight */}
         <NavButton
           Title="Settings"
           CustomFunc={() => dispatch(setIsClicked("Settings"))}

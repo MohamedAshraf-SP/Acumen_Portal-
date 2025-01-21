@@ -4,9 +4,9 @@ import { deleteItem } from "../../services/globalService";
 const deleteTargetItem = createAsyncThunk(
   "data/deleteItem",
   async ({ path, itemId }, thunkAPI) => {
- 
     try {
       const response = await deleteItem(path, itemId);
+
       return response;
     } catch (error) {
       return thunkAPI.rejectWithValue(

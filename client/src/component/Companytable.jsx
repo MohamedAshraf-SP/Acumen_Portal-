@@ -1,79 +1,125 @@
-import React, { useEffect, useState } from "react";
-import {
-  GridComponent,
-  ColumnsDirective,
-  ColumnDirective,
-  Search,
-  Sort,
-  Scroll,
-  Page,
-  Inject,
-  Toolbar,
-} from "@syncfusion/ej2-react-grids";
+import React, { memo, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import ConfirmDelete from "./ConfirmDelete";
-import EditClient from "./EditClient";
-import ViewClientCard from "./ViewClientCard";
 import { FetchedItems } from "../Rtk/slices/getAllslice";
-import {
-  setdeleteHintmsg,
-  seteditItemForm,
-  setViewClient,
-} from "../Rtk/slices/settingSlice";
-import { Link } from "react-router-dom";
+import { setdeleteHintmsg } from "../Rtk/slices/settingSlice";
+import { Link, useNavigate } from "react-router-dom";
 import { GoPlus } from "react-icons/go";
 import { FaRegTrashCan } from "react-icons/fa6";
-import { BiShow } from "react-icons/bi";
 import { MdOutlineModeEditOutline } from "react-icons/md";
-import { TooltipComponent } from "@syncfusion/ej2-react-popups";
+import { Table, Pagination } from "antd";
 import Nodataimg from "/images/table/No data.svg";
 
-const Companytable = () => {
-  const data = useSelector((state) => state?.getall?.entities?.Companies);
+const Companytable = memo(() => {
+  const data = useSelector((state) => state?.getall?.entities);
   const status = useSelector((state) => state.getall.status);
+  const totalRecords = useSelector(
+    (state) => state.getall.entities["Companies/abstracted"]?.TotalCompanies
+  );
   const { show, targetId } = useSelector(
     (state) => state.setting.deleteHintmsg
   );
   const dispatch = useDispatch();
-
+  const navigate = useNavigate();
+  const [companies, setCompanies] = useState([]); //  get all companies from response
   const [selectedItem, setSelectedItem] = useState(null);
+  const [pagination, setPagination] = useState({ current: 1, pageSize: 10 });
 
-  const handleCompanyAction = (actionType, path, itemId) => {
-    setSelectedItem({ actionType, path, itemId });
+  const handleAction = (actionType, path, companyId) => {
+    setSelectedItem({ actionType, path, companyId });
     if (actionType === "delete")
-      dispatch(setdeleteHintmsg({ show: true, targetId: itemId }));
-    if (actionType === "edit") dispatch(seteditItemForm(!editItemForm));
+      dispatch(setdeleteHintmsg({ show: true, targetId: companyId }));
+    if (actionType === "edit") {
+      navigate(`/companies/editcompany/${companyId}`);
+    }
   };
 
-  const ActionButton = ({ tooltip, onClick, icon, styles }) => (
-    <TooltipComponent content={tooltip} position="TopCenter">
-      <li
-        className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 ease-in-out cursor-pointer ${styles}`}
-        onClick={onClick}
-      >
-        {icon}
-      </li>
-    </TooltipComponent>
-  );
+  // Handle pagination event
+  const onPageChange = (page, pageSize) => {
+    setPagination({ current: page, pageSize });
+    fetchData(page, pageSize);
+  };
+  // Fetch data based on current pagination
+  const fetchData = (current, pageSize) => {
+    dispatch(
+      FetchedItems({
+        path: "Companies/abstracted",
+        page: current,
+        limit: pageSize,
+      })
+    );
+  };
+  // Initial fetch on component mount
+  useEffect(() => {
+    fetchData(pagination?.current, pagination?.pageSize);
+  }, [dispatch]);
 
   useEffect(() => {
-    dispatch(FetchedItems("Companies"));
-  }, [dispatch]);
+    if (data?.["Companies/abstracted"]) {
+      setCompanies(data["Companies/abstracted"].companies || []);
+    }
+  }, [data]);
+  // Columns for the Ant Design Table
+  const columns = [
+    {
+      title: "Company Name",
+      dataIndex: "companyName",
+      key: "companyName",
+      sorter: true,
+    },
+    {
+      title: "Client Name",
+      dataIndex: "clientName",
+      key: "clientName",
+      sorter: true,
+      align: "center",
+    },
+    {
+      title: "Contact Person Name & Phone",
+      dataIndex: "email",
+      key: "email",
+      sorter: true,
+      align: "center",
+    },
+    {
+      title: "Phone",
+      dataIndex: "telephone",
+      key: "telephone",
+      sorter: true,
+      align: "center",
+    },
+    {
+      title: "Actions",
+      key: "actions",
+      align: "center",
+      render: (_, record) => (
+        <ul className="flex items-center justify-center space-x-2">
+          <li
+            className="bg-[#D6F1E8] text-[#027968] hover:bg-[#027968] hover:text-white text-[14px] w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 ease-in-out cursor-pointer"
+            onClick={() => handleAction("edit", "Companies", record._id)}
+            title="Edit"
+          >
+            <MdOutlineModeEditOutline /> {/* Adjust icon size */}
+          </li>
+          <li
+            className="bg-[#FFF2F2] text-[#FF0000] hover:bg-[#FF0000] hover:text-white text-[14px] w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 ease-in-out cursor-pointer"
+            onClick={() => handleAction("delete", "Companies", record._id)}
+            title="Delete"
+          >
+            <FaRegTrashCan /> {/* Adjust icon size */}
+          </li>
+        </ul>
+      ),
+    },
+  ];
   return (
     <>
-      {show && targetId === selectedItem?.itemId && (
+      {show && targetId === selectedItem?.companyId && (
         <ConfirmDelete
           path={selectedItem?.path}
-          deletedItemId={selectedItem?.itemId}
+          deletedItemId={selectedItem?.companyId}
         />
       )}
-
-      {/* {ViewClient && (
-        <ViewClientCard
-          TargetItem={selectedItem}
-          onClose={() => dispatch(setViewClient(!ViewClient))}
-        />
-      )} */}
 
       <div className="my-8 rounded-lg shadow-sm bg-white overflow-scroll dark:bg-secondary-dark-bg dark:text-gray-200">
         {/* Header */}
@@ -116,85 +162,38 @@ const Companytable = () => {
               </p>
             </div>
           )}
-          {status === "success" && data?.companies?.length === 0 && (
+          {status === "success" && companies?.length === 0 && (
             <div className="flex flex-col justify-center items-center h-64">
               <img src={Nodataimg} alt="No Data" className="w-32 h-32" />
               <p className="text-sm text-gray-500 font-medium mt-2">No data</p>
             </div>
           )}
-          {status === "success" && data?.companies?.length > 0 && (
-            <GridComponent
-              className="transition"
-              dataSource={data?.companies}
-              allowPaging={true}
-              allowSorting={true}
-              toolbar={["Search"]}
-              width="auto"
-              pageSettings={{ pageSize: 5, currentPage: 1 }}
-            >
-              <ColumnsDirective>
-                <ColumnDirective
-                  field="companyName"
-                  headerText="Company Name"
-                  width="200"
-                  textAlign="Left"
+          {status === "success" && companies?.length > 0 && (
+            <>
+              <Table
+                columns={columns}
+                dataSource={companies}
+                pagination={false}
+                rowKey="_id"
+                scroll={{ x: "max-content" }}
+                rowClassName={(record, index) =>
+                  index % 2 === 0 ? "bg-white" : "bg-gray-50"
+                }
+              />
+              <div className="mt-4 flex justify-end">
+                <Pagination
+                  current={pagination.current}
+                  pageSize={pagination.pageSize}
+                  total={totalRecords}
+                  onChange={onPageChange}
                 />
-                <ColumnDirective
-                  field="customerName"
-                  headerText="Client Name"
-                  width="150"
-                  textAlign="Left"
-                />
-                <ColumnDirective
-                  field="email"
-                  headerText="Contact Person Name & Phone"
-                  width="200"
-                  textAlign="Left"
-                />
-                <ColumnDirective
-                  field="phone"
-                  headerText="Company Email"
-                  width="150"
-                  textAlign="Left"
-                />
-
-                <ColumnDirective
-                  headerText="Actions"
-                  width="150"
-                  textAlign="Center"
-                  template={(rowData) => (
-                    <ul className="flex items-center justify-center space-x-2">
-                      <ActionButton
-                        tooltip="Edit"
-                        icon={<MdOutlineModeEditOutline />}
-                        styles="bg-[#E9F7E6] text-[#19A2D6] hover:bg-[#19A2D6] hover:text-white"
-                        onClick={() =>
-                          handleCompanyAction("edit", "clients", rowData._id)
-                        }
-                      />
-                      <ActionButton
-                        tooltip="Delete"
-                        icon={<FaRegTrashCan />}
-                        styles="bg-[#FFF2F2] text-[#FF0000] hover:bg-[#FF0000] hover:text-white"
-                        onClick={() =>
-                          handleCompanyAction(
-                            "delete",
-                            "Companies",
-                            rowData._id
-                          )
-                        }
-                      />
-                    </ul>
-                  )}
-                />
-              </ColumnsDirective>
-              <Inject services={[Search, Sort, Page, Scroll, Toolbar]} />
-            </GridComponent>
+              </div>
+            </>
           )}
         </div>
       </div>
     </>
   );
-};
+});
 
-export default React.memo(Companytable);
+export default Companytable;

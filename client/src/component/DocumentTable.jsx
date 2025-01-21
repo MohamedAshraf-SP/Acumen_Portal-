@@ -1,252 +1,203 @@
-import React, { useEffect, useState } from "react";
-import {
-  GridComponent,
-  ColumnsDirective,
-  ColumnDirective,
-  Search,
-  Sort,
-  Scroll,
-  Page,
-  Inject,
-  Toolbar,
-} from "@syncfusion/ej2-react-grids";
+import React, { memo, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-// import icons
-import { LuDot } from "react-icons/lu";
-import { FaDownload } from "react-icons/fa6";
-import { AiFillEyeInvisible } from "react-icons/ai";
-import { TooltipComponent } from "@syncfusion/ej2-react-popups";
-import Nodataimg from "/images/table/No data.svg";
+import { Link, useNavigate } from "react-router-dom";
+import { Table, Pagination, Empty } from "antd"; // Ant Design components
+// readux actions
 import { FetchedItems } from "../Rtk/slices/getAllslice";
-import axios from "axios";
+import { setdeleteHintmsg, seteditItemForm } from "../Rtk/slices/settingSlice";
+// import icons
 
-const Documents = () => {
-  const api = import.meta.env.VITE_API_URL;
+import { RiDownloadCloud2Line } from "react-icons/ri";
+import { AiOutlineEyeInvisible } from "react-icons/ai";
+
+// import images
+import Nodataimg from "/images/table/No data.svg";
+import { formatDate, handleDownloadPdf } from "../Utils";
+
+const DocumentTable = memo(() => {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [selectedItem, setSelectedItem] = useState(null);
-  const data = useSelector((state) => state?.getall?.entities?.tasksDocuments);
-  const status = useSelector((state) => state.getall.status);
-  const { deleteHintmsg } = useSelector((state) => state.setting);
-  const routes = ["Dashboard", "Files"];
 
-  // handle several actions when click
-  const handleDocumentsAction = (actionType, path, itemId) => {
-    setSelectedItem({ actionType, path, itemId });
-    if (actionType === "delete") dispatch(setdeleteHintmsg(!deleteHintmsg));
-  };
-
-  const ActionButton = ({ tooltip, onClick, icon, styles }) => (
-    <TooltipComponent content={tooltip} position="TopCenter">
-      <li
-        className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 ease-in-out cursor-pointer ${styles}`}
-        onClick={onClick}
-      >
-        {icon}
-      </li>
-    </TooltipComponent>
+  // Redux state
+  const data = useSelector((state) => state.getall.entities.tasksDocuments);
+  const totalRecords = useSelector(
+    (state) => state.getall.entities.tasksDocuments?.TasksDocumentCount
   );
-  // handle date to display it pretty
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
-    const year = date.getFullYear();
-    const hours = String(date.getHours()).padStart(2, "0");
-    const minutes = String(date.getMinutes()).padStart(2, "0");
-    const seconds = String(date.getSeconds()).padStart(2, "0");
+  const status = useSelector((state) => state.getall?.status);
+  const { show, targetId } = useSelector(
+    (state) => state.setting.deleteHintmsg
+  );
 
-    return `${month}/${day}/${year}   ${hours}:${minutes}:${seconds}`;
+  // Local state
+  const [pagination, setPagination] = useState({ current: 1, pageSize: 10 });
+
+  // Handle pagination event
+  const onPageChange = (page, pageSize) => {
+    setPagination({ current: page, pageSize });
+    fetchData(page, pageSize);
   };
-  // handle download document
-  const handleDownload = async (documentId) => {
-    console.log(documentId);
-    try {
-      const response = await axios.get(
-        `${api}/tasksDocuments/download/${documentId}`,
-        {
-          responseType: "blob", // This is critical for handling file downloads
-        }
-      );
 
-      // Create a Blob from the response data
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      // Create a link element for downloading the file
-      const link = document.createElement("a");
-      link.href = url;
-      // Set the file name (you may get it from the response headers or hardcode it)
-      const contentDisposition = response.headers["content-disposition"];
-      const filename = contentDisposition
-        ? contentDisposition.split("filename=")[1].replace(/"/g, "")
-        : `download_${documentId}.pdf`;
-
-      link.setAttribute("download", filename);
-
-      // Append the link to the body, trigger click, and remove it
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    } catch (error) {
-      alert("sorry error happened while downloading the file,try again");
-      console.error("Error downloading file:", error);
+  // Handle actions like show, edit, and delete
+  const handleAction = (actionType, path, itemId) => {
+    setSelectedItem({ actionType, path, itemId });
+    if (actionType === "delete")
+      dispatch(setdeleteHintmsg({ show: true, targetId: itemId }));
+    if (actionType === "edit") dispatch(seteditItemForm(true));
+    if (actionType === "show") {
+      navigate(`/companies/${itemId}`);
     }
   };
-  // dispatch load content action when detect change on dispatch
+  // Fetch data based on current pagination
+  const fetchData = (current, pageSize) => {
+    dispatch(
+      FetchedItems({ path: "tasksDocuments", page: current, limit: pageSize })
+    );
+  };
+  // Initial fetch on component mount
   useEffect(() => {
-    dispatch(FetchedItems("tasksDocuments"));
+    fetchData(pagination?.current, pagination?.pageSize);
   }, [dispatch]);
+
+  // Columns for the Ant Design Table
+  const columns = [
+    {
+      title: "Company",
+      dataIndex: "title",
+      key: "title",
+      sorter: true,
+    },
+    {
+      title: "Title",
+      dataIndex: "title",
+      key: "title",
+      sorter: true,
+      align: "center",
+    },
+    {
+      title: "Date & Time",
+      dataIndex: "emadateTimeil",
+      key: "emadateTimeil",
+      sorter: true,
+      align: "center",
+      render: (_, record) => (
+        <div className="text-md font-medium">{formatDate(record.dateTime)}</div>
+      ),
+    },
+    {
+      title: "Status",
+      key: "status",
+      sorter: true,
+      align: "center",
+      render: (_, record) => (
+        <div
+          className={` w-fit mx-auto px-2 rounded-md text-md font-medium  ${
+            record.status === "seen"
+              ? "bg-[#D3EFDF] text-[#1A925D]"
+              : "bg-[#F7EAD0] text-[#a07b41]"
+          }`}
+        >
+          {record.status}
+        </div>
+      ),
+    },
+    {
+      title: "Actions",
+      key: "actions",
+      align: "center",
+      render: (_, record) => (
+        <ul className="flex items-center justify-center space-x-2">
+          <li
+            className="bg-[#D6F4F9] text-[#1A7DA7] hover:bg-[#1A7DA7] hover:text-white text-[14px] w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 ease-in-out cursor-pointer"
+            onClick={() => handleAction("show", "clients", record._id)}
+            title="Show"
+          >
+            <AiOutlineEyeInvisible />
+          </li>
+          <li
+            className="bg-[#D6F1E8] text-[#027968] hover:bg-[#027968] hover:text-white text-[14px] w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 ease-in-out cursor-pointer"
+            onClick={() =>
+              handleDownloadPdf(record._id, "tasksDocuments/download")
+            }
+            title="Edit"
+          >
+            <RiDownloadCloud2Line />
+          </li>
+        </ul>
+      ),
+    },
+  ];
+
   return (
     <>
-      <div className="my-8 rounded-lg shadow-sm bg-white overflow-scroll dark:bg-secondary-dark-bg dark:text-gray-200">
+      <div className="my-20 rounded-lg  shadow-sm  bg-white overflow-hidden">
         {/* Header */}
-        <div className="my-4">
-          <h1 className="text-xl font-semibold leading-[1.5] dark:text-white text-[#1C252E]">
+        <div className="flex justify-between items-center p-2 border-b  ">
+          <h4 className="text-xl font-semibold text-gray-800">
             Recent Uploaded Files
-          </h1>
-
-          <ul className="flex flex-row items-center space-x-1 text-sm py-2">
-            {routes.map((route, index) => (
-              <li
-                key={index}
-                className={`flex flex-row items-center ${
-                  index === routes.length - 1
-                    ? "text-gray-400"
-                    : "text-slate-900 dark:text-gray-200"
-                }`}
-              >
-                {index > 0 && (
-                  <LuDot className="text-lg text-gray-400 font-bold" />
-                )}
-                {route}
-              </li>
-            ))}
-          </ul>
+          </h4>
         </div>
 
-        {/* Table or No Data */}
-        <div className="overflow-scroll border-none">
+        {/* Table */}
+        <div className=" ">
+          {/* loading status */}
           {status === "loading" && (
-            <div className="flex items-center justify-center h-64">
-              <svg
-                aria-hidden="true"
-                className="w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-slate-900"
-                viewBox="0 0 100 101"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
-                  fill="currentColor"
-                />
-                <path
-                  d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
-                  fill="currentFill"
-                />
-              </svg>
+            <div className="flex justify-center">
+              <div className="flex items-center justify-center h-64">
+                <svg
+                  aria-hidden="true"
+                  className="w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-slate-900"
+                  viewBox="0 0 100 101"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                    fill="currentColor"
+                  />
+                  <path
+                    d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                    fill="currentFill"
+                  />
+                </svg>
+              </div>
             </div>
           )}
           {status === "failed" && (
-            <div className="flex items-center justify-center h-64">
-              <p className="text-red-600">
-                Failed to load Documents. Please try again later.
-              </p>
-            </div>
+            <p className="text-red-600">Failed to load data.</p>
           )}
           {status === "success" && data?.TasksDocuments?.length === 0 && (
-            <div className="flex flex-col justify-center items-center h-64">
-              <img src={Nodataimg} alt="No Data" className="w-32 h-32" />
-              <p className="text-sm text-gray-500 font-medium mt-2">No data</p>
-            </div>
+            <Empty
+              image={Nodataimg}
+              description="No Data Available"
+              className="flex flex-col items-center"
+            />
           )}
           {status === "success" && data?.TasksDocuments?.length > 0 && (
-            <GridComponent
-              className="transition"
-              dataSource={data?.TasksDocuments.map((item) => ({
-                ...item,
-                formattedDateTime: formatDate(item.dateTime),
-              }))}
-              allowPaging={true}
-              allowSorting={true}
-              toolbar={["Search"]}
-              width="auto"
-              pageSettings={{ pageSize: 5, currentPage: 1 }}
-            >
-              <ColumnsDirective>
-                <ColumnDirective
-                  field="companyName"
-                  headerText="Company"
-                  width="200"
-                  textAlign="Left"
+            <>
+              <Table
+                columns={columns}
+                dataSource={data?.TasksDocuments}
+                pagination={false}
+                rowKey="_id"
+                rowClassName={(record, index) =>
+                  index % 2 === 0 ? "bg-white" : "bg-gray-50"
+                }
+              />
+              <div className="mt-4 flex justify-end">
+                <Pagination
+                  current={pagination.current}
+                  pageSize={pagination.pageSize}
+                  total={totalRecords}
+                  onChange={onPageChange}
+                  //showSizeChanger
+                  //pageSizeOptions={["3", "5", "10", "20"]}
                 />
-                <ColumnDirective
-                  field="title"
-                  headerText="Title"
-                  width="150"
-                  textAlign="Left"
-                />
-                <ColumnDirective
-                  field="formattedDateTime"
-                  headerText="Date Time"
-                  width="200"
-                  textAlign="Left"
-                />
-                <ColumnDirective
-                  headerText="status"
-                  width="150"
-                  textAlign="center"
-                  template={(rowData) => {
-                    // Define the colors for different statuses
-                    const statusColors = {
-                      pending: "bg-orange-100 text-amber-700",
-                      seen: "bg-green-100 text-green-500",
-                    };
-
-                    // Get the status value and handle undefined/null cases
-                    const status = rowData?.status?.toLowerCase() || "unknown";
-
-                    // Determine the appropriate class based on the status
-                    const statusClass =
-                      statusColors[status] || "bg-gray-100 text-gray-700 ";
-
-                    return (
-                      <span
-                        className={`px-2 py-1  rounded-lg text-sm font-thin ${statusClass}`}
-                      >
-                        {status}
-                      </span>
-                    );
-                  }}
-                />
-
-                <ColumnDirective
-                  headerText="Actions"
-                  width="150"
-                  textAlign="Center"
-                  template={(rowData) => (
-                    <ul className="flex items-center justify-center space-x-2">
-                      <ActionButton
-                        tooltip="seen"
-                        icon={<AiFillEyeInvisible />}
-                        styles="bg-[#E9F7E6] text-[#19A2D6] hover:bg-[#19A2D6] hover:text-white text-xl"
-                        onClick={() =>
-                          handleDocumentsAction("edit", "clients", rowData._id)
-                        }
-                      />
-                      <ActionButton
-                        tooltip="Download"
-                        icon={<FaDownload />}
-                        styles="bg-[#FFF2F2] text-[#FF0000] hover:bg-[#FF0000] hover:text-white text-xl"
-                        onClick={() => handleDownload(rowData._id)}
-                      />
-                    </ul>
-                  )}
-                />
-              </ColumnsDirective>
-              <Inject services={[Search, Sort, Page, Scroll, Toolbar]} />
-            </GridComponent>
+              </div>
+            </>
           )}
         </div>
       </div>
     </>
   );
-};
+});
 
-export default Documents;
+export default React.memo(DocumentTable);
