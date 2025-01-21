@@ -1,7 +1,7 @@
 import express from "express";
 import accountantRoute from "./accountant.js";
 import usersRoute from "./users.js";
-import loginRoute from "./login.js";
+
 import emailSenderRouter from "./email.js";
 import helpersRoute from "./helpers/consts.js";
 import clientRouter from "./clients.js";
