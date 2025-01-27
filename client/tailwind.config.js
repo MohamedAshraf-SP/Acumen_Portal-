@@ -3,8 +3,8 @@ module.exports = {
   darkMode: "class",
   theme: {
     fontFamily: {
-      display: ["Open Sans", "sans-serif"],
-      body: ["Open Sans", "sans-serif"],
+      display: ["Inter", "ui-sans-serif", "system-ui"],
+      body: ["Inter", "ui-sans-serif", "system-ui"],
     },
     extend: {
       fontSize: {
@@ -45,10 +45,6 @@ module.exports = {
       },
       minHeight: {
         590: "590px",
-      },
-      backgroundImage: {
-        "hero-pattern":
-          "url('https://demos.wrappixel.com/premium-admin-templates/react/flexy-react/main/static/media/welcome-bg-2x-svg.25338f53.svg')",
       },
     },
   },

@@ -1,9 +1,10 @@
-@import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+ 
 
 body {
   margin: 0;
   padding: 0;
-  font-family: "Open Sans", sans-serif;
+  font-family: "Inter", sans-serif;
 }
 
 @tailwind base;
@@ -24,55 +25,76 @@ body {
 .input {
   @apply px-[16px] py-[12px] outline-none text-sm text-[#5a5a5a]   border border-solid border-[#aeb7c154] rounded-md focus:border-slate-700 w-full;
 }
-
+.customInput {
+  @apply rounded-[16px] border border-solid  py-[16px] px-[20px] outline-none text-sm text-[#1c1c1c]   focus:border-slate-700 w-full placeholder:font-thin placeholder:text-[#a3a2a2];
+}
 button {
   @apply font-medium text-sm leading-[1.71429] capitalize min-w-[60px] shadow-none text-black   outline-none border border-solid border-neutral-200 m-0 no-underline px-3 py-[6px] rounded-md   transition-all duration-300 ease-in-out hover:bg-gray-700 hover:text-white hover:shadow-md;
 }
 .blackbutton {
-  @apply flex items-center justify-center gap-1 bg-[#1C252E] text-white px-3 py-2 rounded-md hover:shadow-lg hover:opacity-[.8] font-semibold text-[13px] transition;
+  @apply flex items-center justify-center gap-1 bg-[#1C252E] text-white px-3 py-2 rounded-md hover:shadow-lg hover:opacity-[.8] font-normal text-[13px] transition;
 }
 .customlabel {
-  @apply absolute text-gray-500 cursor-text bg-white px-1 left-2.5 -top-3  transition-all transform origin-left  peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-[#9EA9B5]   font-semibold peer-focus:text-xs focus:-top-4 focus:left-2.5 focus:transform scale-90;
+  @apply absolute text-gray-500 cursor-text bg-white px-1 left-2.5 -top-3  transition-all transform origin-left  peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-[#9EA9B5]   font-medium peer-focus:text-xs focus:-top-4 focus:left-2.5 focus:transform scale-90;
 }
 
 @keyframes fade {
   0% {
     opacity: 0;
-    transform: translateY(-20px);
+    /* transform: translateY(-20px); */
   }
   100% {
     opacity: 1;
-    transform: translateY(0);
+    /* transform: translateY(0); */
   }
 }
 
 @keyframes fade-out {
   0% {
     opacity: 1;
+    /* transform: translateY(0); */
+  }
+  100% {
+    opacity: 0;
+    /* transform: translateY(-20px); */
+  }
+}
+/* , fade-out 0.3s ease-in 2.7s forwards */
+.animate-fade {
+  animation: fade 0.5s ease-out;
+}
+
+@keyframes fade-in-out {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  10%,
+  90% {
+    opacity: 1;
     transform: translateY(0);
   }
   100% {
     opacity: 0;
-    transform: translateY(-20px);
+    transform: translateY(-10px);
   }
 }
 
-.animate-fade {
-  animation: fade 0.3s ease-out, fade-out 0.3s ease-in 2.7s forwards;
+.animate-fade-in-out {
+  animation: fade-in-out 4s ease-in-out;
 }
-
 /* table of suyncfusions style */
 /* Change table header row background */
 .custom-grid .e-headercell {
   background-color: #f4f6f8 !important; /* Dark Gray */
-  color: #3c4247;
-  font-weight: bolder !important;
+  color: #a4a4a4;
 }
 .e-headercelldiv {
   font-size: 13px !important;
-  font-weight: 700 !important;
-  color: 616170 !important;
+  font-weight: 400 !important;
+  color: #a4a4a4 !important;
 }
 /* Add shadow to table */
 
 /* Optional: Highlight header row on hover */
+ 

@@ -4,7 +4,6 @@ import MainLayout from "../Layouts/MainLayout"; // Import your layout
 import NotFind from "../pages/NotFind"; // 404 Page Component
 import Loader from "../component/Loader"; // Loading component
 // import AddAcountant from "../component/AddAcountant";
-import Editor from "../pages/Editor";
 import AddacountantForm from "../component/addAcountantForm";
 import DisplayUsersCompany from "../pages/DisplayUsersCompany";
 
@@ -22,10 +21,23 @@ const ImportClients = lazy(() => import("../pages/Admin/Import_clients"));
 const SentNotifications = lazy(() =>
   import("../pages/Admin/sent_Notifications")
 );
+const EditUserCompany = lazy(() => import("../pages/Admin/EditCompany"));
 // ---------------client ---------
 const ClientDashboard = lazy(() => import("../pages/Client/Client_Dashboard"));
 const AddCompany = lazy(() => import("../pages/Client/Add_Company"));
 const ClientEngagement = lazy(() => import("../pages/Client/Engagement"));
+const ClientDocuments = lazy(() => import("../pages/Client/Client_Documents"));
+//--------------- Accountants--------
+const Accountants_Dashboard = lazy(() =>
+  import("../pages/Accountant/Accountant_Dashboard")
+);
+const Accountants_clients = lazy(() =>
+  import("../pages/Accountant/Accountant_Clients")
+);
+const Accountants_Documents = lazy(() =>
+  import("../pages/Accountant/Accountants_Documents")
+);
+
 // -------------- shared-----------
 const Editorpage = lazy(() => import("../pages/Editor"));
 const Forms = lazy(() => import("../pages/Forms"));
@@ -39,7 +51,7 @@ const withSuspense = (children) => (
 
 const AppRouter = () => {
   // Assuming you have dynamic logic to determine the user role
-  const userRole = "Admin"; // Replace this with dynamic role logic (e.g., from context or auth state)
+  const userRole = "Accountant"; // Replace this with dynamic role logic (e.g., from context or auth state)
 
   return (
     <BrowserRouter>
@@ -47,11 +59,11 @@ const AppRouter = () => {
         {/* Routes with MainLayout */}
         <Route element={<MainLayout />}>
           {/* Common Route - Redirect to the dashboard by default */}
-          <Route path="/" element={<Navigate to="/dashboard" />} />
 
           {/* Admin Routes */}
           {userRole === "Admin" && (
             <>
+              <Route path="/" element={<Navigate to="/dashboard" />} />
               <Route
                 path="/dashboard"
                 element={withSuspense(<AdminDashboard />)}
@@ -79,6 +91,10 @@ const AppRouter = () => {
                 element={withSuspense(<DisplayUsersCompany />)}
               />
               <Route
+                path="/companies/editcompany/:companyId"
+                element={withSuspense(<EditUserCompany />)}
+              />
+              <Route
                 path="/notifications"
                 element={withSuspense(<AdminNotifications />)}
               />
@@ -104,17 +120,27 @@ const AppRouter = () => {
           {/* Client Routes */}
           {userRole === "Client" && (
             <>
+              <Route path="/" element={withSuspense(<ClientDashboard />)} />
               <Route
-                path="/dashboard"
+                path="/client/dashboard"
                 element={withSuspense(<ClientDashboard />)}
               />
               <Route
-                path="/add-company"
+                path="/client/add_Company"
                 element={withSuspense(<AddCompany />)}
               />
               <Route
-                path="/engagement"
+                path="/client/Engagement"
                 element={withSuspense(<ClientEngagement />)}
+              />
+              <Route path="/client/Forms" element={withSuspense(<Forms />)} />
+              <Route
+                path="/client/Invoices"
+                element={withSuspense(<Invoices />)}
+              />
+              <Route
+                path="/client/Documents"
+                element={withSuspense(<ClientDocuments />)}
               />
             </>
           )}
@@ -123,12 +149,37 @@ const AppRouter = () => {
           {userRole === "Accountant" && (
             <>
               <Route
-                path="/dashboard"
-                element={withSuspense(<AccountantDashboard />)}
+                path="/"
+                element={<Navigate to="/accountant/dashboard" />}
               />
               <Route
-                path="/settings"
-                element={withSuspense(<AccountantSettings />)}
+                path="/accountant/dashboard"
+                element={withSuspense(<Accountants_Dashboard />)}
+              />
+              <Route
+                path="/accountant/Clients"
+                element={withSuspense(<Accountants_clients />)}
+              />
+              <Route
+                path="/accountant/Companies"
+                element={withSuspense(<AdminCompaines />)}
+              />
+              <Route
+                path="/accountant/History"
+                element={withSuspense(<AdminHistory />)}
+              />
+              <Route
+                path="/accountant/Forms"
+                element={withSuspense(<Forms />)}
+              />
+
+              <Route
+                path="/accountant/Invoices"
+                element={withSuspense(<Invoices />)}
+              />
+              <Route
+                path="/accountant/Documents"
+                element={withSuspense(<Accountants_Documents />)}
               />
             </>
           )}

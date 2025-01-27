@@ -1,35 +1,34 @@
-import React, { useEffect, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
-import { Table, Pagination, Empty } from "antd"; // Ant Design components
-// readux actions
+import ConfirmDelete from "./ConfirmDelete";
+import EditClient from "./EditClient";
 import { FetchedItems } from "../Rtk/slices/getAllslice";
 import { setdeleteHintmsg, seteditItemForm } from "../Rtk/slices/settingSlice";
-// import icons
-import { LuDot } from "react-icons/lu";
-import { RiDownloadCloud2Line } from "react-icons/ri";
-import { AiOutlineEyeInvisible } from "react-icons/ai";
-
-// import images
+import { Link, useNavigate } from "react-router-dom";
+import { GoPlus } from "react-icons/go";
+import { FaRegTrashCan } from "react-icons/fa6";
+import { BiShow } from "react-icons/bi";
+import { MdOutlineModeEditOutline } from "react-icons/md";
+import { Table, Pagination, Empty } from "antd"; // Ant Design components
 import Nodataimg from "/images/table/No data.svg";
-import { formatDate, handleDownloadPdf } from "../Utils";
 
-const DocumentTable = () => {
-  const routes = ["Dashboard", "Documents"];
+const Accountant_Clients = memo(() => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   // Redux state
-  const data = useSelector((state) => state.getall.entities.tasksDocuments);
+  const data = useSelector((state) => state.getall.entities.clients);
   const totalRecords = useSelector(
-    (state) => state.getall.entities.tasksDocuments?.TasksDocumentCount
+    (state) => state.getall.entities.clients?.clientCount
   );
   const status = useSelector((state) => state.getall?.status);
   const { show, targetId } = useSelector(
     (state) => state.setting.deleteHintmsg
   );
+  const { editItemForm } = useSelector((state) => state.setting);
 
   // Local state
+  const [selectedItem, setSelectedItem] = useState("");
   const [pagination, setPagination] = useState({ current: 1, pageSize: 10 });
 
   // Handle pagination event
@@ -50,56 +49,43 @@ const DocumentTable = () => {
   };
   // Fetch data based on current pagination
   const fetchData = (current, pageSize) => {
-    dispatch(
-      FetchedItems({ path: "tasksDocuments", page: current, limit: pageSize })
-    );
+    dispatch(FetchedItems({ path: "clients", page: current, limit: pageSize }));
   };
   // Initial fetch on component mount
   useEffect(() => {
-    fetchData(pagination?.current, pagination?.pageSize);
+    if (!data || data.length === 0) {
+      fetchData(pagination?.current, pagination?.pageSize);
+    }
   }, [dispatch]);
 
   // Columns for the Ant Design Table
   const columns = [
     {
-      title: "Company",
-      dataIndex: "title",
-      key: "title",
+      title: "Client Name",
+      dataIndex: "name",
+      key: "name",
       sorter: true,
     },
     {
-      title: "Title",
-      dataIndex: "title",
-      key: "title",
+      title: "Accountant Manager",
+      dataIndex: "customerName",
+      key: "customerName",
       sorter: true,
       align: "center",
     },
     {
-      title: "Date & Time",
-      dataIndex: "emadateTimeil",
-      key: "emadateTimeil",
+      title: "Email",
+      dataIndex: "email",
+      key: "email",
       sorter: true,
       align: "center",
-      render: (_, record) => (
-        <div className="text-md font-medium">{formatDate(record.dateTime)}</div>
-      ),
     },
     {
-      title: "Status",
-      key: "status",
+      title: "Phone",
+      dataIndex: "phone",
+      key: "phone",
       sorter: true,
       align: "center",
-      render: (_, record) => (
-        <div
-          className={` w-fit mx-auto px-2 rounded-md text-md font-medium  ${
-            record.status === "seen"
-              ? "bg-[#D3EFDF] text-[#1A925D]"
-              : "bg-[#F7EAD0] text-[#a07b41]"
-          }`}
-        >
-          {record.status}
-        </div>
-      ),
     },
     {
       title: "Actions",
@@ -112,16 +98,21 @@ const DocumentTable = () => {
             onClick={() => handleAction("show", "clients", record._id)}
             title="Show"
           >
-            <AiOutlineEyeInvisible />
+            <BiShow className="w-5 h-5" /> {/* Adjust icon size */}
           </li>
           <li
             className="bg-[#D6F1E8] text-[#027968] hover:bg-[#027968] hover:text-white text-[14px] w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 ease-in-out cursor-pointer"
-            onClick={() =>
-              handleDownloadPdf(record._id, "tasksDocuments/download")
-            }
+            onClick={() => handleAction("edit", "clients", record._id)}
             title="Edit"
           >
-            <RiDownloadCloud2Line />
+            <MdOutlineModeEditOutline /> {/* Adjust icon size */}
+          </li>
+          <li
+            className="bg-[#FFF2F2] text-[#FF0000] hover:bg-[#FF0000] hover:text-white text-[14px] w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 ease-in-out cursor-pointer"
+            onClick={() => handleAction("delete", "clients", record._id)}
+            title="Delete"
+          >
+            <FaRegTrashCan /> {/* Adjust icon size */}
           </li>
         </ul>
       ),
@@ -130,34 +121,25 @@ const DocumentTable = () => {
 
   return (
     <>
-      <div className="  rounded-lg  shadow-sm  bg-white overflow-hidden">
+      {show && targetId === selectedItem.itemId && (
+        <ConfirmDelete
+          path={selectedItem.path}
+          deletedItemId={selectedItem.itemId}
+        />
+      )}
+      {editItemForm && <EditClient TargetItem={selectedItem} />}
+      <div className="my-8 rounded-lg  shadow-sm  bg-white overflow-hidden">
         {/* Header */}
-        <div className="my-4">
-          <h1 className="text-xl font-semibold leading-[1.5] dark:text-white text-[#1C252E]">
-            Files
-          </h1>
-
-          <ul className="flex flex-row items-center space-x-1 text-sm py-2">
-            {routes.map((route, index) => (
-              <li
-                key={index}
-                className={`flex flex-row items-center ${
-                  index === routes.length - 1
-                    ? "text-gray-400"
-                    : "text-slate-900 dark:text-gray-200"
-                }`}
-              >
-                {index > 0 && (
-                  <LuDot className="text-lg text-gray-400 font-bold" />
-                )}
-                {route}
-              </li>
-            ))}
-          </ul>
+        <div className="flex justify-between items-center p-2 border-b  ">
+          <h4 className="text-xl font-semibold text-gray-800">Clients</h4>
+          <Link to="/clients/add-Client" className="blackbutton">
+            <GoPlus />
+            Add Client
+          </Link>
         </div>
 
         {/* Table */}
-        <div className=" ">
+        <div className="mb-10">
           {/* loading status */}
           {status === "loading" && (
             <div className="flex justify-center">
@@ -183,18 +165,18 @@ const DocumentTable = () => {
           {status === "failed" && (
             <p className="text-red-600">Failed to load data.</p>
           )}
-          {status === "success" && data?.TasksDocuments?.length === 0 && (
+          {status === "success" && data?.clients?.length === 0 && (
             <Empty
               image={Nodataimg}
               description="No Data Available"
               className="flex flex-col items-center"
             />
           )}
-          {status === "success" && data?.TasksDocuments?.length > 0 && (
+          {status === "success" && data?.clients?.length > 0 && (
             <>
               <Table
                 columns={columns}
-                dataSource={data?.TasksDocuments}
+                dataSource={data?.clients}
                 pagination={false}
                 rowKey="_id"
                 rowClassName={(record, index) =>
@@ -217,6 +199,6 @@ const DocumentTable = () => {
       </div>
     </>
   );
-};
+});
 
-export default React.memo(DocumentTable);
+export default Accountant_Clients;

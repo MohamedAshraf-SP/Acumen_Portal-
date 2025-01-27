@@ -5,8 +5,6 @@ const updateTargetItem = createAsyncThunk(
   async ({ path, itemId, updatedItemData }, thunkAPI) => {
     try {
       const response = await updateItem(path, itemId, updatedItemData);
-      console.log(updatedItemData, itemId, path);
-      console.log(response);
       return response;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response?.data || error?.message);
