@@ -3,6 +3,7 @@ import router from "./routes/router.js";
 import cors from "cors";
 import dotenv from "dotenv";
 import { run } from "./config/databaseConnection.js";
+import cookieParser from "cookie-parser";
 
 
 /*
@@ -43,6 +44,7 @@ try {
 }
 
 // Set up body parsers for handling JSON and URL-encoded data
+app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use("/api", router);

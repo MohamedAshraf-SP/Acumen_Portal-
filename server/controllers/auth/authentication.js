@@ -32,8 +32,13 @@ export const login = async (req, res) => {
         const accessToken = generateAccessToken(user);
         const refreshToken = generateRefreshToken(user);
 
+        res.cookie("refreshToken", refreshToken, {
+            httpOnly: true,
+            secure: true, // Use true in production for HTTPS
+            sameSite: "Strict",
+        });
 
-        res.status(200).json({ accessToken, refreshToken });
+        res.json({ accessToken });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -55,9 +60,17 @@ export const refreshToken = async (req, res) => {
 
             const userObj = await User.findById(user.id);
             if (!userObj) return res.status(404).json({ message: 'User not found!' });
-            const newAccessToken = generateAccessToken(userObj);
-            res.status(200).json({ accessToken: newAccessToken });
 
+            const newAccessToken = generateAccessToken(userObj);
+            const newRefreshToken = generateRefreshToken({ id: userObj.id });
+
+            res.cookie("refreshToken", newRefreshToken, {
+                httpOnly: true,
+                secure: true,
+                sameSite: "Strict",
+            });
+
+            res.json({ newAccessToken });
         });
 
 };
@@ -101,7 +114,7 @@ export const resetPassword = async (req, res) => {
 
         return res.status(200).json({ message: "New Password sent to your Email!!" })
     } catch (e) {
-        console.log(e);
+       
         return res.status(400).json({ message: "Error resetting the password!!" })
     }
 }
@@ -115,6 +128,8 @@ export const resetPassword = async (req, res) => {
 
 
 export const logout = async (req, res) => {
+    res.clearCookie('refreshToken');
+    res.json({ message: "Logged out successfully" });
 }
 
 

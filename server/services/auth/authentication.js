@@ -8,7 +8,6 @@ dotenv.config()
 
 
 export const generateAccessToken = (user) => {
-    console.log(user.role);
     return jwt.sign(
         { id: user._id, role: user.userRole },
         process.env.JWT_SECRET,
@@ -45,11 +44,11 @@ export const generateRandomPassword = (length = 12) => {
 };
 
 
-export const hashPassword = async (password,saltRounds=5) => {
+export const hashPassword = async (password, saltRounds = 5) => {
     // Number of hashing rounds
     const hashedPassword = await bcrypt.hash(password, saltRounds);
     return hashedPassword;
-  };
+};
 
 
 

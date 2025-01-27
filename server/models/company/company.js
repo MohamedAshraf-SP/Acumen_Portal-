@@ -14,9 +14,8 @@ const companySchema = new mongoose.Schema({
   clientName: String,
 
   companyName: String,
-  registrationDate: Date,
-  incorporationDate: Date,
-  accountingReferenceDate: Date,
+  registrationDate: Date,  
+  incorporationDate: Date,//date_of_creation 
   registrationNumber: String,
   AuthCode: String,
   CISRegistrationNumber: String,
@@ -50,8 +49,6 @@ const companySchema = new mongoose.Schema({
   dueDates: { type: mongoose.Schema.Types.ObjectId, ref: "DueDate" },
   shareholders: [{ type: mongoose.Schema.Types.ObjectId, ref: "Shareholder" }],
   directors: [{ type: mongoose.Schema.Types.ObjectId, ref: "Director" }],
-
-
   documents: [{ type: mongoose.Schema.Types.ObjectId, ref: "Document" }],
 
 });
