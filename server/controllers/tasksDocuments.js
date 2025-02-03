@@ -38,7 +38,7 @@ export const addTask = async (req, res) => {
             action,
         });
 
-        
+
 
         const savedTask = await newTask.save();
         res.status(201).json({ message: "Task added successfully!!" });
@@ -53,15 +53,16 @@ export const getAllTasks = async (req, res) => {
     const page = req.query.page || 1;
     const limit = req.query.limit || 100;
     const skip = (page - 1) * limit;
+    const clientID = req.body.clientID
 
-    const TasksDocumentCount = await TasksDocument.countDocuments();
+    const TasksDocumentCount = await TasksDocument.countDocuments({ clientID });
     // console.log(clientCount)
 
     const pagesCount = Math.ceil(TasksDocumentCount / limit) || 0;
 
     try {
         const TasksDocuments = await TasksDocument.find(
-            {}
+            { clientID }
         ).skip(skip)
             .limit(limit); // Skip the specified number of documents.limit(limit);;
         res.status(200).json({

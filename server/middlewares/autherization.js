@@ -10,7 +10,7 @@ export const authMiddleware = (req, res, next) => {
 
     try {
         const verified = jwt.verify(token, process.env.JWT_SECRET);
-        console.log(verified);
+        //console.log(verified);
         req.user = verified; // Attach user info to request object
         next();
     } catch (error) {
@@ -24,9 +24,9 @@ export const authMiddleware = (req, res, next) => {
 
 export const roleMiddleware = (requiredRoles) => {
     return (req, res, next) => {
-        console.log(requiredRoles);
-        console.log(req.user.role);
-        console.log(requiredRoles.includes(req.user.role));
+        // console.log(requiredRoles);
+        // console.log(req.user.role);
+        // console.log(requiredRoles.includes(req.user.role));
         if (!requiredRoles.includes(req.user.role)) {
 
             return res.status(403).json({

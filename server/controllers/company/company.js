@@ -26,7 +26,8 @@ export const addCompany = async (req, res) => {
             AccountsOfficeReference,
             AuthCode,
             CISRegistrationNumber,
-            RMdepartments,
+            // RMdepartments,
+            departments,
             VATRegistered,
             accountingReferenceDate,
             bankDetails,
@@ -51,7 +52,10 @@ export const addCompany = async (req, res) => {
             accountHolder,
             sortCode
         } = req.body;
-        if ((!clientID) || !(await Client.findById(clientID))) {
+
+        const targetClient = await Client.findById(clientID)
+
+        if ((!clientID) || !(targetClient)) {
             return res.status(400).json({ message: "Company Client  not Found !!" })
         }
 
@@ -62,7 +66,7 @@ export const addCompany = async (req, res) => {
             AccountsOfficeReference,
             AuthCode,
             CISRegistrationNumber,
-            RMdepartments,
+            departments,
             VATRegistered,
             accountingReferenceDate,
             bankDetails,
@@ -89,7 +93,7 @@ export const addCompany = async (req, res) => {
         });
         const savedCompanyID = (await company.save())._id;
 
-        await Client.findByIdAndUpdate(clientID, { $push: { companies: savedCompanyID } })
+        await Client.findByIdAndUpdate(clientID, { $push: { companies: savedCompanyID }, $addToSet: { departments: { $each: departments } } })
 
 
 
@@ -182,7 +186,7 @@ export const getCompanyById = async (req, res) => {
             .populate({ path: "address", strictPopulate: false })
             .populate({ path: "document", strictPopulate: false })
             .populate({ path: "BankDetail", strictPopulate: false })
-            .populate({ path: "RMdepartment", strictPopulate: false })
+        // .populate({ path: "RMdepartment", strictPopulate: false })
 
         if (!company) {
             return res.status(404).json({ message: "Company not found" });
@@ -202,6 +206,9 @@ export const updateCompany = async (req, res) => {
 
         // Update company
         const company = await Company.findByIdAndUpdate(req.params.id, companyData, { new: true });
+        console.log(company.clientID);
+
+        await Client.findByIdAndUpdate(company.clientID, {  $addToSet: { departments: { $each: companyData.departments } } })
 
         if (!company) {
             return res.status(404).json({ message: "Company not found" });
@@ -236,7 +243,7 @@ export const deleteCompany = async (req, res) => {
 
         await DueDate.deleteMany({ _id: company.dueDates });
         // await Address.deleteMany({ _id: company.address });
-        await RMdepartment.deleteMany({ _id: company.RMdepartments });
+        // await RMdepartment.deleteMany({ _id: company.RMdepartments });
         //await BankDetail.deleteMany({ _id: company.bankDetails });
 
         res.status(200).json({ message: "Company deleted successfully" });

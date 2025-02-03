@@ -45,7 +45,18 @@ const companySchema = new mongoose.Schema({
   sortCode: String,
 
 
-  RMdepartments: { type: mongoose.Schema.Types.ObjectId, ref: "RMdepartments" },
+  departments: [{
+    type: String,
+    enum: [
+      'Annual accounts, CT and Director department',
+      'Finance department',
+      'General and administrative matters',
+      'Paye, Pension and CIS department department',
+      'Self-employed and partnership department',
+      'Vat department'
+    ],
+    required: true
+  }],
   dueDates: { type: mongoose.Schema.Types.ObjectId, ref: "DueDate" },
   shareholders: [{ type: mongoose.Schema.Types.ObjectId, ref: "Shareholder" }],
   directors: [{ type: mongoose.Schema.Types.ObjectId, ref: "Director" }],

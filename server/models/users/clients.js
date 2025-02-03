@@ -5,10 +5,11 @@ import Company from '../company/company.js';
 // create schema
 const clientSchema = new Schema({
   userID: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: false },
+  accountantID:{ type: mongoose.Schema.Types.ObjectId, ref: 'Accountant', required: false },
   name: { type: String, required: true },
   email: { type: String, required: true },
   notification: { type: Number, required: true, enum: [1, 2, 3] },//1.2.3
-  department: {
+  departments: [{
     type: String,
     enum: [
       'Annual accounts, CT and Director department',
@@ -19,7 +20,7 @@ const clientSchema = new Schema({
       'Vat department'
     ],
     required: true
-  },
+  }],
   companies: [{
     type: mongoose.Types.ObjectId, ref: 'Company',
 

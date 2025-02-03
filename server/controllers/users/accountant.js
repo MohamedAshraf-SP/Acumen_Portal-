@@ -66,7 +66,7 @@ export const addAccountant = async (req, res) => {
 
     const nUser = new User({
       userName: req.body.email,
-      password: password,
+      password: hashedPassword,
       userRole: 'accountant'
 
     })

@@ -28,6 +28,7 @@ export const getClients = async (req, res) => {
     const page = req.query.page || 1;
     const limit = req.query.limit || 100;
     const skip = (page - 1) * limit;
+ 
 
     const clientCount = await Client.countDocuments();
     // console.log(clientCount)
@@ -36,7 +37,7 @@ export const getClients = async (req, res) => {
 
     try {
         const clients = await Client.find(
-            {}
+            {  }
         ).populate('userID')
             .populate('companies')
             .skip(skip)
@@ -55,6 +56,13 @@ export const getClients = async (req, res) => {
 // Add a new client
 export const addClient = async (req, res) => {
     try {
+
+        const departmentForTasks = req.body.department
+
+
+        const departments = Array.isArray(req.body.department)
+            ? req.body.department
+            : [req.body.department];
         if (!req.file) {
             return res.status(400).json({ message: 'LEO File is required!!' });
         }
@@ -85,7 +93,7 @@ export const addClient = async (req, res) => {
             name: req.body.name,
             email: req.body.email,
             notification: req.body.notification,
-            department: req.body.department,
+            departments: (departments || []),
             companies: [newCompany._id]
         });
 
@@ -131,7 +139,7 @@ export const addClient = async (req, res) => {
             clientName: clientData.name,
             companyName: "default",
             path: req.file.path,
-            department: clientData.department,
+            department: departmentForTasks,
             title: "LOE",
         });
         const savedTask = await newTask.save();
@@ -240,9 +248,27 @@ export const getDepartmentClients = async (req, res) => {
         const limit = req.query.limit || 10;
         const skip = (page - 1) * limit;
 
-        const clients = await Client.find(
-            { department: req.body.department }
-        ).skip(skip)
+        const clients = await Client.aggregate([
+            {
+                $match: {
+                    departments: { $in: [req.body.department] }
+                }
+
+            },
+            {
+                $project: {
+                    _id: 0, // Exclude _id if not needed
+                    name: 1,
+                    email: 1
+
+                }
+            },
+            {
+                $addFields: {
+                    Department: req.body.department // Add the requested department
+                }
+            }
+        ]).skip(skip)
             .limit(limit);
 
         const pagesCount = Math.ceil(clients.length / limit) || 0;
