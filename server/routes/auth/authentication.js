@@ -9,7 +9,7 @@ import {
 
 export const authRoute = express.Router();
 
-authRoute.get("/login", login);
-authRoute.get("/refreshToken", refreshToken);
-authRoute.get("/resetPassword", resetPassword);
+authRoute.post("/login", login);
+authRoute.post("/refreshToken", refreshToken);
+authRoute.post("/resetPassword", resetPassword);
 authRoute.get("/logout", logout);
