@@ -13,8 +13,6 @@ import { FaBuildingShield } from "react-icons/fa6";
 import { MdEmail } from "react-icons/md";
 import { IoSettingsOutline } from "react-icons/io5";
 // cliets icons
-import { BiSolidAddToQueue } from "react-icons/bi";
-import { MdDocumentScanner } from "react-icons/md";
 import { IoDocuments } from "react-icons/io5";
 
 // ------------- dashboard overciew icons
@@ -37,9 +35,9 @@ import color5 from "/images/SidebarSettings/colors/Capture5.webp";
 import color6 from "/images/SidebarSettings/colors/Capture6.webp";
 // sidebar Links
 export const menuItems = {
-  Admin: [
+  admin: [
     {
-      path: "dashboard",
+      path: "admin/dashboard",
       label: "Dashboard",
       icon: <LuLayoutDashboard />,
     },
@@ -112,7 +110,7 @@ export const menuItems = {
       icon: <IoDocumentsOutline />,
     },
   ],
-  Client: [
+  client: [
     {
       path: "client/dashboard",
       label: "Dashboard",

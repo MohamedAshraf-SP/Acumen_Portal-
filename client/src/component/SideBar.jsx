@@ -1,40 +1,44 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, NavLink } from "react-router-dom";
-import sidebarLogo from "/images/DashboardLogo/Capture-removebg-preview.png";
 import { menuItems } from "../assets";
 import Overlay from "./Overlay";
 import { useSelector, useDispatch } from "react-redux";
 import { setActiveMenu } from "../Rtk/slices/settingSlice";
+import { useAuth } from "../Contexts/AuthContext";
+import Skeleton from "react-loading-skeleton";
 
 const DEFAULT_SETTINGS = { navColor: "#ffffff", navView: "default" };
 
 export default function SideBar() {
+  // get user role
+  const { user } = useAuth();
+
   const SideBarRef = useRef(null);
   const dispatch = useDispatch();
   const { screenSize, collapsed, activeMenu } = useSelector(
     (state) => state.setting
   );
-  const [sidebBarSettings, setsidebBarSettings] = useState(DEFAULT_SETTINGS);
 
-  // Function to update localStorage and state
+  const [userRole, setUserRole] = useState("");
+  const [sidebarSettings, setSidebarSettings] = useState(DEFAULT_SETTINGS);
+
+  // Update sidebar settings in both state and localStorage
   const updateSidebarSettings = (newSettings) => {
     localStorage.setItem("appSettings", JSON.stringify(newSettings));
-    setsidebBarSettings(newSettings);
+    setSidebarSettings(newSettings);
   };
 
-  // Handle localStorage changes for cross-tab communication
+  // Sync sidebar settings across tabs
   useEffect(() => {
     const handleStorageChange = () => {
-      const updatedSettings = JSON.parse(localStorage.getItem("appSettings"));
-      setsidebBarSettings(updatedSettings || DEFAULT_SETTINGS);
+      const updatedSettings =
+        JSON.parse(localStorage.getItem("appSettings")) || DEFAULT_SETTINGS;
+      setSidebarSettings(updatedSettings);
     };
 
     window.addEventListener("storage", handleStorageChange);
-
-    return () => {
-      window.removeEventListener("storage", handleStorageChange);
-    };
-  }, [sidebBarSettings]);
+    return () => window.removeEventListener("storage", handleStorageChange);
+  }, []);
 
   // Handle clicks outside the sidebar
   useEffect(() => {
@@ -49,63 +53,76 @@ export default function SideBar() {
     };
 
     window.addEventListener("click", handleOutsideClick);
-
-    return () => {
-      window.removeEventListener("click", handleOutsideClick);
-    };
+    return () => window.removeEventListener("click", handleOutsideClick);
   }, [screenSize, dispatch]);
 
-  const activeLink = `flex items-center gap-5 py-3 rounded-lg bg-[#edeefc] text-[#1C1C1C] text-[.8rem] font-medium tracking-wide pl-2 w-full ${
-    collapsed ? "justify-center pl-1 px-1 flex-col text-[8px] gap-1" : ""
-  }`;
+  // Set user role based on authentication context
+  useEffect(() => {
+    setUserRole(user?.role || "");
+  }, [user]);
 
-  const normalLink = `flex items-center gap-5 py-3 my-1 rounded-lg text-md dark:text-gray-200 hover:bg-light-gray overflow-hidden whitespace-nowrap pl-2 w-full text-[15px] text-[#999999] font-normal hover:translate-x-1 transition-all duration-300 ${
-    collapsed
-      ? "justify-center pl-1 px-1 font-bold flex-col text-[8px] gap-1"
-      : ""
-  }`;
+  // Generate link styles based on active state and collapse status
+  const getLinkStyle = (isActive) => {
+    const baseStyle = `flex items-center  gap-3 py-3 rounded-lg pl-2 w-full  transition-all duration-300 overflow-hidden whitespace-nowrap leading-relaxed ${
+      collapsed
+        ? "justify-center px-1 flex-col text-[8px]  "
+        : "text-[.8rem] font-normal tracking-wider   "
+    }`;
+
+    return isActive
+      ? `${baseStyle} bg-[#338585] text-white  `
+      : `${baseStyle} text-[#b6d3d3] hover:bg-[#338585] my-1 `;
+  };
 
   return (
     <>
       {/* Sidebar */}
       <div
         ref={SideBarRef}
-        style={{ backgroundColor: sidebBarSettings?.navColor }}
-        className=" after:transition-all duration-300 overflow-auto md:hover:overflow-y-auto overflow-x-hidden pb-4 px-2 border-r border-solid border-[#E2E7EC] dark:bg-secondary-dark-bg h-screen"
+        // style={{ backgroundColor: sidebarSettings.navColor }}
+        className="rounded-tr-xl rounded-br-xl overflow-auto pb-4 px-2 border-r border-[#E2E7EC] dark:bg-secondary-dark-bg h-screen 
+        bg-[#006666]"
       >
         {/* Sidebar Header */}
-        <div className="flex items-center justify-between px-4 py-4 sticky top-0 left-0 overflow-hidden border-[#919eab1f] w-full z-40 mb-4">
+        <div
+          className="flex items-center justify-between px-4 py-4 sticky top-0 z-40 mb-4 bg-[#006666]  
+       "
+        >
           <Link
-            to="/"
-            className="relative flex items-center gap-3 text-xl font-extrabold tracking-tight dark:text-white text-slate-900"
+            to={`${user?.role}/dashboard`}
+            className="flex items-center gap-3 text-white text-xl "
           >
             <img
-              src={sidebarLogo}
-              alt="Dashboard Logo"
-              className="transition-all duration-300 w-full h-full"
+              className="w-8 h-8 mr-2"
+              src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/logo.svg"
+              alt="logo"
             />
+            {!collapsed && <span>AMS</span>}
           </Link>
         </div>
 
         {/* Sidebar Links */}
         <div className="flex flex-col items-start">
-          {menuItems?.Accountant?.map((link) => (
+          {menuItems?.[userRole]?.map((link) => (
             <NavLink
               key={link.label}
               to={`/${link.path}`}
               onClick={() =>
                 screenSize <= 900 && dispatch(setActiveMenu(false))
               }
-              className={({ isActive }) => (isActive ? activeLink : normalLink)}
+              className={({ isActive }) => getLinkStyle(isActive)}
               aria-label={link.label}
             >
               <span className="font-bold text-xl">{link.icon}</span>
               {!collapsed && <span className="capitalize">{link.label}</span>}
             </NavLink>
           )) || (
-            <p className="text-center text-gray-500">
-              No menu items available.
-            </p>
+            <div>
+              <Skeleton width="100%" height="4rem" />
+              <Skeleton width="75%" className="mb-2" />
+              <Skeleton width="50%" className="mb-2" />
+              <Skeleton height="2rem" className="mb-2" />
+            </div>
           )}
         </div>
       </div>

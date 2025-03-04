@@ -79,7 +79,7 @@ const Company = () => {
   // handle cancel Button
   const handleCancelBtn = () => {
     formik.resetForm();
-    navigate("/");
+    navigate("/dashboard");
   };
   return (
     <div className="my-4 py-4 px-6 rounded-[16px] bg-[#f9f9fa] animate-fade relative">
