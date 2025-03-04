@@ -33,7 +33,7 @@ export const login = async (req, res) => {
         const refreshToken = generateRefreshToken(user);
 
         res.cookie("refreshToken", refreshToken, {
-            httpOnly: true,
+            httpOnly: false,
             secure: true, // Use true in production for HTTPS
             sameSite: "Strict",
         });
