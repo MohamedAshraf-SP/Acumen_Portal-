@@ -174,7 +174,7 @@ export default function Editor() {
                 className={`font-thin px-10 max-w-sm mt-4 ${
                   !formik.isValid || status == "loading"
                     ? "bg-gray-800 border-none text-white cursor-not-allowed"
-                    : "bg-blue-500 text-white  hover:bg-blue-900"
+                    : "blackbutton "
                 }`}
                 type="submit"
                 disabled={!formik.isValid || formik.isSubmitting}

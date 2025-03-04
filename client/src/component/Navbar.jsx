@@ -3,7 +3,9 @@ import { useEffect, useRef, useState } from "react";
 import { MdOutlineSettingsSuggest, MdKeyboardArrowDown } from "react-icons/md";
 import { CiMenuFries } from "react-icons/ci";
 import { CiDark } from "react-icons/ci";
-import { CiLight } from "react-icons/ci";
+
+import { CgProfile } from "react-icons/cg";
+import { IoMdSettings } from "react-icons/io";
 
 import { GoSidebarExpand } from "react-icons/go";
 import userimg from "/images/user/avatar-25.webp";
@@ -14,9 +16,15 @@ import {
   setIsClicked,
   setScreenSize,
 } from "../Rtk/slices/settingSlice";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+import { useAuth } from "../Contexts/AuthContext";
 
 export default function Navbar() {
+  const ProfileSammary = [
+    { title: "Profile", href: "/Profile" },
+    { title: "settings", href: "/settings" },
+  ];
+  const { logout } = useAuth();
   const [MobileScreen, setMobileScreen] = useState(false);
   const [routes, showRoutes] = useState(false);
   const location = useLocation();
@@ -103,9 +111,9 @@ export default function Navbar() {
           CustomFunc={() => dispatch(setIsClicked("Settings"))}
           icon={<MdOutlineSettingsSuggest />}
         />
-        <TooltipComponent content="Profile" position="BottomCenter">
+        <div className="relative group">
           <div
-            className="flex items-center gap-2 cursor-pointer p-1 hover:bg-light-gray rounded-lg"
+            className=" flex items-center gap-2 cursor-pointer p-1   rounded-lg "
             onClick={() => dispatch(setIsClicked("UserProfile"))}
           >
             <img
@@ -121,7 +129,42 @@ export default function Navbar() {
             </p>
             <MdKeyboardArrowDown className="text-gray-400 text-14" />
           </div>
-        </TooltipComponent>
+          {/* list user quick links */}
+          <div className="hidden  group-hover:block absolute top-full left-0 z-10    bg-white shadow-md w-full h-fit  rounded-lg   ">
+            <div className=" p-2 w-full border-b border-solid  flex  flex-row items-start  gap-2  ">
+              <img
+                src={userimg}
+                className="rounded-full w-8 h-8"
+                loading="lazy"
+              />
+              <div className="flex flex-col itsms-start justify-center gap-1">
+                <h1 className="text-sm">Hossam</h1>
+                <p className="text-[#a3a7af] text-xs">Admin</p>
+              </div>
+            </div>
+
+            <ul className="border-b border-solid my-2">
+              {ProfileSammary?.map((item, index) => (
+                <li
+                  className="px-4 py-2 cursor-pointer  text-sm flex items-center gap-2 text-[#7c7e8a] hover:bg-[#f7f7ff] rounded-md"
+                  key={index}
+                >
+                  <CgProfile size={16} />
+                  <Link to={item.href}> {item.title}</Link>
+                </li>
+              ))}
+            </ul>
+            <div className="flex items-center justify-center w-full py-2">
+              <button
+                type="button"
+                onClick={() => logout()}
+                className="w-full mx-1 text-[#b71d18] bg-[#ff563052] hover:bg-[#b71d18]"
+              >
+                Log out
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
