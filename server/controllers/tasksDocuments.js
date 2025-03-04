@@ -5,6 +5,7 @@ import { deleteFileWithPath } from "../helpers/deleteFile.js"
 import { fileURLToPath } from 'url';
 import path from "path"
 import Client from '../models/users/clients.js';
+import { Company } from '../models/company/index.js';
 
 
 
@@ -49,28 +50,36 @@ export const addTask = async (req, res) => {
 
 // READ: Get all tasks
 export const getAllTasks = async (req, res) => {
-
-    const page = req.query.page || 1;
-    const limit = req.query.limit || 100;
-    const skip = (page - 1) * limit;
-    const clientID = req.body.clientID
-
-    const TasksDocumentCount = await TasksDocument.countDocuments({ clientID });
-    // console.log(clientCount)
-
-    const pagesCount = Math.ceil(TasksDocumentCount / limit) || 0;
-
     try {
-        const TasksDocuments = await TasksDocument.find(
-            { clientID }
-        ).skip(skip)
-            .limit(limit); // Skip the specified number of documents.limit(limit);;
-        res.status(200).json({
-            currentPage: page,
-            pagesCount: pagesCount,
-            TasksDocuments: TasksDocuments,
-            TasksDocumentCount,
-        });
+        const page = req.query.page || 1;
+        const limit = req.query.limit || 100;
+        const skip = (page - 1) * limit;
+        const clientID = req.body.clientID
+        const companyID = req.body.companyID
+        const department = req.body.department
+        
+
+       
+            const TasksDocumentCount = await TasksDocument.countDocuments({ clientID, companyID });
+            // console.log(clientCount)
+
+            const pagesCount = Math.ceil(TasksDocumentCount / limit) || 0;
+
+
+            const TasksDocuments = await TasksDocument.find(
+                { clientID, companyID }
+            ).skip(skip)
+                .limit(limit);
+
+
+            // Skip the specified number of documents.limit(limit);;
+            res.status(200).json({
+                currentPage: page,
+                pagesCount: pagesCount,
+                TasksDocuments: TasksDocuments,
+                TasksDocumentCount,
+            });
+        
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

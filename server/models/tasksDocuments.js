@@ -1,7 +1,10 @@
 import mongoose from 'mongoose';
+import Company from './company/company.js';
+import Client from './users/clients.js';
 
 const tasksDocumentSchema = new mongoose.Schema({
-  clientID: { type: mongoose.Types.ObjectId, required: true },
+  clientID: { type: mongoose.Types.ObjectId, ref: Client, required: true },
+  companyID: { type: mongoose.Types.ObjectId, ref: Company, required: true },
   department: {
     type: String,
     enum: [
