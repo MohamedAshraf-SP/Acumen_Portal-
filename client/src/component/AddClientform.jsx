@@ -26,7 +26,7 @@ export default function AddClientForm() {
     setEmailValidation({ loading: true, valid: null, message: "" });
     try {
       const response = await axios.post(`${api}/helpers/checkemail`, { email });
-      const { status, data } = response;
+      const { status } = response;
       setEmailValidation({
         loading: false,
         valid: status === 200,
@@ -71,9 +71,16 @@ export default function AddClientForm() {
       setFileName("");
     }
   };
-
-  // add new client function
-
+  const resetForm = () => {
+    formik.resetForm();
+    setFileName("");
+    setEmailValidation({
+      loading: false,
+      valid: null,
+      message: "",
+    });
+    setAlert({ msg: "", showmsg: false });
+  };
   // Formik setup
   const formik = useFormik({
     initialValues: {
@@ -108,21 +115,35 @@ export default function AddClientForm() {
       formData.append("notification", values.notification);
       formData.append("department", values.department);
       formData.append("LOEfile", values.LOEfile);
+
       try {
-        const response = await dispatch(
+        // Enhancement 1: Properly handle thunk dispatch result
+        const result = await dispatch(
           addNewData({ path: "clients", itemData: formData })
-        );
-     
-        if (status == "success") {
-          setAlert({ msg: "adding client success", showmsg: true });
+        ).unwrap();
+console.log(result)
+        // Enhancement 2: Access status from Redux state instead of local variable
+        const status =
+          result.meta?.requestStatus === "fulfilled" ? "success" : "failed";
+
+        // Enhancement 3: Better success handling
+        if (status === "success") {
+          setAlert({ msg: "Client added successfully", showmsg: true });
+          resetForm(); // Move resetForm to success case if desired
         }
-        console.log(response);
+
+        console.log("Submission result:", result);
+        return result; // Optional: return result for further processing
       } catch (error) {
-        if (status === "failed") {
-          setAlert({ msg: "adding client Failed", showmsg: true });
-          resetForm();
-        }
+        // Enhancement 4: Improved error handling
+        console.error("Submission failed:", error);
+        setAlert({
+          msg: error.message || "Failed to add client",
+          showmsg: true,
+        });
+        resetForm();
       } finally {
+        // Enhancement 5: Consistent cleanup
         setEmailValidation({
           loading: false,
           valid: null,
@@ -132,12 +153,11 @@ export default function AddClientForm() {
     },
   });
 
-  console.log(alert.showmsg);
   return (
     <div className="dark:bg-secondary-dark-bg rounded-md h-full">
       <header>
         <h1 className="text-xl font-semibold leading-[1.5] dark:text-white text-[#1C252E]">
-          Create New Account
+          Create New Client
         </h1>
         <ul className="flex items-center space-x-1 text-sm py-2">
           {routes.map((route, index) => (
@@ -181,9 +201,9 @@ export default function AddClientForm() {
         </div>
       )}
 
-      <div className="mt-8 bg-white dark:bg-gray-800 rounded-lg max-w-[700px] mx-auto border border-solid border-[#919eab33] ">
-        <header className="bg-[linear-gradient(to_top,_#cfd9df_0%,_#e2ebf0_100%)]   ">
-          <h2 className="text-lg font-semibold dark:text-gray-200 py-2 px-4 text-slate-700">
+      <div className="mt-8 bg-white dark:bg-gray-800 rounded-lg max-w-[700px] mx-auto border border-solid border-[#43464933] shadow-md">
+        <header className="bg-gray-50">
+          <h2 className="text-lg font-medium dark:text-gray-200 py-2 px-4 text-slate-700">
             Add Client
           </h2>
           <hr className="border-t border-[#919eab33]" />
@@ -242,7 +262,7 @@ export default function AddClientForm() {
             )}
             {emailValidation.loading && (
               <img
-                className="w-6 h-6 animate-spin"
+                className="w-4 h-4 animate-spin"
                 src="https://www.svgrepo.com/show/474682/loading.svg"
                 alt="Loading icon"
               />
@@ -280,10 +300,16 @@ export default function AddClientForm() {
                     d="M7 16V12m0-4V4m0 12H3m4-4H1M17 16v-4m0-4v-4m0 12h4m-4-4h6"
                   />
                 </svg>
-                <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
-                  <span className="font-semibold">Click to upload</span> Your
-                  Item here
-                </p>
+                {fileName ? (
+                  <span className="text-green-600  mt-2 text-sm">
+                    {fileName}
+                  </span>
+                ) : (
+                  <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
+                    <span className="font-semibold">Click to upload</span> Your
+                    Item here
+                  </p>
+                )}
                 <p className="text-xs text-gray-500 dark:text-gray-400">
                   PDF (Max: 15MB)
                 </p>
@@ -296,11 +322,7 @@ export default function AddClientForm() {
                 onChange={handleFileChange}
               />
             </label>
-            {fileName && (
-              <p className="text-green-600 italic mt-2 text-sm">
-                Selected: {fileName}
-              </p>
-            )}
+
             {formik.touched.LOEfile && formik.errors.LOEfile && (
               <p className="text-red-600 italic mt-1 text-[12px]">
                 {formik.errors.LOEfile}
@@ -324,9 +346,9 @@ export default function AddClientForm() {
               {formik.isSubmitting ? "Adding..." : "Add Client"}
             </button>
             <button
-              type="button"
+              type="reset"
               className=" bg-[#efeff0] px-4 font-normal rounded-md "
-              onClick={() => formik.resetForm()}
+              onClick={resetForm}
             >
               cancel
             </button>

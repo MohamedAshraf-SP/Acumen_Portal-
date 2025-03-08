@@ -73,7 +73,7 @@ export const menuItems = {
       icon: <IoIosNotificationsOutline />,
     },
   ],
-  Accountant: [
+  accountant: [
     {
       path: "accountant/dashboard",
       label: "Dashboard",
@@ -254,5 +254,5 @@ export const editCompanyLinks = [
   { name: "documents", Link: "" },
   { name: "bank details", Link: "" },
   { name: "contact", Link: "" },
-  // { name: "RM", Link: "" },
+  { name: "departments", Link: "" },
 ];

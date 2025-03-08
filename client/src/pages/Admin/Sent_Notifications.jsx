@@ -1,15 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+
 // redux actions
 import { FetchedItems } from "../../Rtk/slices/getAllslice";
-import { setdeleteHintmsg } from "../../Rtk/slices/settingSlice";
-// import icons
-import { GoPlus } from "react-icons/go";
-import { FaRegTrashCan } from "react-icons/fa6";
+
 import { LuDot } from "react-icons/lu";
 // import components
-import ConfirmDelete from "../../component/ConfirmDelete";
+
 import { Table, Pagination, Empty } from "antd"; // Ant Design components
 // import images
 import Nodataimg from "/images/table/No data.svg";
@@ -21,18 +18,20 @@ const Sent_Notifications = () => {
 
   // Redux state
   const data = useSelector(
-    (state) => state.getall.entities["helpers/email/logs/"]?.emailLogs
+    (state) => state.getall.entities["helpers/email/logs/"]
   );
   const totalRecords = useSelector(
-    (state) => state.getall.entities?.["helpers/email/logs/"]?.emailLogsCount
+    (state) => state.getall.entities["helpers/email/logs/"]?.emailLogsCount
   );
-  const status = useSelector((state) => state.getall?.status);
+  const status = useSelector(
+    (state) => state.getall?.status["helpers/email/logs/"]
+  );
   const { show, targetId } = useSelector(
     (state) => state.setting.deleteHintmsg
   );
 
   // Local state
-  const [selectedItem, setSelectedItem] = useState("");
+
   const [pagination, setPagination] = useState({ current: 1, pageSize: 10 });
 
   // Handle pagination event
@@ -175,23 +174,22 @@ const Sent_Notifications = () => {
           {status === "failed" && (
             <p className="text-red-600">Failed to load data.</p>
           )}
-          {status === "success" && data === 0 && (
+          {status === "success" && data?.emailLogs?.length === 0 && (
             <Empty
               image={Nodataimg}
               description="No Data Available"
               className="flex flex-col items-center"
             />
           )}
-          {status === "success" && data?.length > 0 && (
+          {status === "success" && data?.emailLogs?.length > 0 && (
             <>
               <div className="overflow-x-scroll">
                 <Table
                   className="overflow-x-scroll"
                   columns={columns}
-                  dataSource={data}
+                  dataSource={data?.emailLogs}
                   pagination={false}
                   rowKey="_id"
-                  responsive
                   rowClassName={(record, index) =>
                     index % 2 === 0 ? "bg-white" : "bg-gray-50"
                   }
@@ -202,9 +200,6 @@ const Sent_Notifications = () => {
                     pageSize={pagination.pageSize}
                     total={totalRecords}
                     onChange={onPageChange}
-
-                    //showSizeChanger
-                    //pageSizeOptions={["3", "5", "10", "20"]}
                   />
                 </div>
               </div>

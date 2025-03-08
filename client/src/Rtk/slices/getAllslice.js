@@ -1,15 +1,15 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { getAllItems } from "../../services/globalService";
 
-// Thunk to fetch items based on the provided path
-const FetchedItems = createAsyncThunk(
+// Thunk to fetch items dynamically based on path
+export const FetchedItems = createAsyncThunk(
   "data/getAll",
   async ({ path, page = 1, limit = 10 }, thunkAPI) => {
     try {
-      const response = await getAllItems(path, page, limit); // Fetch data for the specified path
-      return { path, data: response }; // Include the path and fetched data
+      const response = await getAllItems(path, page, limit);
+      return { path, data: response };
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.response?.data || error.message);
+      return thunkAPI.rejectWithValue(error.response?.data ?? error.message);
     }
   }
 );
@@ -17,32 +17,32 @@ const FetchedItems = createAsyncThunk(
 const getAllItemsSlice = createSlice({
   name: "getAll",
   initialState: {
-    status: "idle",
-    entities: {}, // Changed to an object to store data dynamically
-    error: null,
+    status: {}, // Track loading status per path
+    entities: {}, // Store fetched data per path
+    error: {}, // Store error messages per path
   },
-  reducers: {
-    // clearData: (state) => {
-    //   state.items = [];
-    // },
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(FetchedItems.pending, (state) => {
-        state.status = "loading";
+      .addCase(FetchedItems.pending, (state, action) => {
+        const { path } = action.meta.arg;
+        state.status[path] = "loading";
+        state.error[path] = null; // Clear previous errors on new request
       })
       .addCase(FetchedItems.fulfilled, (state, action) => {
-        const { path, data } = action.payload; // Destructure path and data from payload
-        state.status = "success";
-        state.entities[path] = data; // Dynamically set data for the specific path
+        const { path, data } = action.payload;
+        if (path) {
+          state.entities[path] = data ?? {}; // Ensure it's always an object
+        }
+        state.status[path] = "success";
       })
       .addCase(FetchedItems.rejected, (state, action) => {
-        state.status = "failed";
-        state.error = action.payload || action.error.message;
+        const { path } = action.meta.arg;
+        state.status[path] = "failed";
+        state.error[path] = action.payload ?? "An error occurred";
       });
   },
 });
 
 // Export the thunk and reducer
-export { FetchedItems };
 export default getAllItemsSlice.reducer;

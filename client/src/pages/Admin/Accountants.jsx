@@ -19,18 +19,18 @@ const Accountants = React.memo(() => {
   const dispatch = useDispatch();
 
   // Redux state
-  const data = useSelector((state) => state.getall.entities.Accountants);
+  const data = useSelector((state) => state.getall.entities?.Accountants);
   const totalRecords = useSelector(
     (state) => state.getall.entities.Accountants?.accountantCount
   );
-  const status = useSelector((state) => state.getall?.status);
+  const status = useSelector((state) => state.getall?.status.Accountants);
   const { show, targetId } = useSelector(
     (state) => state.setting.deleteHintmsg
   );
 
   // Local state
   const [selectedItem, setSelectedItem] = useState("");
-  const [pagination, setPagination] = useState({ current: 1, pageSize: 10 });
+  const [pagination, setPagination] = useState({ current: 1, pageSize: 6 });
 
   // Handle pagination event
   const onPageChange = (page, pageSize) => {
@@ -101,7 +101,7 @@ const Accountants = React.memo(() => {
       ),
     },
   ];
-
+ 
   return (
     <>
       {show && targetId === selectedItem.itemId && (

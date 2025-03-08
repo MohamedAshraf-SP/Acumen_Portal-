@@ -16,8 +16,8 @@ const Notifications = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const routes = ["Dashboard", "Notifications"];
-  const data = useSelector((state) => state?.getall?.entities.emailtemplates);
-  const status = useSelector((state) => state.getall.status);
+  const data = useSelector((state) => state?.getall?.entities?.emailtemplates);
+  const status = useSelector((state) => state.getall.status?.emailtemplates);
 
   // dispatch load content action when detect change on dispatch
   useEffect(() => {
@@ -32,7 +32,7 @@ const Notifications = () => {
   const redirectToEditorWithId = (id) => {
     navigate(`/editor/${id}`);
   };
-
+ 
   return (
     <>
       <div className="my-8 py-4 px-4 rounded-lg shadow-sm h-full  dark:bg-secondary-dark-bg dark:text-gray-200">
@@ -59,7 +59,7 @@ const Notifications = () => {
         </div>
 
         {/* Table or No Data */}
-        <div className="overflow-scroll border-none">
+        <div className="overflow-scroll ">
           {status === "loading" && (
             <div className="flex items-center justify-center h-64">
               {[1, 2, 3, 4, 5].map((item) => (
@@ -82,25 +82,35 @@ const Notifications = () => {
             </div>
           )}
           {status === "success" && data?.templates?.length > 0 && (
-            <div className="p-4 lg:mt-6 mt-4 bg-white rounded-md">
+            <div className="  p-4 mt-2 border border-solid rounded-md bg-white  ">
               <h2 className="font-semibold text-[16px] my-6 text-[#474D58]">
                 Simple Notifications
               </h2>
               {attachColors.map((alert, index) => (
                 <div
                   key={index}
-                  className={`flex lg:items-center lg:justify-between lg:flex-row flex-col items-end justify-center gap-4  p-3 mb-6 text-sm  border border-solid rounded-lg 
-                    ${alert.Color} dark:bg-gray-800 dark:text-blue-400 `}
+                  className={`flex lg:items-center lg:justify-between lg:flex-row flex-col items-end justify-center gap-4  p-3 mb-6 text-sm border-b border-solid border-neutral-200 last:border-none  
+                   `}
                   role="alert"
                 >
                   <div className="flex lg:items-center lg:justify-start lg:flex-row flex-col items-start justify-center lg:gap-6 gap-2 ms-3 text-sm font-medium">
-                    <span className="text-xl  ">
-                      {alert.documentType == "EMail" ? <MdEmail /> : <FaSms />}
+                    <span
+                      className={`text-xl ${
+                        alert.documentType == "EMail"
+                          ? "text-[#FF5E5E]"
+                          : "text-[#452B90]"
+                      }`}
+                    >
+                      {alert.documentType == "EMail" ? (
+                        <MdEmail size={20} />
+                      ) : (
+                        <FaSms size={20} />
+                      )}
                     </span>
-                    <Link className="font-semibold hover:underline transition w-[250px]">
+                    <Link className="font-medium text-neutral-600 hover:underline transition w-[250px]">
                       {alert.name}
                     </Link>
-                    <p className="text-xs lg:ml-4">
+                    <p className="text-xs lg:ml-4 text-gray-600">
                       {alert?.content
                         ?.replace(/<b\s*\/?>/gi, "") // Remove <b> tags
                         .replace(/<\/b>/gi, "") // Remove </b> tags

@@ -7,7 +7,7 @@ import TextInput from "../TextInput";
 import NodataFond from "/images/NodataFound/nodata.webp";
 import { useDispatch, useSelector } from "react-redux";
 import ConfirmDelete from "../ConfirmDelete";
-import { setdeleteHintmsg } from "../../Rtk/slices/settingSlice";
+import { setdeleteHintmsg, setsuccessmsg } from "../../Rtk/slices/settingSlice";
 import { updateTargetItem } from "../../Rtk/slices/updateItemSlice";
 
 const Shareholder = () => {
@@ -15,6 +15,7 @@ const Shareholder = () => {
   const api = import.meta.env.VITE_API_URL;
   const { companyId } = useParams(); //get company id from params
   const deletestatus = useSelector((state) => state.deleteItem.status);
+  const UpdateStatus = useSelector((state) => state.updaateItem?.status);
   const { show, targetId } = useSelector(
     (state) => state.setting.deleteHintmsg
   );
@@ -45,6 +46,12 @@ const Shareholder = () => {
       );
       if (response.status === 201) {
         setLoadingStatus("success");
+        dispatch(
+          setsuccessmsg({
+            success: true,
+            message: "new shareHolder adding success!",
+          })
+        );
         setnewshareHolder("");
         get_User_Share_Holders();
       }
@@ -89,6 +96,14 @@ const Shareholder = () => {
               updatedItemData: editedShareholderresult,
             })
           );
+          if (UpdateStatus === "success") {
+            dispatch(
+              setsuccessmsg({
+                success: true,
+                message: "shareHolder updating success!",
+              })
+            );
+          }
         } catch (error) {
           console.log(error);
         }
@@ -121,7 +136,7 @@ const Shareholder = () => {
   };
 
   useEffect(() => {
-    if (companyId && data.length === 0) {
+    if (companyId && data?.length === 0) {
       get_User_Share_Holders();
     }
   }, [companyId]);
@@ -131,6 +146,7 @@ const Shareholder = () => {
       get_User_Share_Holders(); // Refresh UI after deletion
     }
   }, [deletestatus, show]);
+
   return (
     <div className="my-4 py-4 px-6 rounded-[16px] bg-[#f9f9fa] animate-fade">
       {/* Delete component */}
@@ -144,7 +160,7 @@ const Shareholder = () => {
         <h1 className="text-[15px] font-medium">Shareholders</h1>
         <button
           type="button"
-          className="blackbutton !rounded-xl"
+          className="blackbutton "
           onClick={AddNewShareHolder}
         >
           <GoPlus />
@@ -154,72 +170,73 @@ const Shareholder = () => {
 
       {loadingStatus === "loading" && <p>Loading...</p>}
 
-      {formik.values.shareholders.length > 0 && loadingStatus === "success" && (
-        <div className="py-4">
-          {formik.values.shareholders.map((shareholder, index) => (
-            <form
-              onSubmit={formik.handleSubmit}
-              className="border-b border-solid last:border-transparent border-slate-300 py-4"
-              key={shareholder._id}
-            >
-              <div>
-                <h1>shareholder {index + 1}</h1>
-                <div
-                  className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 my-6"
-                  key={shareholder._id}
-                >
-                  <TextInput
-                    label="Shareholder Name"
-                    name={`shareholders[${index}].shName`}
-                    value={formik.values.shareholders[index].shName}
-                    onChange={formik.handleChange}
-                    className="customInput"
-                  />
-                  <TextInput
-                    label="Number of Shares"
-                    name={`shareholders[${index}].numberOfShares`}
-                    value={formik.values.shareholders[index].numberOfShares}
-                    onChange={formik.handleChange}
-                    className="customInput"
-                  />
-                  <TextInput
-                    label="Share Class"
-                    name={`shareholders[${index}].shareClass`}
-                    value={formik.values.shareholders[index].shareClass}
-                    onChange={formik.handleChange}
-                    className="customInput"
-                  />
-                </div>
+      {formik.values.shareholders?.length > 0 &&
+        loadingStatus === "success" && (
+          <div className="py-4">
+            {formik.values.shareholders.map((shareholder, index) => (
+              <form
+                onSubmit={formik.handleSubmit}
+                className="border-b border-solid last:border-transparent border-gray-300 py-3"
+                key={shareholder.id}
+              >
+                <div>
+                  <h1>shareholder {index + 1}</h1>
+                  <div
+                    className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 my-2"
+                    key={shareholder.id}
+                  >
+                    <TextInput
+                      label="Shareholder Name"
+                      name={`shareholders[${index}].shName`}
+                      value={formik.values.shareholders[index].shName}
+                      onChange={formik.handleChange}
+                      className="customInput"
+                    />
+                    <TextInput
+                      label="Number of Shares"
+                      name={`shareholders[${index}].numberOfShares`}
+                      value={formik.values.shareholders[index].numberOfShares}
+                      onChange={formik.handleChange}
+                      className="customInput"
+                    />
+                    <TextInput
+                      label="Share Class"
+                      name={`shareholders[${index}].shareClass`}
+                      value={formik.values.shareholders[index].shareClass}
+                      onChange={formik.handleChange}
+                      className="customInput"
+                    />
+                  </div>
 
-                <div className="flex justify-end gap-4  border-t border-neutral-100 pt-4">
-                  <button
-                    type="button"
-                    className={`bg-[#efeff0] px-4 font-normal rounded-md hover:text-white hover:bg-red-700 transition  ${
-                      deletestatus == "loading"
-                        ? "cursor-not-allowed"
-                        : "cursor-pointer"
-                    }`}
-                    onClick={() =>
-                      DeleteSelectedShareHolder(
-                        formik.values?.shareholders[index]?.id
-                      )
-                    }
-                  >
-                    {deletestatus == "loading" ? "Deleting..." : "Delete"}
-                  </button>
-                  <button
-                    type="submit"
-                    className="blackbutton !rounded-xl"
-                    onClick={() => setEditedShareHolderId(shareholder.id)}
-                  >
-                    Update
-                  </button>
+                  <div className="flex justify-end gap-4  border-t border-neutral-100 pt-4">
+                    <button
+                      type="button"
+                      className={`bg-[#efeff0] px-4 font-normal rounded-md hover:text-white hover:bg-red-700 transition  ${
+                        deletestatus == "loading"
+                          ? "cursor-not-allowed"
+                          : "cursor-pointer"
+                      }`}
+                      onClick={() =>
+                        DeleteSelectedShareHolder(
+                          formik.values?.shareholders[index]?.id
+                        )
+                      }
+                    >
+                      {deletestatus == "loading" ? "Deleting..." : "Delete"}
+                    </button>
+                    <button
+                      type="submit"
+                      className="blackbutton !rounded-xl"
+                      onClick={() => setEditedShareHolderId(shareholder.id)}
+                    >
+                      Update
+                    </button>
+                  </div>
                 </div>
-              </div>
-            </form>
-          ))}
-        </div>
-      )}
+              </form>
+            ))}
+          </div>
+        )}
       {/* display add new shareholder form */}
       {NewShareholders && (
         <form
@@ -289,19 +306,21 @@ const Shareholder = () => {
         </form>
       )}
       {/* display No shareholder Img */}
-      {formik.values.shareholders.length === 0 &&
-        loadingStatus === "success" && (
-          <div className="flex flex-col items-center justify-center mt-10">
-            <img
-              src={NodataFond}
-              alt="No Data Found"
-              className="rounded-full bg-blue-100 p-2 w-40 h-40"
-            />
-            <p className="text-center my-2 text-md font-normal">
-              This company has no shareholders. Try adding a new one now.
-            </p>
-          </div>
-        )}
+      {formik.values.shareholders?.length === 0 && !NewShareholders
+        ? loadingStatus === "success" && (
+            <div className="flex flex-col items-center justify-center mt-10">
+              <img
+                src={NodataFond}
+                alt="No Data Found"
+                className="rounded-full bg-blue-50 p-2 w-24 h-24"
+              />
+              <p className="text-center  text-sm font-normal text-gray-500">
+                This company has no shareholders.
+                <br /> Try adding a new one now.
+              </p>
+            </div>
+          )
+        : null}
     </div>
   );
 };

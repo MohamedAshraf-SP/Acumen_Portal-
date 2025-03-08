@@ -8,13 +8,14 @@ import TextInput from "../TextInput"; // Text input component
 import { GoPlus } from "react-icons/go";
 // import img
 import NodataFond from "/images/NodataFound/nodata.webp";
-import { setdeleteHintmsg } from "../../Rtk/slices/settingSlice";
+import { setdeleteHintmsg, setsuccessmsg } from "../../Rtk/slices/settingSlice";
 import ConfirmDelete from "../ConfirmDelete";
 import { updateTargetItem } from "../../Rtk/slices/updateItemSlice";
 const Directors = () => {
   const api = import.meta.env.VITE_API_URL;
   const dispatch = useDispatch();
   const deletestatus = useSelector((state) => state.deleteItem.status);
+  const UpdateStatus = useSelector((state) => state.updaateItem?.status);
   const { show, targetId } = useSelector(
     (state) => state.setting.deleteHintmsg
   );
@@ -42,6 +43,7 @@ const Directors = () => {
   // save new director
   const saveNewDirector = async (values) => {
     try {
+      setLoadingStatus(true);
       const response = await axios.post(
         `${api}/Companies/${companyId}/directors`,
         values
@@ -49,6 +51,13 @@ const Directors = () => {
       if (response.status === 201) {
         setNewDirecotor(null);
         get_User_Dierctors();
+        dispatch(
+          setsuccessmsg({
+            success: true,
+            message: "New Director adding success!",
+          })
+        );
+        setLoadingStatus(false);
       }
     } catch (error) {
       console.log(error);
@@ -108,6 +117,7 @@ const Directors = () => {
     }),
     [data]
   );
+
   // Initialize Formik
   const formik = useFormik({
     enableReinitialize: true,
@@ -125,13 +135,20 @@ const Directors = () => {
               updatedItemData: editedDirectorresult,
             })
           );
+          if (UpdateStatus === "success") {
+            dispatch(
+              setsuccessmsg({
+                success: true,
+                message: "Director updating success!",
+              })
+            );
+          }
         } catch (error) {
           console.log(error);
         }
       }
     },
   });
-
   useEffect(() => {
     get_User_Dierctors();
   }, [companyId]);
@@ -147,10 +164,10 @@ const Directors = () => {
         <h1 className="text-[15px] font-medium">Directors</h1>
         <button
           type="submit"
-          className="blackbutton !rounded-xl"
+          className="blackbutton"
           onClick={() => addNewDirector()}
         >
-          <GoPlus />
+          <GoPlus size={16} />
           Add Director
         </button>
       </div>
@@ -543,10 +560,11 @@ const Directors = () => {
             <img
               src={NodataFond}
               alt="No Data Found"
-              className="rounded-full bg-blue-100 p-2 w-40 h-40"
+              className="rounded-full bg-blue-50 p-2 w-24 h-24"
             />
-            <p className="text-center my-2 text-md font-normal">
-              This company has no Directors. Try adding a new one now.
+            <p className="text-center  text-sm font-normal text-gray-500">
+              This company has no shareholders.
+              <br /> Try adding a new one now.
             </p>
           </div>
         )}

@@ -18,14 +18,15 @@ const DocumentTable = memo(() => {
   const dispatch = useDispatch();
   const [selectedItem, setSelectedItem] = useState(null);
   // Redux state
-  const data = useSelector((state) => state.getall.entities.tasksDocuments);
+  const data = useSelector((state) => state.getall.entities?.tasksDocuments);
   const totalRecords = useSelector(
     (state) => state.getall.entities.tasksDocuments?.TasksDocumentCount
   );
-  const status = useSelector((state) => state.getall?.status);
+  const status = useSelector((state) => state.getall?.status.tasksDocuments);
 
+console.log(data)
   // Local state
-  const [pagination, setPagination] = useState({ current: 1, pageSize: 10 });
+  const [pagination, setPagination] = useState({ current: 1, pageSize: 6 });
 
   // Handle pagination event
   const onPageChange = (page, pageSize) => {
@@ -164,7 +165,7 @@ const DocumentTable = memo(() => {
             <Empty
               image={Nodataimg}
               description="No Data Available"
-              className="flex flex-col items-center"
+              className="flex flex-col text-base items-center font-normal"
             />
           )}
           {status === "success" && data?.TasksDocuments?.length > 0 && (
