@@ -31,6 +31,7 @@ export const AuthContextProvider = ({ children }) => {
           "Content-Type": "application/json",
         },
       });
+
       if (response.data) {
         const { accessToken } = response.data;
         const decodedUser = decodedToken(accessToken);
@@ -43,18 +44,20 @@ export const AuthContextProvider = ({ children }) => {
       }
       return response;
     } catch (error) {
-        console.error("Login failed. Please try again.", error);
-      return null;
+     // console.error("Login failed. Please try again.", error);
+      return error;
     } finally {
       setLoading(false);
     }
   };
   const logout = async () => {
+    setLoading(true);
     try {
-      await axios.post(`${api}/auth/logout`, {}, { withCredentials: true });
+      await axios.get(`${api}/auth/logout`, {}, { withCredentials: true });
       setUser(null);
       setAccessToken(null);
       navigate("/auth/login");
+      setLoading(false);
     } catch (error) {
       console.error("Logout failed:", error);
     }
@@ -62,10 +65,9 @@ export const AuthContextProvider = ({ children }) => {
 
   const refreshAccessToken = async (refreshToken) => {
     try {
-      const response = await axios.post(
-        `${api}/auth/refreshtoken`,
-        { refreshToken },
-      );
+      const response = await axios.post(`${api}/auth/refreshtoken`, {
+        refreshToken,
+      });
 
       if (response.data) {
         const { newAccessToken } = response.data;
@@ -77,12 +79,10 @@ export const AuthContextProvider = ({ children }) => {
       }
     } catch (error) {
       // console.error("Failed to refresh access token:", error);
-      logout();
-      return null;
     }
   };
   // ask for new accesss Token
- 
+
   useEffect(() => {
     const initializeAuth = async () => {
       const refreshToken = Cookies.get("refreshToken");
@@ -97,7 +97,6 @@ export const AuthContextProvider = ({ children }) => {
     initializeAuth();
   }, []);
 
- 
   return (
     <AuthContext.Provider
       value={{ user, accessToken, handleLogin, logout, loading }}

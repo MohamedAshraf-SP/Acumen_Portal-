@@ -19,6 +19,9 @@ const BankDetails = lazy(() =>
   import("../../component/Edit_Company/BankDetails")
 );
 const Contact = lazy(() => import("../../component/Edit_Company/Contact"));
+const CmopanyDepartmets = lazy(() =>
+  import("../../component/Edit_Company/companyDepartments")
+);
 
 const EditCompany = () => {
   const routes = ["User Company", "Edit Company"]; // Displayed routes
@@ -63,6 +66,8 @@ const EditCompany = () => {
         return <BankDetails />;
       case "contact":
         return <Contact />;
+      case "departments":
+        return <CmopanyDepartmets />;
       default:
         return null;
     }
@@ -140,7 +145,7 @@ const EditCompany = () => {
             </Suspense>
           </div>
         </div>
-      ) : companyExist ===false && loading === false ? (
+      ) : companyExist === false && loading === false ? (
         <div className="w-full h-full flex flex-col items-center justify-center gap-4 py-10 text-center">
           <div className="border-b border-solid border-slate-200 lg:px-20">
             <div className="w-60 h-60 my-4">

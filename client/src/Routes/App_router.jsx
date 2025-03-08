@@ -27,7 +27,7 @@ const EditUserCompany = lazy(() => import("../pages/Admin/EditCompany"));
 // ---------------client ---------
 const ClientDashboard = lazy(() => import("../pages/Client/Client_Dashboard"));
 const AddCompany = lazy(() => import("../pages/Client/Add_Company"));
-const ClientEngagement = lazy(() => import("../pages/Client/Engagement"));
+const ClientEngagement = lazy(() => import("../pages/Client/ClientEngagement"));
 const ClientDocuments = lazy(() => import("../pages/Client/Client_Documents"));
 //--------------- Accountants--------
 const Accountants_Dashboard = lazy(() =>
@@ -67,7 +67,10 @@ const AppRouter = () => {
       <Route element={<MainLayout />}>
         {/* Admin Routes */}
         <Route element={<ProtectedRoute allowedTo={["admin"]} />}>
-          <Route path="admin/dashboard" element={withSuspense(AdminDashboard)} />
+          <Route
+            path="admin/dashboard"
+            element={withSuspense(AdminDashboard)}
+          />
           <Route path="/accountants" element={withSuspense(AdminAccounts)} />
           <Route
             path="/accountants/add-account"
@@ -101,7 +104,10 @@ const AppRouter = () => {
           />
         </Route>
         <Route element={<ProtectedRoute allowedTo={["client"]} />}>
-          <Route path="client/dashboard" element={withSuspense(ClientDashboard)} />
+          <Route
+            path="client/dashboard"
+            element={withSuspense(ClientDashboard)}
+          />
           <Route
             path="/client/add_Company"
             element={withSuspense(AddCompany)}
@@ -118,7 +124,7 @@ const AppRouter = () => {
           />
         </Route>
         {/* Accountant Routes */}
-        <Route element={<ProtectedRoute allowedTo={["Accountant"]} />}>
+        <Route element={<ProtectedRoute allowedTo={["accountant"]} />}>
           <Route
             path="/accountant/dashboard"
             element={withSuspense(Accountants_Dashboard)}
@@ -143,7 +149,7 @@ const AppRouter = () => {
           />
         </Route>
       </Route>
-       {/* Catch-all route for non-existent pages */}
+      {/* Catch-all route for non-existent pages */}
       <Route path="*" element={<NotFind />} />
       <Route path="/auth/unauthorized" element={<Unauthorized />} />
     </Routes>

@@ -12,6 +12,7 @@ const Due_Dates = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [data, setData] = useState({});
+  const [loadingStatus, setLoadingStatus] = useState("idle");
   const updateStatus = useSelector((state) => state.updaateItem?.status);
   const { companyId } = useParams();
   // Fetch company details with an API request
@@ -60,16 +61,16 @@ const Due_Dates = () => {
   return (
     <div className="my-4 py-4 px-6 rounded-[16px] bg-[#f9f9fa] animate-fade">
       <div className="py-2">
-        <h1 className="text-[15px] font-medium">Due Dates</h1>
+        <h1 className="text-[17px] font-medium underline">Due Dates</h1>
       </div>
       <form onSubmit={formik.handleSubmit} className="py-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {/* <div className="form-control block col-span-4  ">
+          <div className="mb-4">
             <label className="label cursor-pointer">
-              <span className="label-text text-sm">VAT Registered</span>
               <input type="checkbox" defaultChecked className="checkbox" />
+              <span className="label-text text-sm ml-2">VAT Registered</span>
             </label>
-          </div> */}
+          </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <TextInput
             label="Vat Number"
             id="VatNumber"

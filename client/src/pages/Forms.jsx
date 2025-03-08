@@ -5,28 +5,30 @@ import { formsColors } from "../assets";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useMemo } from "react";
 import { FetchedItems } from "../Rtk/slices/getAllslice";
-import axios from "axios";
 import { handleDownloadPdf } from "../Utils";
 
 export default function Forms() {
   const dispatch = useDispatch();
-  const api = import.meta.env.VITE_API_URL;
+
   const routes = ["Forms", "display Forms"];
   const data = useSelector((state) => state?.getall?.entities?.forms);
-  const status = useSelector((state) => state.getall.status);
+  const loadingDataStatus = useSelector((state) => state?.getall?.status?.forms);
+
+ 
   //  make dispatch action to get all forms
   useEffect(() => {
     dispatch(FetchedItems({ path: "forms" }));
   }, [dispatch]);
   //  add color to each form block
-  const attachColors = useMemo(
-    () =>
-      data?.map((form, index) => ({
+  const attachColors = useMemo(() => {
+    if (loadingDataStatus === "success" && data?.length) {
+      return data.map((form, index) => ({
         ...form,
-        color: formsColors[index],
-      })),
-    [data, formsColors]
-  );
+        color: formsColors[index % formsColors.length], // Prevent index out of bounds
+      }));
+    }
+    return [];
+  }, [loadingDataStatus, data, formsColors]);
 
   return (
     <div>
@@ -92,7 +94,7 @@ export default function Forms() {
             </div>
             <span
               className="  flex items-center justify-center text-blue-500 border border-solid border-slate-300 bg-white rounded-full w-12 h-12 cursor-pointer transition-all duration-300 ease-in-out mb-2 hover:bg-blue-500 hover:text-white"
-              onClick={() => handleDownloadPdf(item._id,'forms')}
+              onClick={() => handleDownloadPdf(item._id, "forms")}
             >
               <FaDownload />
             </span>

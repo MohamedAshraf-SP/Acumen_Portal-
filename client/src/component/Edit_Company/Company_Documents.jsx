@@ -5,7 +5,8 @@ import * as Yup from "yup";
 import { useParams } from "react-router-dom";
 // import icons
 import { IoCheckmarkDoneOutline } from "react-icons/io5";
-
+import { BsFillCloudUploadFill } from "react-icons/bs";
+import CompanyDocTable from "../CompanyDocTable";
 const api = import.meta.env.VITE_API_URL;
 
 const Company_Documents = () => {
@@ -194,7 +195,7 @@ const Company_Documents = () => {
                       onChange={hadleuploadedDocument}
                       onBlur={formik.handleBlur}
                     />
-                    <div className="flex  h-9 px-4 flex-col bg-slate-600 rounded-lg shadow-lg hover:opacity-[.8] text-white text-xs font-normal leading-4 items-center justify-center cursor-pointer focus:outline-none">
+                    <div className="flex  h-9 px-4 flex-col bg-slate-700 rounded-lg shadow-lg hover:opacity-[.8] text-white text-xs font-normal leading-4 items-center justify-center cursor-pointer focus:outline-none">
                       {documentName ? "Upload another File" : "Upload File"}
                     </div>
                   </label>
@@ -216,11 +217,15 @@ const Company_Documents = () => {
                 (!formik.isValid && "cursor-not-allowed")
               } `}
             >
+              <BsFillCloudUploadFill size={16} />
               {Uploadstatus == "loading" ? "Uploading ..." : "Upload document"}
             </button>
           </div>
         </form>
       </div>
+
+      {/* dispaly company Uploaded Documents */}
+      <CompanyDocTable Uploadstatus={Uploadstatus} />
     </div>
   );
 };

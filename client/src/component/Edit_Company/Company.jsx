@@ -20,6 +20,7 @@ const Company = () => {
   const getCompaniesDetails = async () => {
     try {
       const response = await getItem("Companies", companyId);
+
       if (response) {
         setData(response);
       }
@@ -76,6 +77,7 @@ const Company = () => {
       }
     },
   });
+
   // handle cancel Button
   const handleCancelBtn = () => {
     formik.resetForm();

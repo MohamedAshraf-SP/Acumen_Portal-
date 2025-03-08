@@ -20,14 +20,11 @@ const DocumentTable = () => {
   const dispatch = useDispatch();
 
   // Redux state
-  const data = useSelector((state) => state.getall.entities.tasksDocuments);
+  const data = useSelector((state) => state.getall.entities?.tasksDocuments);
   const totalRecords = useSelector(
     (state) => state.getall.entities.tasksDocuments?.TasksDocumentCount
   );
-  const status = useSelector((state) => state.getall?.status);
-  const { show, targetId } = useSelector(
-    (state) => state.setting.deleteHintmsg
-  );
+  const status = useSelector((state) => state.getall?.status?.tasksDocuments);
 
   // Local state
   const [pagination, setPagination] = useState({ current: 1, pageSize: 10 });
@@ -187,7 +184,7 @@ const DocumentTable = () => {
             <Empty
               image={Nodataimg}
               description="No Data Available"
-              className="flex flex-col items-center"
+              className="flex flex-col text-base items-center font-normal"
             />
           )}
           {status === "success" && data?.TasksDocuments?.length > 0 && (

@@ -21,12 +21,14 @@ const Compaines = React.memo(() => {
 
   // Redux state
   const data = useSelector(
-    (state) => state.getall?.entities["Companies/abstracted"]?.companies
+    (state) => state.getall?.entities["Companies/abstracted"]
   );
   const totalRecords = useSelector(
     (state) => state.getall.entities["Companies/abstracted"]?.TotalCompanies
   );
-  const status = useSelector((state) => state.getall?.status);
+  const status = useSelector(
+    (state) => state.getall?.status["Companies/abstracted"]
+  );
   const { show, targetId } = useSelector(
     (state) => state.setting.deleteHintmsg
   );
@@ -50,6 +52,7 @@ const Compaines = React.memo(() => {
       navigate(`/companies/editcompany/${companyId}`);
     }
   };
+
   // Fetch data based on current pagination
   const fetchData = (current, pageSize) => {
     dispatch(
@@ -62,7 +65,7 @@ const Compaines = React.memo(() => {
   };
   // Initial fetch on component mount
   useEffect(() => {
-      fetchData(pagination?.current, pagination?.pageSize);    
+    fetchData(pagination?.current, pagination?.pageSize);
   }, [dispatch, show]);
 
   // Columns for the Ant Design Table
@@ -132,7 +135,7 @@ const Compaines = React.memo(() => {
       ),
     },
   ];
-
+ 
   return (
     <>
       {show && targetId === selectedItem.companyId && (
@@ -196,11 +199,11 @@ const Compaines = React.memo(() => {
                 </svg>
               </div>
             </div>
-          ) : status === "success" && data?.length > 0 ? (
+          ) : status === "success" && data?.companies?.length > 0 ? (
             <>
               <Table
                 columns={columns}
-                dataSource={data}
+                dataSource={data?.companies}
                 pagination={false}
                 rowKey="_id"
                 rowClassName={(record, index) =>
@@ -222,9 +225,9 @@ const Compaines = React.memo(() => {
               description="No Data Available Now"
               className="flex flex-col items-center"
             />
-          ) : (
+          ) : status === "success" ? (
             <p className="text-red-600">Failed to load data.</p>
-          )}
+          ) : null}
         </div>
       </div>
     </>

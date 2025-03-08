@@ -35,7 +35,7 @@ export default function AddacountantForm() {
     message: "",
   });
 
-  const routes = ["Clients", "Add Client"];
+  const routes = ["Accountants", "Add Accountant"];
 
   // handle email check while typing
   const checkEmailAvailability = async (email) => {
@@ -51,7 +51,6 @@ export default function AddacountantForm() {
         message: status === 200 && "Email is available.",
       });
     } catch (error) {
-      console.log(error);
       setEmailValidation({
         loading: false,
         valid: status === 200,
@@ -84,7 +83,7 @@ export default function AddacountantForm() {
       department: "Finance department",
     },
     validationSchema: Yup.object({
-      name: Yup.string().required("Please enter client name."),
+      name: Yup.string().required("Please enter Accountant name."),
       email: Yup.string()
         .email("Invalid email")
         .required("Please enter a valid Email."),
@@ -92,27 +91,29 @@ export default function AddacountantForm() {
     }),
     onSubmit: async (values, { resetForm }) => {
       try {
-        const response = await dispatch(
+        const result = await dispatch(
           addNewData({ path: "accountants", itemData: values })
-        );
+        ).unwrap();
+        setalert({
+          msg: "Accountant added successfully",
+          showmsg: true,
+        });
+        resetForm();
 
-        if (status === "success") {
-          setalert({
-            msg: "adding accountannt success",
-            showmsg: true,
-          });
-          //resetForm();
-        }
+        return result;
       } catch (error) {
-        console.log(error);
-        if (status === "failed") {
-          setalert({
-            msg: "adding accountannt failed",
-            showmsg: true,
-          });
-          resetForm();
-        }
+        console.error("Failed to add accountant:", {
+          error: error.message,
+          details: error,
+        });
+
+        setalert({
+          msg: error.message || "Failed to add accountant",
+          showmsg: true,
+        });
+        resetForm();
       } finally {
+        // Enhancement 6: Consistent cleanup with type safety
         setEmailValidation({
           loading: false,
           valid: null,
@@ -174,8 +175,8 @@ export default function AddacountantForm() {
         </div>
       )}
       <div className="mt-8    overflow-hidden bg-white dark:bg-gray-800 rounded-lg max-w-[700px]   mx-auto border border-solid border-[#919eab33] transition">
-        <div className="bg-gray-100  ">
-          <h2 className="bg-[linear-gradient(to_top,_#cfd9df_0%,_#e2ebf0_100%)] text-lg font-semibold dark:text-gray-200 p-4">
+        <div className="bg-gray-50  ">
+          <h2 className="  text-lg font-medium dark:text-gray-200 p-4">
             Add Accountant
           </h2>
           <hr className="border-t border-t-solid border-[#919eab33]  " />
@@ -188,13 +189,13 @@ export default function AddacountantForm() {
           >
             <div className="relative w-full">
               <label
-                htmlFor="clientName"
+                htmlFor="AccountantName"
                 className=" customlabel text-gray-900"
               >
                 Accountant Name
               </label>
               <input
-                id="clientName"
+                id="AccountantName"
                 name="name"
                 className="peer input block "
                 type="text"
@@ -211,7 +212,7 @@ export default function AddacountantForm() {
             </div>
             <div className="relative w-full">
               <label
-                htmlFor="clientemail"
+                htmlFor="Accountantemail"
                 className=" customlabel text-gray-900"
               >
                 Email
@@ -253,7 +254,7 @@ export default function AddacountantForm() {
             </div>
             <div className="relative w-full">
               <label
-                htmlFor="clientPhone"
+                htmlFor="AccountantPhone"
                 className=" customlabel text-gray-900"
               >
                 Phone

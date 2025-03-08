@@ -1,0 +1,4 @@
+- in adding accountant response is bad
+- in adding client it didn't add response is bad
+- make checking email if exist as a hook
+ - in update client or accountant shodldn't add exist email
