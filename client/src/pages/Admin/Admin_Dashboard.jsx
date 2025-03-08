@@ -11,7 +11,10 @@ import { formatNum } from "../../Utils";
 const ClientTable = lazy(() => import("../../component/ClientTable"));
 const CompanyTable = lazy(() => import("../../component/Companytable"));
 const DocumentTable = lazy(() => import("../../component/DocumentTable"));
-
+// Wrap each component with React.memo
+const MemoizedClientTable = React.memo(ClientTable);
+const MemoizedCompanyTable = React.memo(CompanyTable);
+const MemoizedDocumentTable = React.memo(DocumentTable);
 export default function Admin_Dashboard() {
   const OverViewAnalysis = useMemo(() => Analysis || [], []);
   const [usersCount, setUserCount] = useState([]);
@@ -91,15 +94,15 @@ export default function Admin_Dashboard() {
       <div className="container overflow-hidden">
         {/* Render tables independently */}
         <Suspense fallback={<Skeleton height="10rem" className="mt-10" />}>
-          <ClientTable />
+          <MemoizedClientTable />
         </Suspense>
 
         <Suspense fallback={<Skeleton height="10rem" className="mt-10" />}>
-          <CompanyTable />
+          <MemoizedCompanyTable />
         </Suspense>
 
         <Suspense fallback={<Skeleton height="10rem" className="mt-10" />}>
-          <DocumentTable />
+          <MemoizedDocumentTable />
         </Suspense>
       </div>
     </div>

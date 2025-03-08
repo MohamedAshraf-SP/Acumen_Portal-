@@ -5,10 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import ConfirmDelete from "../../component/ConfirmDelete";
 // redux actions
 import { FetchedItems } from "../../Rtk/slices/getAllslice";
-import {
-  setdeleteHintmsg,
-  seteditItemForm,
-} from "../../Rtk/slices/settingSlice";
+import { setdeleteHintmsg } from "../../Rtk/slices/settingSlice";
 // import icons
 import { LuDot } from "react-icons/lu";
 import { GoPlus } from "react-icons/go";
@@ -65,7 +62,7 @@ const Compaines = React.memo(() => {
   };
   // Initial fetch on component mount
   useEffect(() => {
-    fetchData(pagination?.current, pagination?.pageSize);
+      fetchData(pagination?.current, pagination?.pageSize);    
   }, [dispatch, show]);
 
   // Columns for the Ant Design Table
@@ -152,11 +149,11 @@ const Compaines = React.memo(() => {
           <div>
             <h1 className="text-xl font-semibold">Compaines</h1>
             <ul className="flex flex-row items-center space-x-1 text-sm py-2">
-              {routes.map((route, index) => (
+              {routes?.map((route, index) => (
                 <li
                   key={index}
                   className={`flex flex-row items-center ${
-                    index === routes.length - 1
+                    index === routes?.length - 1
                       ? "text-gray-400"
                       : "text-slate-900 dark:text-gray-200"
                   }`}
@@ -179,7 +176,7 @@ const Compaines = React.memo(() => {
         {/* Table */}
         <div className="my-8">
           {/* loading status */}
-          {status === "loading" && (
+          {status === "loading" ? (
             <div className="flex justify-center">
               <div className="flex items-center justify-center h-64">
                 <svg
@@ -199,16 +196,7 @@ const Compaines = React.memo(() => {
                 </svg>
               </div>
             </div>
-          )}
-
-          {status === "success" && data === 0 && (
-            <Empty
-              image={Nodataimg}
-              description="No Data Available"
-              className="flex flex-col items-center"
-            />
-          )}
-          {status === "success" && data.length > 0 && (
+          ) : status === "success" && data?.length > 0 ? (
             <>
               <Table
                 columns={columns}
@@ -225,13 +213,16 @@ const Compaines = React.memo(() => {
                   pageSize={pagination.pageSize}
                   total={totalRecords}
                   onChange={onPageChange}
-                  //showSizeChanger
-                  //pageSizeOptions={["3", "5", "10", "20"]}
                 />
               </div>
             </>
-          )}
-          {status === "failed" && (
+          ) : status === "success" && data?.length === 0 ? (
+            <Empty
+              image={Nodataimg}
+              description="No Data Available Now"
+              className="flex flex-col items-center"
+            />
+          ) : (
             <p className="text-red-600">Failed to load data.</p>
           )}
         </div>

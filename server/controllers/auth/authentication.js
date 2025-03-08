@@ -19,25 +19,20 @@ const redisExpirePeriod = process.env.REDIS_EXPIRATION_PERIOD
 
 export const login = async (req, res) => {
     try {
+        console.log(req.body)
         const { email, password } = req.body;
         const user = await User.findOne({ userName: email });
-
-        // console.log(await bcrypt.compare(user.password, password), user.password, password)
-
-
+ 
         if (!user || !(await bcrypt.compare(password, user.password))) {
             return res.status(401).json({ message: "Invalid email or password!!" });
         }
-
         const accessToken = generateAccessToken(user);
         const refreshToken = generateRefreshToken(user);
-
         res.cookie("refreshToken", refreshToken, {
             httpOnly: false,
-            secure: true, // Use true in production for HTTPS
-            sameSite: "Strict",
+            secure: false, // Use true in production for HTTPS
+            sameSite: "none",
         });
-
         res.json({ accessToken });
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -65,8 +60,8 @@ export const refreshToken = async (req, res) => {
             const newRefreshToken = generateRefreshToken({ id: userObj.id });
 
             res.cookie("refreshToken", newRefreshToken, {
-                httpOnly: true,
-                secure: true,
+                httpOnly: false,
+                secure: false,
                 sameSite: "Strict",
             });
 

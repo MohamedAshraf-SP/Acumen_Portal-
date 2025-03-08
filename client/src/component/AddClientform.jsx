@@ -112,13 +112,12 @@ export default function AddClientForm() {
         const response = await dispatch(
           addNewData({ path: "clients", itemData: formData })
         );
-
-        resetForm();
-        if (status === "success") {
+     
+        if (status == "success") {
           setAlert({ msg: "adding client success", showmsg: true });
         }
+        console.log(response);
       } catch (error) {
-        console.log(error);
         if (status === "failed") {
           setAlert({ msg: "adding client Failed", showmsg: true });
           resetForm();
@@ -132,8 +131,8 @@ export default function AddClientForm() {
       }
     },
   });
- 
 
+  console.log(alert.showmsg);
   return (
     <div className="dark:bg-secondary-dark-bg rounded-md h-full">
       <header>
@@ -313,7 +312,7 @@ export default function AddClientForm() {
           <div className="flex justify-end md:flex-row flex-col md:gap-4 gap-2">
             <button
               type="submit"
-              className={`font-thin px-10 max-w-sm   text-white   py-2 rounded-lg hover:bg-blue-600 transition ${
+              className={`blackbutton ${
                 emailValidation.valid === false ||
                 !formik.isValid ||
                 status == "loading"
@@ -326,7 +325,7 @@ export default function AddClientForm() {
             </button>
             <button
               type="button"
-              className=" font-thin bg-[#1C252E] text-white px-10 max-w-sm "
+              className=" bg-[#efeff0] px-4 font-normal rounded-md "
               onClick={() => formik.resetForm()}
             >
               cancel

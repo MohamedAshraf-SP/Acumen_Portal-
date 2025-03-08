@@ -1,32 +1,28 @@
 import React, { memo, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Table, Pagination, Empty } from "antd"; // Ant Design components
 // readux actions
 import { FetchedItems } from "../Rtk/slices/getAllslice";
 import { setdeleteHintmsg, seteditItemForm } from "../Rtk/slices/settingSlice";
 // import icons
-
 import { RiDownloadCloud2Line } from "react-icons/ri";
 import { AiOutlineEyeInvisible } from "react-icons/ai";
-
 // import images
 import Nodataimg from "/images/table/No data.svg";
+// functions
 import { formatDate, handleDownloadPdf } from "../Utils";
 
 const DocumentTable = memo(() => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
+  const [selectedItem, setSelectedItem] = useState(null);
   // Redux state
   const data = useSelector((state) => state.getall.entities.tasksDocuments);
   const totalRecords = useSelector(
     (state) => state.getall.entities.tasksDocuments?.TasksDocumentCount
   );
   const status = useSelector((state) => state.getall?.status);
-  const { show, targetId } = useSelector(
-    (state) => state.setting.deleteHintmsg
-  );
 
   // Local state
   const [pagination, setPagination] = useState({ current: 1, pageSize: 10 });
@@ -111,7 +107,7 @@ const DocumentTable = memo(() => {
             onClick={() => handleAction("show", "clients", record._id)}
             title="Show"
           >
-            <AiOutlineEyeInvisible />
+            <AiOutlineEyeInvisible size={18} />
           </li>
           <li
             className="bg-[#D6F1E8] text-[#027968] hover:bg-[#027968] hover:text-white text-[14px] w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 ease-in-out cursor-pointer"
@@ -120,7 +116,7 @@ const DocumentTable = memo(() => {
             }
             title="Edit"
           >
-            <RiDownloadCloud2Line />
+            <RiDownloadCloud2Line size={18} />
           </li>
         </ul>
       ),

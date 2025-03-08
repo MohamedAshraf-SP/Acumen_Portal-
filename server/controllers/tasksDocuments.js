@@ -6,6 +6,7 @@ import { fileURLToPath } from 'url';
 import path from "path"
 import Client from '../models/users/clients.js';
 import { Company } from '../models/company/index.js';
+import company from '../models/company/company.js';
 
 
 
@@ -17,9 +18,17 @@ const __dirname = path.dirname(__filename)
 export const addTask = async (req, res) => {
     try {
         // console.log(req.file.path)
-        const { clientID, clientName, companyName, title, status, userKey, accountantName, action } = req.body;
+        const { clientID, clientName, companyName, title, status, userKey, department, companyID, accountantName, action } = req.body;
         const client = await Client.findById(clientID)
 
+        if (companyID) {
+            if (!(await Company.findById(companyID))) return res.status(400).json({ message: "company don't exits" });
+        }
+        if (clientID) {
+            if (!(await Client.findById(clientID))) return res.status(400).json({ message: "client don't exits" });
+        }
+
+        console.log(client);
 
 
         if (!req.file) {
@@ -27,10 +36,11 @@ export const addTask = async (req, res) => {
         }
 
         const newTask = new TasksDocument({
-            clientID: clientID,
+            clientID: clientID,///user id
+            companyID: companyID,///user id
             clientName,
             companyName,
-            department: client.department,
+            department: department || client.departments[0],
             path: req.file.path,
             title,
             status,
@@ -54,32 +64,38 @@ export const getAllTasks = async (req, res) => {
         const page = req.query.page || 1;
         const limit = req.query.limit || 100;
         const skip = (page - 1) * limit;
+
+        let filter ={}
         const clientID = req.body.clientID
         const companyID = req.body.companyID
         const department = req.body.department
-        
 
-       
-            const TasksDocumentCount = await TasksDocument.countDocuments({ clientID, companyID });
-            // console.log(clientCount)
-
-            const pagesCount = Math.ceil(TasksDocumentCount / limit) || 0;
+        if(clientID)filter.clientID=req.body.clientID
+        if(companyID)filter.companyID=req.body.companyID
+        if(department)filter.department=req.body.department
 
 
-            const TasksDocuments = await TasksDocument.find(
-                { clientID, companyID }
-            ).skip(skip)
-                .limit(limit);
+
+        const TasksDocumentCount = await TasksDocument.countDocuments(filter);
+        console.log(TasksDocumentCount)
+
+        const pagesCount = Math.ceil(TasksDocumentCount / limit) || 0;
 
 
-            // Skip the specified number of documents.limit(limit);;
-            res.status(200).json({
-                currentPage: page,
-                pagesCount: pagesCount,
-                TasksDocuments: TasksDocuments,
-                TasksDocumentCount,
-            });
-        
+
+        const TasksDocuments = await TasksDocument.find(filter)
+            .skip(skip)
+            .limit(limit);
+
+
+        // Skip the specified number of documents.limit(limit);;
+        res.status(200).json({
+            currentPage: page,
+            pagesCount: pagesCount,
+            TasksDocuments: TasksDocuments,
+            TasksDocumentCount,
+        });
+
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

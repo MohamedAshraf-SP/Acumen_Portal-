@@ -6,8 +6,9 @@ import { registerLicense } from "@syncfusion/ej2-base";
 import "./index.css";
 import App from "./App.jsx";
 import { Provider } from "react-redux";
-import { ContextProvider } from "./Contexts/ContextProvider.jsx";
 import { store } from "./Rtk/store/store.js";
+import { AuthContextProvider } from "./Contexts/AuthContext.jsx";
+import { BrowserRouter } from "react-router-dom";
 // Register Syncfusion license key
 
 registerLicense(
@@ -16,8 +17,10 @@ registerLicense(
 
 createRoot(document.getElementById("root")).render(
   <Provider store={store}>
-    <ContextProvider>
-      <App />
-    </ContextProvider>
+    <BrowserRouter>
+      <AuthContextProvider>
+        <App />
+      </AuthContextProvider>
+        </BrowserRouter>
   </Provider>
 );

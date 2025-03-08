@@ -35,7 +35,7 @@ export const addUser = async (req, res) => {
 
     const newUser = new user({
       userName: req.body.userName,
-      password: hashedPassword,
+      password: hashedPassword, 
       userRole: req.body.role,
     });
 

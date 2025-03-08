@@ -62,13 +62,7 @@ export const addItem = (path, data) => {
 // add Item with form data
 export const addItemWithFiles = (path, data) => {
   console.log("Path:", path);
-
-  // Log FormData entries
-  for (let [key, value] of data.entries()) {
-    console.log(key, value);
-  }
-
-  return apiCall("POST", path, null, null, data);
+ return apiCall("POST", path, null, null, data);
 };
 
 // update Item

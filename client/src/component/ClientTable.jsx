@@ -12,7 +12,7 @@ import { MdOutlineModeEditOutline } from "react-icons/md";
 import { Table, Pagination, Empty } from "antd"; // Ant Design components
 import Nodataimg from "/images/table/No data.svg";
 
-const ClientTable = memo(() => {
+const ClientTable = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -199,6 +199,6 @@ const ClientTable = memo(() => {
       </div>
     </>
   );
-});
+};
 
 export default ClientTable;

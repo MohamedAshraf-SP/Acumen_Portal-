@@ -24,16 +24,20 @@ const EditCompany = () => {
   const routes = ["User Company", "Edit Company"]; // Displayed routes
   const [openedForm, setOpenedForm] = useState("Company");
   const { companyId } = useParams();
+  const [loading, setLoading] = useState(false);
   //check if company exist
   const [companyExist, setCompanyExist] = useState(null);
   const getCompaniesDetails = async () => {
+    setLoading(true);
     try {
       const response = await getItem("Companies", companyId);
       if (response) {
         setCompanyExist(true);
+        setLoading(false);
       }
     } catch (error) {
       setCompanyExist(false);
+      setLoading(false);
     }
   };
 
@@ -86,7 +90,7 @@ const EditCompany = () => {
           ))}
         </ul>
       </div>
-      {companyExist ? (
+      {companyExist === true && loading === false ? (
         <div className="my-10 lg:px-4 py-4">
           {/* Display Links */}
           <div className="flex flex-row items-center lg:gap-4 gap-6 flex-wrap px-4 rounded-lg">
@@ -136,7 +140,7 @@ const EditCompany = () => {
             </Suspense>
           </div>
         </div>
-      ) : (
+      ) : companyExist ===false && loading === false ? (
         <div className="w-full h-full flex flex-col items-center justify-center gap-4 py-10 text-center">
           <div className="border-b border-solid border-slate-200 lg:px-20">
             <div className="w-60 h-60 my-4">
@@ -160,7 +164,7 @@ const EditCompany = () => {
             </Link>
           </div>
         </div>
-      )}
+      ) : null}
     </div>
   );
 };

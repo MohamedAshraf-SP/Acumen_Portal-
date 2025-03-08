@@ -1,11 +1,13 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import { lazy, Suspense } from "react";
 import MainLayout from "../Layouts/MainLayout"; // Import your layout
 import NotFind from "../pages/NotFind"; // 404 Page Component
 import Loader from "../component/Loader"; // Loading component
-// import AddAcountant from "../component/AddAcountant";
 import AddacountantForm from "../component/addAcountantForm";
 import DisplayUsersCompany from "../pages/DisplayUsersCompany";
+import Unauthorized from "../Auth/Unauthorized";
+import ProtectedRoute from "./ProtectedRoute";
+import Login from "../Auth/Login";
 
 // Lazy Load Pages
 // -------------Admin --------------
@@ -43,152 +45,108 @@ const Editorpage = lazy(() => import("../pages/Editor"));
 const Forms = lazy(() => import("../pages/Forms"));
 const Invoices = lazy(() => import("../pages/Invoices"));
 const Documents = lazy(() => import("../pages/Documents"));
-// const uersCompanies = lazy(() => import("../pages/DisplayUsersCompany"));
+
 // Suspense wrapper for lazy-loaded components
-const withSuspense = (children) => (
-  <Suspense fallback={<Loader />}>{children}</Suspense>
-);
+const withSuspense = (Component) => {
+  return (
+    <Suspense>
+      <Component />
+    </Suspense>
+  );
+};
+
 
 const AppRouter = () => {
-  // Assuming you have dynamic logic to determine the user role
-  const userRole = "Accountant"; // Replace this with dynamic role logic (e.g., from context or auth state)
+  // Get user and loading state from AuthContext
 
   return (
-    <BrowserRouter>
-      <Routes>
-        {/* Routes with MainLayout */}
-        <Route element={<MainLayout />}>
-          {/* Common Route - Redirect to the dashboard by default */}
-
-          {/* Admin Routes */}
-          {userRole === "Admin" && (
-            <>
-              <Route path="/" element={<Navigate to="/dashboard" />} />
-              <Route
-                path="/dashboard"
-                element={withSuspense(<AdminDashboard />)}
-              />
-              <Route
-                path="/accountants"
-                element={withSuspense(<AdminAccounts />)}
-              />
-              <Route
-                path="/accountants/add-account"
-                element={withSuspense(<AddacountantForm />)}
-              />
-              <Route path="editor/:id" element={withSuspense(<Editorpage />)} />
-              <Route path="/clients" element={withSuspense(<AdminClients />)} />
-              <Route
-                path="clients/add-client"
-                element={withSuspense(<AddClient />)}
-              />
-              <Route
-                path="/companies"
-                element={withSuspense(<AdminCompaines />)}
-              />
-              <Route
-                path="/companies/:itemId"
-                element={withSuspense(<DisplayUsersCompany />)}
-              />
-              <Route
-                path="/companies/editcompany/:companyId"
-                element={withSuspense(<EditUserCompany />)}
-              />
-              <Route
-                path="/notifications"
-                element={withSuspense(<AdminNotifications />)}
-              />
-              <Route path="/history" element={withSuspense(<AdminHistory />)} />
-              <Route path="/forms" element={withSuspense(<Forms />)} />
-              <Route path="/invoices" element={withSuspense(<Invoices />)} />
-              <Route path="/documents" element={withSuspense(<Documents />)} />
-              <Route
-                path="/settings"
-                element={withSuspense(<AdminSettings />)}
-              />
-              <Route
-                path="/import-clients"
-                element={withSuspense(<ImportClients />)}
-              />
-              <Route
-                path="/sent-notification"
-                element={withSuspense(<SentNotifications />)}
-              />
-            </>
-          )}
-
-          {/* Client Routes */}
-          {userRole === "Client" && (
-            <>
-              <Route path="/" element={withSuspense(<ClientDashboard />)} />
-              <Route
-                path="/client/dashboard"
-                element={withSuspense(<ClientDashboard />)}
-              />
-              <Route
-                path="/client/add_Company"
-                element={withSuspense(<AddCompany />)}
-              />
-              <Route
-                path="/client/Engagement"
-                element={withSuspense(<ClientEngagement />)}
-              />
-              <Route path="/client/Forms" element={withSuspense(<Forms />)} />
-              <Route
-                path="/client/Invoices"
-                element={withSuspense(<Invoices />)}
-              />
-              <Route
-                path="/client/Documents"
-                element={withSuspense(<ClientDocuments />)}
-              />
-            </>
-          )}
-
-          {/* Accountant Routes */}
-          {userRole === "Accountant" && (
-            <>
-              <Route
-                path="/"
-                element={<Navigate to="/accountant/dashboard" />}
-              />
-              <Route
-                path="/accountant/dashboard"
-                element={withSuspense(<Accountants_Dashboard />)}
-              />
-              <Route
-                path="/accountant/Clients"
-                element={withSuspense(<Accountants_clients />)}
-              />
-              <Route
-                path="/accountant/Companies"
-                element={withSuspense(<AdminCompaines />)}
-              />
-              <Route
-                path="/accountant/History"
-                element={withSuspense(<AdminHistory />)}
-              />
-              <Route
-                path="/accountant/Forms"
-                element={withSuspense(<Forms />)}
-              />
-
-              <Route
-                path="/accountant/Invoices"
-                element={withSuspense(<Invoices />)}
-              />
-              <Route
-                path="/accountant/Documents"
-                element={withSuspense(<Accountants_Documents />)}
-              />
-            </>
-          )}
+    <Routes>
+      {/* Login Page - Default Route */}
+      <Route path="/" element={<Login />} />
+      <Route path="/auth/login" element={<Login />} />
+      <Route element={<MainLayout />}>
+        {/* Admin Routes */}
+        <Route element={<ProtectedRoute allowedTo={["admin"]} />}>
+          <Route path="admin/dashboard" element={withSuspense(AdminDashboard)} />
+          <Route path="/accountants" element={withSuspense(AdminAccounts)} />
+          <Route
+            path="/accountants/add-account"
+            element={withSuspense(AddacountantForm)}
+          />
+          <Route path="/editor/:id" element={withSuspense(Editorpage)} />
+          <Route path="/clients" element={withSuspense(AdminClients)} />
+          <Route path="/clients/add-client" element={withSuspense(AddClient)} />
+          <Route path="/companies" element={withSuspense(AdminCompaines)} />
+          <Route
+            path="/companies/:itemId"
+            element={withSuspense(DisplayUsersCompany)}
+          />
+          <Route
+            path="/companies/editcompany/:companyId"
+            element={withSuspense(EditUserCompany)}
+          />
+          <Route
+            path="/notifications"
+            element={withSuspense(AdminNotifications)}
+          />
+          <Route path="/history" element={withSuspense(AdminHistory)} />
+          <Route path="/forms" element={withSuspense(Forms)} />
+          <Route path="/invoices" element={withSuspense(Invoices)} />
+          <Route path="/documents" element={withSuspense(Documents)} />
+          <Route path="/settings" element={withSuspense(AdminSettings)} />
+          <Route path="/import-clients" element={withSuspense(ImportClients)} />
+          <Route
+            path="/sent-notification"
+            element={withSuspense(SentNotifications)}
+          />
         </Route>
-
-        {/* Catch-all route for non-existent pages */}
-        <Route path="*" element={<NotFind />} />
-      </Routes>
-    </BrowserRouter>
+        <Route element={<ProtectedRoute allowedTo={["client"]} />}>
+          <Route path="client/dashboard" element={withSuspense(ClientDashboard)} />
+          <Route
+            path="/client/add_Company"
+            element={withSuspense(AddCompany)}
+          />
+          <Route
+            path="/client/Engagement"
+            element={withSuspense(ClientEngagement)}
+          />
+          <Route path="/client/Forms" element={withSuspense(Forms)} />
+          <Route path="/client/Invoices" element={withSuspense(Invoices)} />
+          <Route
+            path="/client/Documents"
+            element={withSuspense(ClientDocuments)}
+          />
+        </Route>
+        {/* Accountant Routes */}
+        <Route element={<ProtectedRoute allowedTo={["Accountant"]} />}>
+          <Route
+            path="/accountant/dashboard"
+            element={withSuspense(Accountants_Dashboard)}
+          />
+          <Route
+            path="/accountant/Clients"
+            element={withSuspense(Accountants_clients)}
+          />
+          <Route
+            path="/accountant/Companies"
+            element={withSuspense(AdminCompaines)}
+          />
+          <Route
+            path="/accountant/History"
+            element={withSuspense(AdminHistory)}
+          />
+          <Route path="/accountant/Forms" element={withSuspense(Forms)} />
+          <Route path="/accountant/Invoices" element={withSuspense(Invoices)} />
+          <Route
+            path="/accountant/Documents"
+            element={withSuspense(Accountants_Documents)}
+          />
+        </Route>
+      </Route>
+       {/* Catch-all route for non-existent pages */}
+      <Route path="*" element={<NotFind />} />
+      <Route path="/auth/unauthorized" element={<Unauthorized />} />
+    </Routes>
   );
 };
 

@@ -138,6 +138,7 @@ export const addClient = async (req, res) => {
             clientID: clientData._id,
             clientName: clientData.name,
             companyName: "default",
+            companyID: newCompany._id,
             path: req.file.path,
             department: departmentForTasks,
             title: "LOE",
@@ -210,12 +211,18 @@ export const getClientCompanies = async (req, res) => {
 
 
         // Fetch companies with pagination
-        const companies = await Client.findById(clientID)
+        const companiesOfclient = await Client.findById(clientID)
             .select({ _id: 0, companies: 1 })
             .populate("companies", "companyName clientName email telephone")
 
+            if(!companiesOfclient){
+                return res.status(400).json({message:" there are no companies for that client or client not found "})
+            }
 
-        const totalCompanies = companies.companies.length
+            console.log(companiesOfclient);
+
+
+        const totalCompanies = companiesOfclient.companies.length
         // .select({
         //     companyName: 1,
         //     clientName: 1,
@@ -232,7 +239,7 @@ export const getClientCompanies = async (req, res) => {
             TotalCompanies: totalCompanies,
             // CurrentPage: pageNumber,
             // TotalPages: Math.ceil(totalCompanies / limitNumber),
-            companies,
+            companiesOfclient,
         });
     } catch (error) {
         console.log(error)
