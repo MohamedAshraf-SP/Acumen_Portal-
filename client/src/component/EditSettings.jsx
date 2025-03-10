@@ -102,7 +102,7 @@ export default function EditSettings({ Formid, onClose }) {
             Edit Settings Form
           </h4>
 
-          <span className="bg-[#1251ff] text-white px-4 py-1 rounded-full text-sm">
+          <span className="bg-[#ce424e] text-white px-4 py-1 rounded-lg text-sm">
             {formik?.values?.name || "Loading..."}
           </span>
         </div>
@@ -144,7 +144,7 @@ export default function EditSettings({ Formid, onClose }) {
               <button
                 type="submit"
                 disabled={!formik.isValid || status === "loading"}
-                className={`py-2 px-4 text-white bg-blue-600 hover:bg-blue-700 rounded-md ${
+                className={`blackbutton ${
                   !formik.isValid || status === "loading"
                     ? "opacity-50 cursor-not-allowed"
                     : ""

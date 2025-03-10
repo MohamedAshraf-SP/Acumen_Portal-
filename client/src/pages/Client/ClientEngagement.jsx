@@ -1,0 +1,60 @@
+import React, { useState, useEffect } from "react";
+ 
+import { Worker, Viewer } from "@react-pdf-viewer/core";
+import { defaultLayoutPlugin } from "@react-pdf-viewer/default-layout";
+import "@react-pdf-viewer/core/lib/styles/index.css";
+import "@react-pdf-viewer/default-layout/lib/styles/index.css";
+import { FaSpinner } from "react-icons/fa"; // Import spinner icon
+import { useAuth } from "../../Contexts/AuthContext";
+
+const ClientEngagement = () => {
+  const { user, loading } = useAuth();
+  const [pdfUrl, setPdfUrl] = useState(null);
+
+  // React PDF Viewer plugin (adds zoom, download, and print)
+  const defaultLayout = defaultLayoutPlugin();
+
+  useEffect(() => {
+    if (user?.id) {
+      fetchDocument(user.id);
+    }
+  }, [user]);
+
+  const fetchDocument = async (userId) => {
+    try {
+      // Replace with your actual API call or Firebase storage retrieval
+      const response = await fetch(`/api/getDocument?userId=${userId}`);
+      const data = await response.json();
+      setPdfUrl(data.pdfUrl); // URL of the stored PDF
+    } catch (error) {
+      console.error("Error fetching document:", error);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <FaSpinner className="animate-spin text-4xl text-blue-500" />
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex flex-col items-center p-4">
+      <h2 className="text-xl font-semibold mb-4">Letter of Engagement</h2>
+      {pdfUrl ? (
+        <div className="w-full max-w-3xl border shadow-lg">
+          <Worker
+            workerUrl={`https://unpkg.com/pdfjs-dist@2.16.105/build/pdf.worker.min.js`}
+          >
+            <Viewer fileUrl={pdfUrl} plugins={[defaultLayout]} />
+          </Worker>
+        </div>
+      ) : (
+        <p>No document available</p>
+      )}
+    </div>
+  );
+};
+
+export default ClientEngagement;

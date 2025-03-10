@@ -7,7 +7,7 @@ import { ImSpinner8 } from "react-icons/im";
 import { PiEyeClosedBold } from "react-icons/pi";
 import { FaEye } from "react-icons/fa6";
 import { AiFillExclamationCircle } from "react-icons/ai";
-
+import LoginImg from "/images/Login/LoginImg.png";
 const Login = () => {
   const { handleLogin } = useAuth();
   const [wrongCreditionls, setwrongCreditionls] = useState(false);
@@ -23,16 +23,17 @@ const Login = () => {
         .required("Password is required."),
     }),
     onSubmit: async (values) => {
+      setwrongCreditionls(false);
       const response = await handleLogin(values);
-      if (response.status == 401) {
-        setwrongCreditionls(!wrongCreditionls);
+      if (response.status === 401) {
+        setwrongCreditionls(true);
       }
     },
   });
   return (
     <>
-      <div className="h-screen">
-        <section className="bg-gray-50 dark:bg-gray-900 my-auto">
+      <div className="h-screen grid grid-cols-12">
+        <section className="bg-gray-50 dark:bg-gray-900 my-auto col-span-12 md:col-span-6">
           <div className="flex flex-col items-center justify-center px-6 py-4 mx-auto md:h-screen lg:py-0">
             <a
               href="#"
@@ -43,7 +44,7 @@ const Login = () => {
                 src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/logo.svg"
                 alt="logo"
               />
-             Account Management Software
+              Account Management Software
             </a>
             <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
               <div className="p-2 space-y-4 md:space-y-6 sm:p-8">
@@ -52,12 +53,14 @@ const Login = () => {
                 </h1>
                 {/* wrong email and password */}
                 {wrongCreditionls && (
-                  <div className="flex flex-row items-center justify-start text-sm font-semibold gap-2 text-gray-300 bg-red-400 rounded-lg px-2 py-3">
+                  <div className="flex flex-row items-center justify-start text-sm font-semibold gap-2 text-gray-200 bg-red-400 rounded-lg px-2 py-3">
                     <AiFillExclamationCircle
                       size={18}
-                      className="text-gray-300"
+                      className="text-gray-100"
                     />
-                    <p>userName or password is wrong, please try again</p>
+                    <p className="capitailize">
+                      Email or password is Wrong, try again
+                    </p>
                   </div>
                 )}
                 <form
@@ -144,7 +147,7 @@ const Login = () => {
                   </div>
                   <button
                     type="submit"
-                    className={`w-full blackbutton ${
+                    className={` w-full bg-sky-700 text-white flex items-center justify-center gap-2 text-md rounded-full p-3 ${
                       !formik.isValid || !formik.dirty
                         ? "cursor-not-allowed opacity-.5"
                         : "cursor-pointer"
@@ -154,7 +157,7 @@ const Login = () => {
                     {formik.isSubmitting ? (
                       <ImSpinner8
                         className="rotate animate-spin transition "
-                        size={15}
+                        size={20}
                       />
                     ) : (
                       <HiOutlineLockClosed size={15} />
@@ -167,6 +170,9 @@ const Login = () => {
             </div>
           </div>
         </section>
+        <div className="md:col-span-5  overflow-hidden md:flex items-center justify-center w-90 h-90 hidden ">
+          <img src={LoginImg} className="w-full h-full" />
+        </div>
       </div>
     </>
   );

@@ -6,7 +6,7 @@ const addressSchema = new mongoose.Schema({
     },
     businessAddress: String,
     registeredOfficeAddress: String,
-    telephone: String,
+    telephone: Number,
     email: String,
     website: String,
 });

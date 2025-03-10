@@ -65,7 +65,7 @@ const Import_clients = () => {
         );
 
         if (response.status === 200) {
-          setResult(response.data);
+          setResult(response?.data);
           setStatus("success");
           setUploadError(null);
         }
@@ -129,7 +129,7 @@ const Import_clients = () => {
                   />
                 </svg>
                 <div className="grid gap-4">
-                  <h2 className="text-center text-gray-400 text-xs font-light leading-4">
+                  <h2 className="text-center text-gray-600 text-sm font-normal leading-4">
                     {formik.values.clients
                       ? fileName
                       : "Select a file to import data from (CSV format only)"}
@@ -139,7 +139,7 @@ const Import_clients = () => {
                       <h4 className="text-center text-gray-900 text-sm font-medium leading-snug">
                         Drag The File here
                       </h4>
-                      <span className="text-center text-gray-400 text-xs font-light leading-4">
+                      <span className="text-center text-gray-400 text-xs font-normal leading-4">
                         OR
                       </span>
                     </div>
@@ -155,7 +155,7 @@ const Import_clients = () => {
                         onChange={handleFileChange}
                         onBlur={formik.handleBlur}
                       />
-                      <div className="flex w-28 h-9 px-2 flex-col bg-indigo-600 rounded-full shadow text-white text-xs font-semibold leading-4 items-center justify-center cursor-pointer focus:outline-none">
+                      <div className="flex w-28 h-9 px-2 flex-col bg-slate-800 hover:opacity-80 rounded-lg  text-white text-xs font-semibold leading-4 items-center justify-center cursor-pointer focus:outline-none">
                         Upload CSV File
                       </div>
                     </label>

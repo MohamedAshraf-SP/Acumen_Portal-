@@ -31,7 +31,7 @@ export const login = async (req, res) => {
         res.cookie("refreshToken", refreshToken, {
             httpOnly: false,
             secure: false, // Use true in production for HTTPS
-            sameSite: "none",
+            sameSite: "strict",
         });
         res.json({ accessToken });
     } catch (error) {
