@@ -28,7 +28,7 @@ export const getClients = async (req, res) => {
     const page = req.query.page || 1;
     const limit = req.query.limit || 100;
     const skip = (page - 1) * limit;
- 
+
 
     const clientCount = await Client.countDocuments();
     // console.log(clientCount)
@@ -37,7 +37,7 @@ export const getClients = async (req, res) => {
 
     try {
         const clients = await Client.find(
-            {  }
+            {}
         ).populate('userID')
             .populate('companies')
             .skip(skip)
@@ -215,11 +215,11 @@ export const getClientCompanies = async (req, res) => {
             .select({ _id: 0, companies: 1 })
             .populate("companies", "companyName clientName email telephone")
 
-            if(!companiesOfclient){
-                return res.status(400).json({message:" there are no companies for that client or client not found "})
-            }
+        if (!companiesOfclient) {
+            return res.status(200).json({ message: " there are no companies for that client or client not found " })
+        }
 
-            console.log(companiesOfclient);
+        console.log(companiesOfclient);
 
 
         const totalCompanies = companiesOfclient.companies.length
