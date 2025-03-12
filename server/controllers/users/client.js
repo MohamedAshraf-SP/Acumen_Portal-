@@ -28,7 +28,7 @@ export const getClients = async (req, res) => {
     const page = req.query.page || 1;
     const limit = req.query.limit || 100;
     const skip = (page - 1) * limit;
- 
+
 
     const clientCount = await Client.countDocuments();
     // console.log(clientCount)
@@ -37,7 +37,7 @@ export const getClients = async (req, res) => {
 
     try {
         const clients = await Client.find(
-            {  }
+            {}
         ).populate('userID')
             .populate('companies')
             .skip(skip)
@@ -138,6 +138,7 @@ export const addClient = async (req, res) => {
             clientID: clientData._id,
             clientName: clientData.name,
             companyName: "default",
+            companyID: newCompany._id,
             path: req.file.path,
             department: departmentForTasks,
             title: "LOE",
@@ -210,12 +211,18 @@ export const getClientCompanies = async (req, res) => {
 
 
         // Fetch companies with pagination
-        const companies = await Client.findById(clientID)
+        const companiesOfclient = await Client.findById(clientID)
             .select({ _id: 0, companies: 1 })
             .populate("companies", "companyName clientName email telephone")
 
+        if (!companiesOfclient) {
+            return res.status(200).json({ message: " there are no companies for that client or client not found " })
+        }
 
-        const totalCompanies = companies.companies.length
+        console.log(companiesOfclient);
+
+
+        const totalCompanies = companiesOfclient.companies.length
         // .select({
         //     companyName: 1,
         //     clientName: 1,
@@ -232,7 +239,7 @@ export const getClientCompanies = async (req, res) => {
             TotalCompanies: totalCompanies,
             // CurrentPage: pageNumber,
             // TotalPages: Math.ceil(totalCompanies / limitNumber),
-            companies,
+            companiesOfclient,
         });
     } catch (error) {
         console.log(error)

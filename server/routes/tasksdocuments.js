@@ -44,5 +44,4 @@ tasksRouter.put(
   updateTask
 );
 tasksRouter.delete("/:id", roleMiddleware(["admin"]), deleteTask);
-
 export default tasksRouter;

@@ -31,7 +31,6 @@ export const getAccountants = async (req, res) => {
 
   try {
     const accountants = await Accountant.find(
-      {}
     ).populate('userID')
       .skip(skip)
       .limit(limit); // Skip the specified number of documents.limit(limit);;
