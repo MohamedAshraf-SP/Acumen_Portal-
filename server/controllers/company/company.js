@@ -93,6 +93,12 @@ export const addCompany = async (req, res) => {
         });
         const savedCompanyID = (await company.save())._id;
 
+        const dueDate = new DueDate({
+            companyId: savedCompanyID
+        })
+        const newDueDate = await dueDate.save()
+        //console.log(newDueDate);
+
         await Client.findByIdAndUpdate(clientID, { $push: { companies: savedCompanyID }, $addToSet: { departments: { $each: departments } } })
 
 
@@ -153,15 +159,26 @@ export const getCompaniesAbstracted = async (req, res) => {
 
         // Fetch companies with pagination
         const companies = await Company.find()
-            .populate({ path: "Client", strictPopulate: false })
+            //  .populate({ path: "Client", strictPopulate: false })
             .select({
                 companyName: 1,
                 clientName: 1,
+                contactName: 1,
+                phone: 1,
                 email: 1,
                 telephone: 1
-            })
-            .skip((pageNumber - 1) * limitNumber) // Skip documents for the previous pages
-            .limit(limitNumber); // Limit the number of documents per page
+            }).skip((pageNumber - 1) * limitNumber) // Skip documents for the previous pages
+            .limit(limitNumber);
+
+        // const transformedCompanies = companies.map(company => ({
+        //     company: company.companyName,
+        //     client: company.clientName,
+        //     contactInfo: `${company.contactName} / ${company.phone}`, // Merging fields
+        //     emailAddress: company.email,
+        //     landline: company.telephone
+        // }));
+
+        // Limit the number of documents per page
 
         // Return paginated response
         res.status(200).json({
@@ -208,7 +225,7 @@ export const updateCompany = async (req, res) => {
         const company = await Company.findByIdAndUpdate(req.params.id, companyData, { new: true });
         console.log(company.clientID);
 
-        await Client.findByIdAndUpdate(company.clientID, {  $addToSet: { departments: { $each: companyData.departments } } })
+        await Client.findByIdAndUpdate(company.clientID, { $addToSet: { departments: { $each: companyData.departments } } })
 
         if (!company) {
             return res.status(404).json({ message: "Company not found" });
@@ -267,6 +284,7 @@ export const updateCompanyDuedates = async (req, res) => {
     try {
         const companyId = req.params.id
         const company = await Company.findOne({ _id: companyId });
+
         if (!company) {
             return res.status(404).json({ message: "Due dates for this company not found or company does not exits!!" });
         }
@@ -296,6 +314,7 @@ export const getDueDateByCompanyId = async (req, res) => {
     try {
         const companyId = req.params.id
         const due = await DueDate.findOne({ companyId });
+        console.log(companyId);
         if (!due) {
             return res.status(404).json({ message: "Due dates for this company not found or company does not exits!!" });
         }
