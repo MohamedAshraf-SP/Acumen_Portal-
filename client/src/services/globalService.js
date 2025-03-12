@@ -61,8 +61,7 @@ export const addItem = (path, data) => {
 
 // add Item with form data
 export const addItemWithFiles = (path, data) => {
-  console.log("Path:", path);
- return apiCall("POST", path, null, null, data);
+  return apiCall("POST", path, null, null, data);
 };
 
 // update Item
@@ -73,4 +72,9 @@ export const updateItem = (path, itemId, data) => {
 // delete Item
 export const deleteItem = (path, itemId) => {
   return apiCall("DELETE", `${path}/${itemId}`);
+};
+
+// get All department client
+export const getDepartmentClients = (department) => {
+  return apiCall("POST", "/clients/ofdepartment", department);
 };

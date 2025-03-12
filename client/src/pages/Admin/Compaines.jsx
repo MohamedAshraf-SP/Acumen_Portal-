@@ -219,13 +219,13 @@ const Compaines = React.memo(() => {
                 />
               </div>
             </>
-          ) : status === "success" && data?.length === 0 ? (
+          ) : status === "success" && data?.companies?.length === 0 ? (
             <Empty
               image={Nodataimg}
               description="No Data Available Now"
               className="flex flex-col items-center"
             />
-          ) : status === "success" ? (
+          ) : status === "failed" ? (
             <p className="text-red-600">Failed to load data.</p>
           ) : null}
         </div>

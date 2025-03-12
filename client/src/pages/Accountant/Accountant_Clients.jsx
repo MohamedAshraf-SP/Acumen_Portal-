@@ -11,17 +11,13 @@ import { BiShow } from "react-icons/bi";
 import { MdOutlineModeEditOutline } from "react-icons/md";
 import { Table, Pagination, Empty } from "antd"; // Ant Design components
 import Nodataimg from "/images/table/No data.svg";
+import { getDepartmentClients } from "../../services/globalService";
 
-const Accountant_Clients = memo(() => {
+const Accountant_Clients = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   // Redux state
-  const data = useSelector((state) => state.getall.entities.clients);
-  const totalRecords = useSelector(
-    (state) => state.getall.entities.clients?.clientCount
-  );
-  const status = useSelector((state) => state.getall?.status);
   const { show, targetId } = useSelector(
     (state) => state.setting.deleteHintmsg
   );
@@ -30,7 +26,8 @@ const Accountant_Clients = memo(() => {
   // Local state
   const [selectedItem, setSelectedItem] = useState("");
   const [pagination, setPagination] = useState({ current: 1, pageSize: 10 });
-
+  const [accountantDetails, setAccountantDetails] = useState([]);
+  const [loadingStatus, setLoadingStatus] = useState("idle");
   // Handle pagination event
   const onPageChange = (page, pageSize) => {
     setPagination({ current: page, pageSize });
@@ -48,8 +45,14 @@ const Accountant_Clients = memo(() => {
     }
   };
   // Fetch data based on current pagination
-  const fetchData = (current, pageSize) => {
-    dispatch(FetchedItems({ path: "clients", page: current, limit: pageSize }));
+  // get all department clients
+  const fetDepartmentClients = async () => {
+    setLoadingStatus(true);
+    try {
+      const response = await getDepartmentClients();
+    } catch (error) {
+      console.log("error get departments client", error);
+    }
   };
   // Initial fetch on component mount
   useEffect(() => {
@@ -199,6 +202,6 @@ const Accountant_Clients = memo(() => {
       </div>
     </>
   );
-});
+};
 
 export default Accountant_Clients;

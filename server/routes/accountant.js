@@ -12,7 +12,6 @@ import { authMiddleware, roleMiddleware } from "../middlewares/autherization.js"
 export const accountantRoute = express.Router();
 
 
-
 accountantRoute.get("/count", roleMiddleware(["admin", "accountant"]), getAccountantsCount);
 accountantRoute.get("/:id", roleMiddleware(["admin", "accountant"]), getAccountant);
 accountantRoute.get("/", roleMiddleware(["admin"]), getAccountants);

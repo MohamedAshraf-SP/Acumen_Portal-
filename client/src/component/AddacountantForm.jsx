@@ -91,29 +91,32 @@ export default function AddacountantForm() {
     }),
     onSubmit: async (values, { resetForm }) => {
       try {
+        // Dispatch and unwrap the async thunk to get the actual response
         const result = await dispatch(
           addNewData({ path: "accountants", itemData: values })
         ).unwrap();
+
+        console.log("Accountant added successfully:", result);
+
+        // Show success alert
         setalert({
           msg: "Accountant added successfully",
           showmsg: true,
         });
-        resetForm();
 
-        return result;
+        resetForm(); // Reset form only on success
+        return result; // Return result for further use if needed
       } catch (error) {
-        console.error("Failed to add accountant:", {
-          error: error.message,
-          details: error,
-        });
-
+        
+        // Extract meaningful error message
+        const errorMsg = error || "Failed to add accountant";
+        // Show error alert
         setalert({
-          msg: error.message || "Failed to add accountant",
+          msg: errorMsg,
           showmsg: true,
         });
-        resetForm();
       } finally {
-        // Enhancement 6: Consistent cleanup with type safety
+        // Consistent cleanup of validation state
         setEmailValidation({
           loading: false,
           valid: null,
@@ -156,14 +159,14 @@ export default function AddacountantForm() {
             </div>
           ) : (
             <div
-              className={`p-4 mb-4 text-sm  rounded-xl  font-normal flex flex-row items-center justify-between  ${
+              className={`p-4 my-2 text-sm  rounded-xl   flex flex-row items-center justify-between  ${
                 status === "success"
                   ? "text-green-700  bg-green-100"
                   : "bg-red-50 text-red-500"
               }`}
               role="alert"
             >
-              <span className="font-semibold mr-2">{alert.msg}</span>
+              <span className="font-normal text-sm mr-2">{alert.msg}</span>
               <IoIosCloseCircleOutline
                 className="cursor-pointer text-slate-700 text-xl hover:text-slate-400 transition"
                 onClick={() =>
@@ -311,6 +314,13 @@ export default function AddacountantForm() {
             </div>
             <div className="flex md:flex-row flex-col  justify-end md:gap-4 gap-2  w-full">
               <button
+                type="button"
+                className=" bg-[#efeff0] px-4 font-normal rounded-md "
+                onClick={() => formik.resetForm()}
+              >
+                cancel
+              </button>
+              <button
                 className={`blackbutton ${
                   !formik.isValid ||
                   status == "loading" ||
@@ -323,21 +333,13 @@ export default function AddacountantForm() {
                   !formik.isValid || status == "loading" || formik.isSubmitting
                 }
               >
+                {status == "loading" ? "Adding" : "Add accountant"}
                 {status == "loading" && (
                   <ImSpinner8
                     className="rotate animate-spin transition "
                     size={15}
                   />
                 )}
-                {status == "loading" ? "Loading..." : "Add accountant"}
-              </button>
-
-              <button
-                type="button"
-                className=" bg-[#efeff0] px-4 font-normal rounded-md "
-                onClick={() => formik.resetForm()}
-              >
-                cancel
               </button>
             </div>
           </form>

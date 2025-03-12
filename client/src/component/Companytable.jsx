@@ -24,43 +24,52 @@ const Companytable = memo(() => {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [companies, setCompanies] = useState([]); //  get all companies from response
+  const [companies, setCompanies] = useState([]); // Store companies
   const [selectedItem, setSelectedItem] = useState(null);
   const [pagination, setPagination] = useState({ current: 1, pageSize: 6 });
 
+  // Handle actions (Edit/Delete)
   const handleAction = (actionType, path, companyId) => {
     setSelectedItem({ actionType, path, companyId });
-    if (actionType === "delete")
+
+    if (actionType === "delete") {
       dispatch(setdeleteHintmsg({ show: true, targetId: companyId }));
+    }
+
     if (actionType === "edit") {
       navigate(`/companies/editcompany/${companyId}`);
     }
   };
- 
-  // Handle pagination event
+
+  // Handle pagination change (Avoid unnecessary API calls)
   const onPageChange = (page, pageSize) => {
     setPagination({ current: page, pageSize });
-    fetchData(page, pageSize);
   };
+
   // Fetch data based on current pagination
-  const fetchData = (current, pageSize) => {
+  const fetchData = () => {
     dispatch(
       FetchedItems({
         path: "Companies/abstracted",
-        page: current,
-        limit: pageSize,
+        page: pagination.current,
+        limit: pagination.pageSize,
       })
     );
   };
-  // Initial fetch on component mount
-  useEffect(() => {
-    fetchData(pagination?.current, pagination?.pageSize);
-  }, [dispatch]);
 
+  // 🔹 Fetch Data When `pagination` Changes
   useEffect(() => {
-    if (companies.length === 0) {
-      setCompanies(data["Companies/abstracted"]?.companies || []);
-    }
+    fetchData();
+  }, [pagination]);
+
+  // 🔹 Fetch Data When Item is Deleted (When Delete Confirmation is Shown)
+  useEffect(() => {
+    fetchData(); // Re-fetch after deletion
+  }, [show, targetId]);
+
+  // 🔹 Update Companies When Data Changes
+  useEffect(() => {
+    setCompanies(data["Companies/abstracted"]?.companies || []);
   }, [data]);
   // Columns for the Ant Design Table
   const columns = [
@@ -115,7 +124,7 @@ const Companytable = memo(() => {
       ),
     },
   ];
-       
+
   return (
     <>
       {show && targetId === selectedItem?.companyId && (
@@ -124,11 +133,12 @@ const Companytable = memo(() => {
           deletedItemId={selectedItem?.companyId}
         />
       )}
-
       <div className="my-8 rounded-lg shadow-sm bg-white overflow-scroll dark:bg-secondary-dark-bg dark:text-gray-200">
         {/* Header */}
         <div className="flex justify-between items-center p-4 border-b dark:border-gray-700">
-          <h4 className="text-xl font-semibold">Latest Companies</h4>
+          <h4 className="text-xl font-semibold text-gray-700">
+            Latest Companies
+          </h4>
           <Link
             to="/clients/add-Client"
             className="flex items-center gap-1 bg-[#1A7F64] text-white px-3 py-2 rounded-md hover:shadow-lg hover:opacity-[.8] font-semibold text-[13px] transition"
