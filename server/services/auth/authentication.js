@@ -8,8 +8,9 @@ dotenv.config()
 
 
 export const generateAccessToken = (user) => {
+
     return jwt.sign(
-        { id: user._id, role: user.userRole },
+        { ...user },
         process.env.JWT_SECRET,
         { expiresIn: process.env.JWT_VALIDITY_PERIOD }
     )
@@ -17,7 +18,7 @@ export const generateAccessToken = (user) => {
 
 
 export const generateRefreshToken = (user) => {
-    return jwt.sign({ id: user._id },
+    return jwt.sign({ id: user.id },
         process.env.JWT_SECRET,
         {
             expiresIn: process.env.REFRESH_TOKEN_EXPIRES_IN,
@@ -53,4 +54,4 @@ export const hashPassword = async (password, saltRounds = 5) => {
 
 
 
- 
+
