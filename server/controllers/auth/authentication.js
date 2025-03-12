@@ -4,12 +4,9 @@ import User from "./../../models/users/user.js"
 import { generateRefreshToken, generateAccessToken, hashPassword, generateRandomPassword } from "../../Services/auth/authentication.js";
 import { sendEmail } from "../../helpers/emailSender.js";
 
-import { createClient } from '@redis/client';
-
-// Initialize Redis client
-
-
 import dotenv from "dotenv"
+import Client from "../../models/users/clients.js";
+import Accountant from "../../models/users/accountants.js";
 
 dotenv.config()
 const redisExpirePeriod = process.env.REDIS_EXPIRATION_PERIOD
@@ -19,15 +16,35 @@ const redisExpirePeriod = process.env.REDIS_EXPIRATION_PERIOD
 
 export const login = async (req, res) => {
     try {
-        console.log(req.body)
+
         const { email, password } = req.body;
         const user = await User.findOne({ userName: email });
- 
         if (!user || !(await bcrypt.compare(password, user.password))) {
             return res.status(401).json({ message: "Invalid email or password!!" });
         }
-        const accessToken = generateAccessToken(user);
-        const refreshToken = generateRefreshToken(user);
+
+        let dataObj = {}
+        if (user.userRole == "client") {
+            dataObj = await Client.findOne({ userID: user._id }).select({ name: 1, _id: 1 });
+        } else if (user.userRole == "accountant") {
+            dataObj = await Accountant.findOne({ userID: user._id }).select({ name: 1, _id: 1 });
+        }
+
+
+        let fullUser = {
+
+            "id": user._id,
+            "role": user.userRole,
+            "dataId": dataObj?._id || null,
+            "name": dataObj?.name || null,
+
+
+        }
+      ///  console.log(fullUser);
+
+
+        const accessToken = generateAccessToken(fullUser);
+        const refreshToken = generateRefreshToken(fullUser);
         res.cookie("refreshToken", refreshToken, {
             httpOnly: false,
             secure: false, // Use true in production for HTTPS
@@ -56,7 +73,25 @@ export const refreshToken = async (req, res) => {
             const userObj = await User.findById(user.id);
             if (!userObj) return res.status(404).json({ message: 'User not found!' });
 
-            const newAccessToken = generateAccessToken(userObj);
+            let dataObj = {}
+            if (userObj.userRole == "client") {
+                dataObj = await Client.findOne({ userID: userObj._id }).select({ name: 1, _id: 1 });
+            } else if (userObj.userRole == "accountant") {
+                dataObj = await Accountant.findOne({ userID: userObj._id }).select({ name: 1, _id: 1 });
+            }
+
+
+            let fullUser = {
+
+                "id": userObj._id,
+                "role": userObj.userRole,
+                "dataId": dataObj?._id || null,
+                "name": dataObj?.name || null,
+
+
+            }
+
+            const newAccessToken = generateAccessToken(fullUser);
             const newRefreshToken = generateRefreshToken({ id: userObj.id });
 
             res.cookie("refreshToken", newRefreshToken, {
@@ -109,7 +144,7 @@ export const resetPassword = async (req, res) => {
 
         return res.status(200).json({ message: "New Password sent to your Email!!" })
     } catch (e) {
-       
+
         return res.status(400).json({ message: "Error resetting the password!!" })
     }
 }
