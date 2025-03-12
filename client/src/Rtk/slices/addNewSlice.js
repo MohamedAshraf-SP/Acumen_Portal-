@@ -6,10 +6,15 @@ const addNewData = createAsyncThunk(
   async ({ path, itemData }, thunkAPI) => {
     try {
       const response = await addItem(path, itemData); // Call the service
-      return { path, data: response.data }; // Return the data
+  
+      return { path, ...response }; // Ensure full response is returned
     } catch (error) {
-      console.log(error);
-      return thunkAPI.rejectWithValue(error.response?.data || error?.message);
+     // console.error(error);
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        "Something went wrong";
+      return thunkAPI.rejectWithValue(errorMessage);
     }
   }
 );
@@ -17,12 +22,11 @@ const addNewData = createAsyncThunk(
 const addDataSlice = createSlice({
   name: "addData",
   initialState: {
-    status: "idle", // Tracks the status: 'idle', 'loading', 'success', or 'failed'
-    error: null, // Stores error messages
-    data: [], // Holds the successfully added data
+    status: "idle",
+    error: null,
+    data: [],
   },
   reducers: {
-    // Optional: Add reducers for clearing/resetting the state if needed
     resetState: (state) => {
       state.status = "idle";
       state.error = null;
@@ -33,21 +37,19 @@ const addDataSlice = createSlice({
     builder
       .addCase(addNewData.pending, (state) => {
         state.status = "loading";
-        state.error = null; // Clear previous errors when a new request starts
+        state.error = null;
       })
       .addCase(addNewData.fulfilled, (state, action) => {
         state.status = "success";
-        state.data = [...state.data, action.payload]; // Add the new data to the existing array
-        // Reset state fields to default values
- 
+        state.data.push(action.payload); // Push new data instead of overwriting
       })
       .addCase(addNewData.rejected, (state, action) => {
         state.status = "failed";
-        state.error = action.payload || action.error.message; // Capture the error message
+        state.error = action.payload; // Ensure proper error message
       });
   },
 });
 
-export const { resetState } = addDataSlice.actions; // Export the reset action if needed
+export const { resetState } = addDataSlice.actions;
 export { addNewData };
 export default addDataSlice.reducer;

@@ -35,10 +35,10 @@ const Notifications = () => {
  
   return (
     <>
-      <div className="my-8 py-4 px-4 rounded-lg shadow-sm h-full  dark:bg-secondary-dark-bg dark:text-gray-200">
+      <div className="my-2 py-4 px-4 rounded-lg shadow-sm h-full  dark:bg-secondary-dark-bg dark:text-gray-200">
         {/* Header */}
         <div className=" p-4  ">
-          <h1 className="text-xl font-semibold">Notifications</h1>
+          <h1 className="text-xl font-semibold ">Notifications</h1>
           <ul className="flex flex-row items-center space-x-1 text-sm py-2">
             {routes.map((route, index) => (
               <li
@@ -82,14 +82,14 @@ const Notifications = () => {
             </div>
           )}
           {status === "success" && data?.templates?.length > 0 && (
-            <div className="  p-4 mt-2 border border-solid rounded-md bg-white  ">
-              <h2 className="font-semibold text-[16px] my-6 text-[#474D58]">
+            <div className=" border border-solid rounded-md bg-white  ">
+              <h2 className="font-semibold text-[16px]  bg-gray-100   text-[#6f7070] border-b border-solid py-4 px-2 capitalize">
                 Simple Notifications
               </h2>
               {attachColors.map((alert, index) => (
                 <div
                   key={index}
-                  className={`flex lg:items-center lg:justify-between lg:flex-row flex-col items-end justify-center gap-4  p-3 mb-6 text-sm border-b border-solid border-neutral-200 last:border-none  
+                  className={` flex lg:items-center lg:justify-between lg:flex-row flex-col items-end justify-center gap-4  p-3  mb-6 text-sm border-b border-solid border-neutral-200 last:border-none  
                    `}
                   role="alert"
                 >
@@ -97,7 +97,7 @@ const Notifications = () => {
                     <span
                       className={`text-xl ${
                         alert.documentType == "EMail"
-                          ? "text-[#FF5E5E]"
+                          ? "text-[#ec4f4f]"
                           : "text-[#452B90]"
                       }`}
                     >
@@ -107,7 +107,7 @@ const Notifications = () => {
                         <FaSms size={20} />
                       )}
                     </span>
-                    <Link className="font-medium text-neutral-600 hover:underline transition w-[250px]">
+                    <Link className="font-medium text-[14px] capitalize text-neutral-600 hover:underline transition w-[250px]">
                       {alert.name}
                     </Link>
                     <p className="text-xs lg:ml-4 text-gray-600">

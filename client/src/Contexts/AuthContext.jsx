@@ -78,7 +78,7 @@ export const AuthContextProvider = ({ children }) => {
         return newAccessToken;
       }
     } catch (error) {
-      // console.error("Failed to refresh access token:", error);
+    //   console.error("Failed to refresh access token:", error);
     }
   };
   // ask for new accesss Token
@@ -96,7 +96,6 @@ export const AuthContextProvider = ({ children }) => {
 
     initializeAuth();
   }, []);
-
   return (
     <AuthContext.Provider
       value={{ user, accessToken, handleLogin, logout, loading }}

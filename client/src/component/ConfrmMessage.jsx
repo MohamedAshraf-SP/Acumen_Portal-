@@ -55,7 +55,7 @@ function ConfrmMessage() {
                   <RiLoader3Line className="animate-spin" />
                 )}
               </span>
-              <p className="text-gray-700 text-[15px] pr-20 pl-2 font-normal">
+              <p className="text-gray-700 text-sm pr-20 pl-2 font-normal">
                 {msg && msg.message ? msg.message : "Loading..."}
               </p>
             </div>

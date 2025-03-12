@@ -16,7 +16,7 @@ export const clientRoute = express.Router();
 // Clients Management
 clientRoute.get("/", roleMiddleware(["admin"]), getClients);
 clientRoute.get("/count", roleMiddleware(["admin", "accountant"]), getClientsCount);
-clientRoute.get("/ofdepartment", roleMiddleware(["admin", "accountant"]), getDepartmentClients);
+clientRoute.post("/ofdepartment", roleMiddleware(["admin", "accountant"]), getDepartmentClients);
 clientRoute.get("/:id/companies", roleMiddleware(["admin", "accountant", "client"]), getClientCompanies);
 clientRoute.get("/:id", roleMiddleware(["admin", "accountant"]), getClient);
 
