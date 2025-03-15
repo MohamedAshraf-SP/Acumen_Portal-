@@ -1,13 +1,9 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import { lazy, Suspense } from "react";
-import MainLayout from "../Layouts/MainLayout"; // Import your layout
-import NotFind from "../pages/NotFind"; // 404 Page Component
-import Loader from "../component/Loader"; // Loading component
-import AddacountantForm from "../component/addAcountantForm";
-import DisplayUsersCompany from "../pages/DisplayUsersCompany";
-import Unauthorized from "../Auth/Unauthorized";
+import MainLayout from "../Layouts/MainLayout";
+import Loader from "../component/Loader";
 import ProtectedRoute from "./ProtectedRoute";
-import Login from "../Auth/Login";
+import { useAuth } from "../Contexts/AuthContext";
 
 // Lazy Load Pages
 // -------------Admin --------------
@@ -39,120 +35,107 @@ const Accountants_clients = lazy(() =>
 const Accountants_Documents = lazy(() =>
   import("../pages/Accountant/Accountants_Documents")
 );
-
+const AddacountantForm = lazy(() => import("../component/addAcountantForm"));
 // -------------- shared-----------
 const Editorpage = lazy(() => import("../pages/Editor"));
 const Forms = lazy(() => import("../pages/Forms"));
 const Invoices = lazy(() => import("../pages/Invoices"));
 const Documents = lazy(() => import("../pages/Documents"));
-
-// Suspense wrapper for lazy-loaded components
-const withSuspense = (Component) => {
-  return (
-    <Suspense>
-      <Component />
-    </Suspense>
-  );
-};
-
+const Notfind = lazy(() => import("../pages/NotFind"));
+const UnAuthorzed = lazy(() => import("../Auth/Unauthorized"));
+const DisplayUsersCompany = lazy(() => import("../pages/DisplayUsersCompany"));
+const Login = lazy(() => import("../Auth/Login"));
 
 const AppRouter = () => {
-  // Get user and loading state from AuthContext
+  const { loading, user } = useAuth();
+
+  if (loading) {
+    return <Loader />;
+  }
 
   return (
-    <Routes>
-      {/* Login Page - Default Route */}
-      <Route path="/" element={<Login />} />
-      <Route path="/auth/login" element={<Login />} />
-      <Route element={<MainLayout />}>
-        {/* Admin Routes */}
-        <Route element={<ProtectedRoute allowedTo={["admin"]} />}>
-          <Route
-            path="admin/dashboard"
-            element={withSuspense(AdminDashboard)}
-          />
-          <Route path="/accountants" element={withSuspense(AdminAccounts)} />
-          <Route
-            path="/accountants/add-account"
-            element={withSuspense(AddacountantForm)}
-          />
-          <Route path="/editor/:id" element={withSuspense(Editorpage)} />
-          <Route path="/clients" element={withSuspense(AdminClients)} />
-          <Route path="/clients/add-client" element={withSuspense(AddClient)} />
-          <Route path="/companies" element={withSuspense(AdminCompaines)} />
-          <Route
-            path="/companies/:itemId"
-            element={withSuspense(DisplayUsersCompany)}
-          />
-          <Route
-            path="/companies/editcompany/:companyId"
-            element={withSuspense(EditUserCompany)}
-          />
-          <Route
-            path="/notifications"
-            element={withSuspense(AdminNotifications)}
-          />
-          <Route path="/history" element={withSuspense(AdminHistory)} />
-          <Route path="/forms" element={withSuspense(Forms)} />
-          <Route path="/invoices" element={withSuspense(Invoices)} />
-          <Route path="/documents" element={withSuspense(Documents)} />
-          <Route path="/settings" element={withSuspense(AdminSettings)} />
-          <Route path="/import-clients" element={withSuspense(ImportClients)} />
-          <Route
-            path="/sent-notification"
-            element={withSuspense(SentNotifications)}
-          />
+    <Suspense fallback={null}>
+      <Routes>
+        <Route
+          path="/"
+          element={
+            user && user?.role ? (
+              <Navigate to={`/${user?.role}/dashboard`} />
+            ) : (
+              <Navigate to="/auth/login" />
+            )
+          }
+        />
+
+        <Route path="/auth/login" element={<Login />} />
+
+        <Route element={<MainLayout />}>
+          {/* Admin Routes */}
+          <Route element={<ProtectedRoute allowedTo={["admin"]} />}>
+            <Route path="/admin/dashboard" element={<AdminDashboard />} />
+            <Route path="/accountants" element={<AdminAccounts />} />
+            <Route
+              path="/accountants/add-account"
+              element={<AddacountantForm />}
+            />
+            <Route path="/editor/:id" element={<Editorpage />} />
+            <Route path="/clients" element={<AdminClients />} />
+            <Route path="/clients/add-client" element={<AddClient />} />
+            <Route path="/companies" element={<AdminCompaines />} />
+            <Route
+              path="/companies/:companyId"
+              element={<DisplayUsersCompany />}
+            />
+            <Route
+              path="/companies/editcompany/:companyId"
+              element={<EditUserCompany />}
+            />
+            <Route path="/notifications" element={<AdminNotifications />} />
+            <Route path="/history" element={<AdminHistory />} />
+            <Route path="/forms" element={<Forms />} />
+            <Route path="/invoices" element={<Invoices />} />
+            <Route path="/documents" element={<Documents />} />
+            <Route path="/settings" element={<AdminSettings />} />
+            <Route path="/import-clients" element={<ImportClients />} />
+            <Route path="/sent-notification" element={<SentNotifications />} />
+          </Route>
+
+          {/* Client Routes */}
+          <Route element={<ProtectedRoute allowedTo={["client"]} />}>
+            <Route path="/client/dashboard" element={<ClientDashboard />} />
+            <Route path="/client/add_Company" element={<AddCompany />} />
+            <Route path="/client/Engagement" element={<ClientEngagement />} />
+            <Route path="/client/Forms" element={<Forms />} />
+            <Route path="/client/Invoices" element={<Invoices />} />
+            <Route path="/client/Documents" element={<ClientDocuments />} />
+          </Route>
+
+          {/* Accountant Routes */}
+          <Route element={<ProtectedRoute allowedTo={["accountant"]} />}>
+            <Route
+              path="/accountant/dashboard"
+              element={<Accountants_Dashboard />}
+            />
+            <Route
+              path="/accountant/Clients"
+              element={<Accountants_clients />}
+            />
+            <Route path="/accountant/Companies" element={<AdminCompaines />} />
+            <Route path="/accountant/History" element={<AdminHistory />} />
+            <Route path="/accountant/Forms" element={<Forms />} />
+            <Route path="/accountant/Invoices" element={<Invoices />} />
+            <Route
+              path="/accountant/Documents"
+              element={<Accountants_Documents />}
+            />
+          </Route>
         </Route>
-        <Route element={<ProtectedRoute allowedTo={["client"]} />}>
-          <Route
-            path="client/dashboard"
-            element={withSuspense(ClientDashboard)}
-          />
-          <Route
-            path="/client/add_Company"
-            element={withSuspense(AddCompany)}
-          />
-          <Route
-            path="/client/Engagement"
-            element={withSuspense(ClientEngagement)}
-          />
-          <Route path="/client/Forms" element={withSuspense(Forms)} />
-          <Route path="/client/Invoices" element={withSuspense(Invoices)} />
-          <Route
-            path="/client/Documents"
-            element={withSuspense(ClientDocuments)}
-          />
-        </Route>
-        {/* Accountant Routes */}
-        <Route element={<ProtectedRoute allowedTo={["accountant"]} />}>
-          <Route
-            path="/accountant/dashboard"
-            element={withSuspense(Accountants_Dashboard)}
-          />
-          <Route
-            path="/accountant/Clients"
-            element={withSuspense(Accountants_clients)}
-          />
-          <Route
-            path="/accountant/Companies"
-            element={withSuspense(AdminCompaines)}
-          />
-          <Route
-            path="/accountant/History"
-            element={withSuspense(AdminHistory)}
-          />
-          <Route path="/accountant/Forms" element={withSuspense(Forms)} />
-          <Route path="/accountant/Invoices" element={withSuspense(Invoices)} />
-          <Route
-            path="/accountant/Documents"
-            element={withSuspense(Accountants_Documents)}
-          />
-        </Route>
-      </Route>
-      {/* Catch-all route for non-existent pages */}
-      <Route path="*" element={<NotFind />} />
-      <Route path="/auth/unauthorized" element={<Unauthorized />} />
-    </Routes>
+
+        {/* Catch-all route for non-existent pages */}
+        <Route path="*" element={<Notfind />} />
+        <Route path="/auth/unauthorized" element={<UnAuthorzed />} />
+      </Routes>
+    </Suspense>
   );
 };
 

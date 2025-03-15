@@ -8,6 +8,7 @@ import * as Yup from "yup";
 import { addNewData } from "../Rtk/slices/addNewSlice";
 import Skeleton from "react-loading-skeleton";
 import axios from "axios";
+import { ImSpinner8 } from "react-icons/im";
 
 export default function AddClientForm() {
   const routes = ["Clients", "Add Client"];
@@ -117,38 +118,33 @@ export default function AddClientForm() {
       formData.append("LOEfile", values.LOEfile);
 
       try {
-        // Enhancement 1: Properly handle thunk dispatch result
+        // Dispatch the async thunk and unwrap the result
         const result = await dispatch(
           addNewData({ path: "clients", itemData: formData })
         ).unwrap();
-console.log(result)
-        // Enhancement 2: Access status from Redux state instead of local variable
-        const status =
-          result.meta?.requestStatus === "fulfilled" ? "success" : "failed";
-
-        // Enhancement 3: Better success handling
-        if (status === "success") {
-          setAlert({ msg: "Client added successfully", showmsg: true });
-          resetForm(); // Move resetForm to success case if desired
+        // Check if the response contains a success message
+        if (result?.message) {
+          setAlert({ msg: result.message, showmsg: true });
+          resetForm(); // Reset form only on success
         }
 
-        console.log("Submission result:", result);
-        return result; // Optional: return result for further processing
+        return result; // Return result for further use if needed
       } catch (error) {
-        // Enhancement 4: Improved error handling
-        console.error("Submission failed:", error);
+        // Capture Redux rejected value or fallback to generic error message
+        const errorMsg = error || "Failed to add client";
+        // console.error("Submission failed:", errorMsg);
         setAlert({
-          msg: error.message || "Failed to add client",
+          msg: errorMsg,
           showmsg: true,
         });
-        resetForm();
       } finally {
-        // Enhancement 5: Consistent cleanup
+        // Cleanup process to reset email validation state
         setEmailValidation({
           loading: false,
           valid: null,
           message: "",
         });
+        setFileName(null);
       }
     },
   });
@@ -333,6 +329,13 @@ console.log(result)
           {/* Submit Button */}
           <div className="flex justify-end md:flex-row flex-col md:gap-4 gap-2">
             <button
+              type="reset"
+              className=" bg-[#efeff0] px-4 font-normal rounded-md "
+              onClick={resetForm}
+            >
+              cancel
+            </button>
+            <button
               type="submit"
               className={`blackbutton ${
                 emailValidation.valid === false ||
@@ -343,14 +346,13 @@ console.log(result)
               }`}
               disabled={formik.isSubmitting}
             >
-              {formik.isSubmitting ? "Adding..." : "Add Client"}
-            </button>
-            <button
-              type="reset"
-              className=" bg-[#efeff0] px-4 font-normal rounded-md "
-              onClick={resetForm}
-            >
-              cancel
+              {status == "loading" ? "Adding" : "Add Client"}
+              {status == "loading" && (
+                <ImSpinner8
+                  className="rotate animate-spin transition "
+                  size={15}
+                />
+              )}
             </button>
           </div>
         </form>

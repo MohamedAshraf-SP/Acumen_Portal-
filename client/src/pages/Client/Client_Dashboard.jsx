@@ -1,7 +1,9 @@
 import React, { lazy, useEffect, useState } from "react";
 import wavingImg from "/images/Dashboard/hand.gif";
-import ClientCompanies from "./clientCompanies";
- 
+import { LazyTable } from "../../Utils";
+// Lazy Imoprting
+const UsersCompany = lazy(() => import("../DisplayUsersCompany"));
+const UserDocument = lazy(() => import("../Documents"));
 export default function Client_Dashboard() {
   const [todayDate, setTodayDate] = useState("");
   useEffect(() => {
@@ -24,8 +26,12 @@ export default function Client_Dashboard() {
         </div>
         <p className="text-[#989999]">Today is : {todayDate} 😊</p>
       </div>
-      <div className="flex flex-row items-center justify-between gap-2">
-        <ClientCompanies />
+      <div>
+        <div className="flex flex-row items-center justify-between gap-2">
+          <LazyTable component={UsersCompany} />
+          {/* <LazyTable component={Documents} /> */}
+        </div>
+        <LazyTable component={UserDocument} />
       </div>
     </div>
   );

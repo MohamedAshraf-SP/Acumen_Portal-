@@ -1,31 +1,31 @@
-import React, { useEffect, useMemo, useState, lazy, Suspense } from "react";
+import React, { useEffect, useState, lazy, Suspense, useCallback } from "react";
 import wavingImg from "/images/Dashboard/hand.gif";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { dashboardAnalytics as Analysis } from "../../assets";
 import Block_Count from "../../component/Block_Count";
 import { getCount } from "../../services/globalService";
-import { formatNum } from "../../Utils";
+import { LazyTable, formatNum } from "../../Utils";
 
 // Lazy load each table
 const ClientTable = lazy(() => import("../../component/ClientTable"));
 const CompanyTable = lazy(() => import("../../component/Companytable"));
-const DocumentTable = lazy(() => import("../../component/DocumentTable"));
-// Wrap each component with React.memo
-const MemoizedClientTable = React.memo(ClientTable);
-const MemoizedCompanyTable = React.memo(CompanyTable);
-const MemoizedDocumentTable = React.memo(DocumentTable);
+const DocumentTable = lazy(() => import("../Documents"));
+
+
+
+
 export default function Admin_Dashboard() {
-  const OverViewAnalysis = useMemo(() => Analysis || [], []);
   const [usersCount, setUserCount] = useState([]);
   const [todayDate, setTodayDate] = useState("");
   const [error, setError] = useState(null);
 
   // Fetch counts for the dashboard
-  const fetchUsersCount = async () => {
+  const fetchUsersCount = useCallback(async () => {
+    setError(null);
     try {
       const userCounts = await Promise.all(
-        OverViewAnalysis.map(async (category) => {
+        Analysis?.map(async (category) => {
           const { count } = await getCount(category.endpoint);
           return { count };
         })
@@ -35,11 +35,11 @@ export default function Admin_Dashboard() {
       setError("Failed to load user counts");
       console.error("Error fetching user counts:", error);
     }
-  };
+  }, [Analysis]);
 
   useEffect(() => {
     fetchUsersCount();
-  }, [OverViewAnalysis]);
+  }, [Analysis]);
 
   useEffect(() => {
     const date = new Date();
@@ -64,8 +64,8 @@ export default function Admin_Dashboard() {
       </div>
 
       <div className="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-4 mt-4">
-        {usersCount.length === 0
-          ? OverViewAnalysis.map((_, index) => (
+        {usersCount?.length === 0
+          ? Analysis?.map((_, index) => (
               <div key={index}>
                 <Skeleton width="100%" height="4rem" />
                 <Skeleton width="75%" className="mb-2" />
@@ -73,7 +73,7 @@ export default function Admin_Dashboard() {
                 <Skeleton height="2rem" className="mb-2" />
               </div>
             ))
-          : OverViewAnalysis.map((block, index) => {
+          : Analysis?.map((block, index) => {
               const countData = usersCount[index];
               return (
                 <Block_Count
@@ -92,18 +92,10 @@ export default function Admin_Dashboard() {
       {error && <p className="text-red-500">Error: {error}</p>}
 
       <div className="container overflow-hidden">
-        {/* Render tables independently */}
-        <Suspense fallback={<Skeleton height="10rem" className="mt-10" />}>
-          <MemoizedClientTable />
-        </Suspense>
-
-        <Suspense fallback={<Skeleton height="10rem" className="mt-10" />}>
-          <MemoizedCompanyTable />
-        </Suspense>
-
-        <Suspense fallback={<Skeleton height="10rem" className="mt-10" />}>
-          <MemoizedDocumentTable />
-        </Suspense>
+        <LazyTable component={ClientTable} />
+        <LazyTable component={CompanyTable} />
+        <LazyTable component={DocumentTable} />
+        
       </div>
     </div>
   );

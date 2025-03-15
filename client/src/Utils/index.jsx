@@ -1,4 +1,6 @@
+import Skeleton from "react-loading-skeleton";
 import axios from "axios";
+import { Suspense, lazy } from "react";
 const api = import.meta.env.VITE_API_URL || "http://localhost:3000";
 // format date
 export const formatDate = (dateString) => {
@@ -52,4 +54,20 @@ export const formatNum = (num) => {
   } else {
     return num;
   }
+};
+
+// create resuable Component Lazy Table with skeleton
+export const LazyTable = ({ component: Component }) => {
+  return (
+    <Suspense
+      fallback={
+        <div className="mt-10">
+          <Skeleton height="2rem" className="mb-2" />
+          <Skeleton height="10rem" />
+        </div>
+      }
+    >
+      <Component />
+    </Suspense>
+  );
 };
