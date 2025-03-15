@@ -200,60 +200,52 @@ export const getClientsCount = async (req, res) => {
 
 export const getClientCompanies = async (req, res) => {
     try {
-        const clientID = req.params.id || null
-        const { page = 1, limit = 10 } = req.query; // Default page = 1, limit = 10
+        const { department } = req.body;
+        const { page = 1, limit = 10 } = req.query; // Default: page 1, limit 10
+        const skip = (page - 1) * limit; // Calculate the number of items to skip
 
-        // Parse page and limit to integers
-        const pageNumber = parseInt(page, 10);
-        const limitNumber = parseInt(limit, 10);
+        let filter = { _id: req.params.id };
 
-        // Calculate total count for pagination metadata
+        // Fetch client and populate companies with department filter
+        const client = await Client.findOne(filter)
+            .populate({
+                path: "companies",
+                select: "companyName clientName email telephone departments",
+                match: department ? { departments: { $in: [department] } } : {} // Filter companies by department
+            });
 
-
-        // Fetch companies with pagination
-        const companiesOfclient = await Client.findById(clientID)
-            .select({ _id: 0, companies: 1 })
-            .populate("companies", "companyName clientName email telephone")
-
-        if (!companiesOfclient) {
-            return res.status(200).json({ message: " there are no companies for that client or client not found " })
+        if (!client || !client.companies) {
+            return res.status(200).json({ message: "No companies found for this client." });
         }
 
-        console.log(companiesOfclient);
+        // Apply pagination
+        const totalCompanies = client.companies.length; // Total before pagination
+        const paginatedCompanies = client.companies.slice(skip, skip + Number(limit));
 
-
-        const totalCompanies = companiesOfclient.companies.length
-        // .select({
-        //     companyName: 1,
-        //     clientName: 1,
-        //     email: 1,
-        //     telephone: 1
-        // })
-        // .skip((pageNumber - 1) * limitNumber) // Skip documents for the previous pages
-        // .limit(limitNumber);
-
-        // Limit the number of documents per page
-
-        // Return paginated response
         res.status(200).json({
-            TotalCompanies: totalCompanies,
-            // CurrentPage: pageNumber,
-            // TotalPages: Math.ceil(totalCompanies / limitNumber),
-            companiesOfclient,
+            totalCount: totalCompanies,
+            currentPage: Number(page),
+            totalPages: Math.ceil(totalCompanies / limit),
+            companies: paginatedCompanies
         });
+
     } catch (error) {
-        console.log(error)
-        res.status(500).json({ message: "Error retrieving companies!!", error });
+        console.error(error);
+        res.status(500).json({ message: "Error retrieving companies!", error });
     }
 };
+
 
 
 export const getDepartmentClients = async (req, res) => {
 
     try {
-        const page = req.query.page || 1;
-        const limit = req.query.limit || 10;
+        const page = Number(req.query.page) || 1;
+        const limit = Number(req.query.limit) || 10;
         const skip = (page - 1) * limit;
+        if (!req.body.department) {
+            return res.status(200).json({ message: "department required" })
+        }
 
         const clients = await Client.aggregate([
             {
@@ -282,10 +274,11 @@ export const getDepartmentClients = async (req, res) => {
 
         // Skip the specified number of documents.limit(limit);
         res.status(200).json({
+            clientCount: clients.length,
             currentPage: page,
             pagesCount: pagesCount,
-            clients: clients,
-            clientCount: clients.length,
+            clients: clients
+
         });
     } catch (error) {
         res.status(500).json({ error: error.message });
