@@ -40,7 +40,7 @@ export const login = async (req, res) => {
 
 
         }
-      ///  console.log(fullUser);
+        ///  console.log(fullUser);
 
 
         const accessToken = generateAccessToken(fullUser);
@@ -158,8 +158,13 @@ export const resetPassword = async (req, res) => {
 
 
 export const logout = async (req, res) => {
-    res.clearCookie('refreshToken');
+    res.clearCookie("refreshToken", {
+        httpOnly: false,
+        secure: false,
+        sameSite: "Lax" // If SameSite=None was used initially, you need it here too
+    });
     res.json({ message: "Logged out successfully" });
+
 }
 
 
