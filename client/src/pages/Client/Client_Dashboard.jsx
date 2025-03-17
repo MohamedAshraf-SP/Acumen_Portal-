@@ -27,6 +27,7 @@ export default function Client_Dashboard() {
         <p className="text-[#989999]">Today is : {todayDate} 😊</p>
       </div>
       <div>
+      
         <div className="flex flex-row items-center justify-between gap-2">
           <LazyTable component={UsersCompany} />
           {/* <LazyTable component={Documents} /> */}

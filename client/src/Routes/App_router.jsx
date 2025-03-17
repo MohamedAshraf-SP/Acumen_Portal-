@@ -4,6 +4,9 @@ import MainLayout from "../Layouts/MainLayout";
 import Loader from "../component/Loader";
 import ProtectedRoute from "./ProtectedRoute";
 import { useAuth } from "../Contexts/AuthContext";
+import Login from "../pages/Auth/Login";
+import Unauthorized from "../pages/Auth/Unauthorized";
+import NotFind from "../pages/NotFind";
 
 // Lazy Load Pages
 // -------------Admin --------------
@@ -22,7 +25,7 @@ const SentNotifications = lazy(() =>
 const EditUserCompany = lazy(() => import("../pages/Admin/EditCompany"));
 // ---------------client ---------
 const ClientDashboard = lazy(() => import("../pages/Client/Client_Dashboard"));
-const AddCompany = lazy(() => import("../pages/Client/Add_Company"));
+const AddCompany = lazy(() => import("../component/AddCompany"));
 const ClientEngagement = lazy(() => import("../pages/Client/ClientEngagement"));
 const ClientDocuments = lazy(() => import("../pages/Client/Client_Documents"));
 //--------------- Accountants--------
@@ -36,15 +39,16 @@ const Accountants_Documents = lazy(() =>
   import("../pages/Accountant/Accountants_Documents")
 );
 const AddacountantForm = lazy(() => import("../component/addAcountantForm"));
+const AccountantCompanies = lazy(() =>
+  import("../pages/Accountant/Accountant_Companies")
+);
 // -------------- shared-----------
 const Editorpage = lazy(() => import("../pages/Editor"));
 const Forms = lazy(() => import("../pages/Forms"));
 const Invoices = lazy(() => import("../pages/Invoices"));
 const Documents = lazy(() => import("../pages/Documents"));
-const Notfind = lazy(() => import("../pages/NotFind"));
-const UnAuthorzed = lazy(() => import("../Auth/Unauthorized"));
 const DisplayUsersCompany = lazy(() => import("../pages/DisplayUsersCompany"));
-const Login = lazy(() => import("../Auth/Login"));
+
 
 const AppRouter = () => {
   const { loading, user } = useAuth();
@@ -56,18 +60,17 @@ const AppRouter = () => {
   return (
     <Suspense fallback={null}>
       <Routes>
+        {/* Redirect to the appropriate dashboard based on the user's role */}
         <Route
           path="/"
           element={
-            user && user?.role ? (
-              <Navigate to={`/${user?.role}/dashboard`} />
-            ) : (
-              <Navigate to="/auth/login" />
-            )
+            user && user?.role && <Navigate to={`/${user?.role}/dashboard`} />
           }
         />
-
+        {/* Catch-all route for non-existent pages */}
         <Route path="/auth/login" element={<Login />} />
+        <Route path="/auth/unauthorized" element={<Unauthorized />} />
+        <Route path="*" element={<NotFind />} />
 
         <Route element={<MainLayout />}>
           {/* Admin Routes */}
@@ -82,6 +85,7 @@ const AppRouter = () => {
             <Route path="/clients" element={<AdminClients />} />
             <Route path="/clients/add-client" element={<AddClient />} />
             <Route path="/companies" element={<AdminCompaines />} />
+            <Route path="/companies/add-company" element={<AddCompany />} />
             <Route
               path="/companies/:companyId"
               element={<DisplayUsersCompany />}
@@ -120,7 +124,11 @@ const AppRouter = () => {
               path="/accountant/Clients"
               element={<Accountants_clients />}
             />
-            <Route path="/accountant/Companies" element={<AdminCompaines />} />
+            <Route path="/accountant/add-client" element={<AddClient />} />
+            <Route
+              path="/accountant/Companies"
+              element={<AccountantCompanies />}
+            />
             <Route path="/accountant/History" element={<AdminHistory />} />
             <Route path="/accountant/Forms" element={<Forms />} />
             <Route path="/accountant/Invoices" element={<Invoices />} />
@@ -130,10 +138,6 @@ const AppRouter = () => {
             />
           </Route>
         </Route>
-
-        {/* Catch-all route for non-existent pages */}
-        <Route path="*" element={<Notfind />} />
-        <Route path="/auth/unauthorized" element={<UnAuthorzed />} />
       </Routes>
     </Suspense>
   );

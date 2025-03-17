@@ -20,50 +20,35 @@ export default function Accountant_Dashboard() {
   const [error, setError] = useState(null);
 
   // Fetch counts for the dashboard
-  const fetchUsersCount = useCallback(async () => {
-    setError(null);
-    try {
-      const userCounts = await Promise.all(
-        OverViewAnalysis.map(async (category) => {
-          const { count } = await getCount(category.endpoint);
-          return { count };
-        })
-      );
-      setUserCount(userCounts);
-    } catch (error) {
-      setError("Failed to load user counts");
-      console.error("Error fetching user counts:", error);
-    }
-  }, [OverViewAnalysis]);
+  // const fetchUsersCount = useCallback(async () => {
+  //   setError(null);
+  //   try {
+  //     const userCounts = await Promise.all(
+  //       OverViewAnalysis.map(async (category) => {
+  //         const { count } = await getCount(category.endpoint);
+  //         return { count };
+  //       })
+  //     );
+  //     setUserCount(userCounts);
+  //   } catch (error) {
+  //     setError("Failed to load user counts");
+  //     console.error("Error fetching user counts:", error);
+  //   }
+  // }, [OverViewAnalysis]);
   // fetch User Details and store data in cookie avoid multiple api req
-  const fetchUserDetails = async () => {
-    try {
-      const response = await getItem("accountants", user?.id);
-      if (response.status === 200) {
-        const data = response.data;
-        Cookies.set("accountantInfo", JSON.stringify(data));
+  // const fetchUserDetails = async () => {
+  //   try {
+  //     const response = await getItem("accountants", user?.id);
+  //     if (response.status === 200) {
+  //       const data = response.data;
+  //       Cookies.set("accountantInfo", JSON.stringify(data));
 
-        console.log(data);
-      }
-    } catch (erro) {
-      console.log("error getting details", error);
-    }
-  };
-  console.log(loading, user);
-  // useEffect(() => {
-  //   fetchUsersCount();
-  // }, [fetchUsersCount]);
-
-  // useEffect(() => {
-  //   const date = new Date();
-  //   setTodayDate(date.toDateString());
-  // }, []);
-  // get user Detalis
-  useEffect(() => {
-    if (!loading) {
-      fetchUserDetails();
-    }
-  }, [loading, user]);
+  //       console.log(data);
+  //     }
+  //   } catch (erro) {
+  //     console.log("error getting details", error);
+  //   }
+  // };
   return (
     <div className="mt-2">
       <div className="flex flex-col items-start mb-6">
