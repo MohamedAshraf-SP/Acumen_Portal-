@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import notfoundImg from "/images/Not found/error-401.png";
-import { useAuth } from "../Contexts/AuthContext";
+import { useAuth } from "../../Contexts/AuthContext";
+ 
 export default function Unauthorized() {
   const { user } = useAuth();
   return (

@@ -249,48 +249,52 @@ export const getClientCompanies = async (req, res) => {
 
 
 export const getDepartmentClients = async (req, res) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+    const department = req.query.department; // Use query instead of body
 
-    try {
-        const page = req.query.page || 1;
-        const limit = req.query.limit || 10;
-        const skip = (page - 1) * limit;
-
-        const clients = await Client.aggregate([
-            {
-                $match: {
-                    departments: { $in: [req.body.department] }
-                }
-
-            },
-            {
-                $project: {
-                    _id: 0, // Exclude _id if not needed
-                    name: 1,
-                    email: 1
-
-                }
-            },
-            {
-                $addFields: {
-                    Department: req.body.department // Add the requested department
-                }
-            }
-        ]).skip(skip)
-            .limit(limit);
-
-        const pagesCount = Math.ceil(clients.length / limit) || 0;
-
-        // Skip the specified number of documents.limit(limit);
-        res.status(200).json({
-            currentPage: page,
-            pagesCount: pagesCount,
-            clients: clients,
-            clientCount: clients.length,
-        });
-    } catch (error) {
-        res.status(500).json({ error: error.message });
+    if (!department) {
+      return res.status(400).json({ error: "Department is required" });
     }
+
+    const clients = await Client.aggregate([
+      {
+        $match: {
+          departments: { $in: [department] }, // Match by department name (string)
+        },
+      },
+      {
+        $project: {
+          _id: 0, // Exclude _id if not needed
+          name: 1,
+          email: 1,
+        },
+      },
+      {
+        $facet: {
+          metadata: [{ $count: "total" }],
+          data: [{ $skip: skip }, { $limit: limit }],
+        },
+      },
+    ]);
+
+    const totalClients = clients[0].metadata[0]?.total || 0;
+    const pagesCount = Math.ceil(totalClients / limit);
+
+    res.status(200).json({
+      currentPage: page,
+      pagesCount: pagesCount,
+      totalClients: totalClients,
+      clients: clients[0].data,
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 };
+
+
 
 
 // export const getClientCompanies = async (req, res) => {

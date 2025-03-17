@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { useAuth } from "../Contexts/AuthContext";
+ 
 import { HiOutlineLockClosed } from "react-icons/hi";
 import { ImSpinner8 } from "react-icons/im";
 import { PiEyeClosedBold } from "react-icons/pi";
@@ -9,6 +9,7 @@ import { FaEye } from "react-icons/fa6";
 import { AiFillExclamationCircle } from "react-icons/ai";
 import PortalLogo from "/images/DashboardLogo/logo.svg";
 import LoginImg from "/images/Login/Design-stats-pana.svg";
+import { useAuth } from "../../Contexts/AuthContext";
 const Login = () => {
   const { handleLogin } = useAuth();
   const [wrongCreditionls, setwrongCreditionls] = useState(false);
