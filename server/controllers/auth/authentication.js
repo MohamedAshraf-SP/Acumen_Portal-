@@ -17,11 +17,44 @@ dotenv.config();
 const redisExpirePeriod = process.env.REDIS_EXPIRATION_PERIOD;
 
 export const login = async (req, res) => {
-  try {
-    const { email, password } = req.body;
-    const user = await User.findOne({ userName: email });
-    if (!user || !(await bcrypt.compare(password, user.password))) {
-      return res.status(401).json({ message: "Invalid email or password!!" });
+    try {
+
+        const { email, password } = req.body;
+        const user = await User.findOne({ userName: email });
+        if (!user || !(await bcrypt.compare(password, user.password))) {
+            return res.status(401).json({ message: "Invalid email or password!!" });
+        }
+
+        let dataObj = {}
+        if (user.userRole == "client") {
+            dataObj = await Client.findOne({ userID: user._id }).select({ name: 1, _id: 1 });
+        } else if (user.userRole == "accountant") {
+            dataObj = await Accountant.findOne({ userID: user._id }).select({ name: 1, _id: 1 });
+        }
+
+
+        let fullUser = {
+
+            "id": user._id,
+            "role": user.userRole,
+            "dataId": dataObj?._id || null,
+            "name": dataObj?.name || null,
+
+
+        }
+        ///  console.log(fullUser);
+
+
+        const accessToken = generateAccessToken(fullUser);
+        const refreshToken = generateRefreshToken(fullUser);
+        res.cookie("refreshToken", refreshToken, {
+            httpOnly: false,
+            secure: false, // Use true in production for HTTPS
+            sameSite: "strict",
+        });
+        res.json({ accessToken });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
     }
 
     let dataObj = {};
@@ -159,8 +192,13 @@ export const resetPassword = async (req, res) => {
 // create redis client
 
 export const logout = async (req, res) => {
-  res.clearCookie("refreshToken");
-  res.json({ message: "Logged out successfully" });
-};
+    res.clearCookie("refreshToken", {
+        httpOnly: false,
+        secure: false,
+        sameSite: "Lax" // If SameSite=None was used initially, you need it here too
+    });
+    res.json({ message: "Logged out successfully" });
+
+}
 
 // console.log(generateToken({ id: 124, role: "admin" }));

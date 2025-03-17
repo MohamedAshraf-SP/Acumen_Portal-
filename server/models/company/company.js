@@ -62,7 +62,7 @@ const companySchema = new mongoose.Schema({
   directors: [{ type: mongoose.Schema.Types.ObjectId, ref: "Director" }],
   documents: [{ type: mongoose.Schema.Types.ObjectId, ref: "Document" }],
 
-});
+},{timestamps:true});
 
 export default mongoose.model("Company", companySchema);
 

@@ -23,12 +23,12 @@ const dbURI = process.env.DB_URI;
 
 console.log(dbURI)
 const app = express();
-const corsOptions = {
-  origin: "http://localhost:5173", // ✅ Explicitly specify your frontend URL
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"],
-  credentials: true, // ✅ Allows cookies/auth headers
-};
+  const corsOptions = {
+    origin: "http://localhost:5173", // ✅ Explicitly specify your frontend URL
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true, // ✅ Allows cookies/auth headers
+  };
 app.use(cors(corsOptions));
 // Handle preflight requests for OPTIONS method
 app.options('*', cors(corsOptions));

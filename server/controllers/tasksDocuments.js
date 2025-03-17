@@ -66,13 +66,13 @@ export const getAllTasks = async (req, res) => {
         const skip = (page - 1) * limit;
 
         let filter ={}
-        const clientID = req.body.clientID
-        const companyID = req.body.companyID
-        const department = req.body.department
+        const clientID = req.query.clientID
+        const companyID = req.query.companyID
+        const department = req.query.department
 
-        if(clientID)filter.clientID=req.body.clientID
-        if(companyID)filter.companyID=req.body.companyID
-        if(department)filter.department=req.body.department
+        if(clientID)filter.clientID=req.query.clientID
+        if(companyID)filter.companyID=req.query.companyID
+        if(department)filter.department=req.query.department
 
 
 
