@@ -76,11 +76,8 @@ export const deleteItem = (path, itemId) => {
 
 // get All department client
 
-export const getDepartmentClients = (page, limit, department) => {
-  return apiCall(
-    "GET",
-    `clients/ofdepartment?page=${page}&limit=${limit}&department=${department}`
-  );
+export const getDepartmentClients = (page, limit) => {
+  return apiCall("GET", `clients/ofdepartment`, page, limit, {});
 };
 
 export const getDocuments = (page, limit, endpoint, department) => {
