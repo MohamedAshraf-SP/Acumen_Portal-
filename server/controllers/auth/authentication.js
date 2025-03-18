@@ -156,11 +156,6 @@ export const resetPassword = async (req, res) => {
 
 
 
-
-// create redis client
-
-
-
 export const logout = async (req, res) => {
     res.clearCookie("refreshToken", {
         httpOnly: false,
