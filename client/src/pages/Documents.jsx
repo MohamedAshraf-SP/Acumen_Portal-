@@ -99,7 +99,7 @@ const Documents = () => {
       sorter: true,
       align: "center",
       render: (_, record) => (
-        <div className="text-sm font-medium text-gray-800">
+        <div className="text-sm font-normal text-gray-800">
           {formatDate(record.dateTime)}
         </div>
       ),
@@ -112,7 +112,7 @@ const Documents = () => {
       render: (_, record) => (
         <div className="relative group w-full mx-auto">
           {/* Tooltip */}
-          {user?.userRole === "admin" && (
+          {user?.role === "admin" && (
             <span
               className={`absolute -top-8 left-1/2 -translate-x-1/2 w-fit rounded-md group-hover:scale-100 bg-slate-700 text-white px-2 py-1 text-xs shadow-md transition-all duration-300 capitalize ${
                 record.status === "seen"
@@ -171,7 +171,7 @@ const Documents = () => {
     <div className="rounded-lg shadow-sm bg-white overflow-hidden">
       {/* Header */}
       <div className="my-4">
-        <h1 className="text-xl font-semibold leading-[1.5] dark:text-white text-gray-700">
+        <h1 className="text-xl font-semibold leading-[1.5] dark:text-white text-gray-600">
           {isDashboard ? "Recent Uploaded Files" : "Files"}
         </h1>
         {!isDashboard && (

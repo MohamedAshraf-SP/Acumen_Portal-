@@ -1,69 +1,66 @@
 import { IoIosCheckmarkCircle, IoIosCloseCircleOutline } from "react-icons/io";
 import { RiLoader3Line } from "react-icons/ri";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { clearSuccessMsg, setsuccessmsg } from "../Rtk/slices/settingSlice";
+import { formatDate } from "../Utils";
 
 function ConfrmMessage() {
   const dispatch = useDispatch();
   const { successmsg } = useSelector((state) => state.setting);
+  const [messageDate, setMessageDate] = useState(null);
 
-  // Close success/failure message on click
+  // Close success message on click
   const handleCloseSccessMsg = (index) => {
     const allmessage = [...successmsg];
-    allmessage?.splice(index, 1); // Remove message at the specified index
-    dispatch(setsuccessmsg({ successmsg: allmessage })); // Update the state with the modified array
+    allmessage.splice(index, 1); // Remove message at the specified index
+    dispatch(setsuccessmsg({ successmsg: allmessage }));
   };
 
-  // Automatically hide message after 4 seconds
   useEffect(() => {
     if (successmsg.length > 0) {
-      const timer = setInterval(() => {
+      setMessageDate(new Date()); // Set date when a new message arrives
+
+      const timer = setTimeout(() => {
         dispatch(clearSuccessMsg());
-      }, 2000);
+      }, 3000);
 
-      // Auto-clear the message after 2000ms (2 seconds)
-
-      // Cleanup the timer when the effect is cleaned up (new message or unmount)
-      return () => clearInterval(timer);
+      return () => clearTimeout(timer);
     }
-  }, [successmsg]); // Only run when `successmsg` or `dispatch` changes
+  }, [successmsg, dispatch]); // Run effect when success messages change
 
   return (
-    <div className={`absolute top-0 right-0 z-50 w-fit h-fit rounded-lg`}>
+    <div className="absolute top-0 right-0 z-50 w-fit h-[60px] rounded-lg">
       {successmsg.map((msg, index) => (
         <div
-          className="mx-2 my-4 bg-white dark:bg-[#1C252E] p-[8px] [box-shadow:rgba(0,_0,_0,_0.24)_0px_3px_8px] rounded-lg animate-fade-in-out"
+          className="mx-2 my-4 h-[70px] bg-white border border-solid border-gray-100 dark:bg-[#1C252E] p-[8px] rounded-lg animate-fade-in-out [box-shadow:rgba(0,_0,_0,_0.18)_0px_2px_8px]"
           key={index}
         >
-          <div className="flex flex-row items-start">
-            <div className="flex flex-row items-center">
+          <div className="flex flex-row items-start justify-between">
+            <div className="flex flex-row items-start gap-2">
               <span
                 className={`p-2 ${
-                  !msg.fail
-                    ? "bg-[#EEFAF2] dark:bg-[#1D3131] text-[#22C55E]"
-                    : msg.fail
+                  msg.fail
                     ? "bg-[#FFF3F3] dark:bg-[#381818] text-[#F87171]"
-                    : ""
+                    : "bg-[#EEFAF2] dark:bg-[#1D3131] text-[#22C55E]"
                 } block rounded-lg`}
               >
-                {!msg.fail ? (
-                  <IoIosCheckmarkCircle />
-                ) : msg.fail ? (
-                  "⚠️"
-                ) : (
-                  <RiLoader3Line className="animate-spin" />
-                )}
+                {msg.fail ? "⚠️" : <IoIosCheckmarkCircle />}
               </span>
-              <p className="text-gray-700 text-sm pr-20 pl-2 font-normal">
-                {msg && msg.message ? msg.message : "Loading..."}
-              </p>
+              <div>
+                <p className="text-slate-800 text-sm pr-10 font-medium">
+                  {msg?.message || "Loading..."}
+                </p>
+                <span className="text-xs font-normal text-[#7b7b7c]">
+                  {messageDate ? formatDate(messageDate, "long") : ""}
+                </span>
+              </div>
             </div>
             <div
-              className="text-gray-600 text-lg flex items-start justify-start px-1 cursor-pointer hover:text-slate-400 transition"
-              onClick={() => handleCloseSccessMsg(index)} // Close the specific message on click
+              className="text-slate-800 rounded-full text-lg flex items-start justify-start cursor-pointer hover:text-slate-400 transition"
+              onClick={() => handleCloseSccessMsg(index)}
             >
-              <IoIosCloseCircleOutline />
+              <IoIosCloseCircleOutline size={20} />
             </div>
           </div>
         </div>

@@ -136,13 +136,8 @@ const Companytable = memo(() => {
       <div className="my-8 rounded-lg shadow-sm bg-white overflow-scroll dark:bg-secondary-dark-bg dark:text-gray-200">
         {/* Header */}
         <div className="flex justify-between items-center p-4 border-b dark:border-gray-700">
-          <h4 className="text-xl font-semibold text-gray-700">
-            Latest Companies
-          </h4>
+          <h4 className="text-xl font-semibold text-gray-600">Companies</h4>
           <Link to="/companies/add-company" className="blackbutton">
-            className="flex items-center gap-1 bg-[#1A7F64] text-white px-3 py-2
-            rounded-md hover:shadow-lg hover:opacity-[.8] font-semibold
-            text-[13px] transition" >
             <GoPlus className="text-lg" />
             Add Company
           </Link>

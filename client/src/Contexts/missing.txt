@@ -10,3 +10,5 @@
   clear syncfusion
 - make checking email if exist as a hook
  - in update client or accountant shodldn't add exist email
+ - rerender login when log
+ - didnt show wrong password

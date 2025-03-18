@@ -137,9 +137,9 @@ const ClientTable = () => {
       <div className="my-8 rounded-lg shadow-sm bg-white overflow-hidden">
         {/* Header */}
         <div className="flex justify-between items-center p-2 border-b">
-          <h4 className="text-xl font-semibold text-gray-700">Clients</h4>
+          <h4 className="text-xl font-semibold text-gray-600">Clients</h4>
           <Link to="/clients/add-Client" className="blackbutton">
-            <GoPlus />
+            <GoPlus size={18}/>
             Add Client
           </Link>
         </div>

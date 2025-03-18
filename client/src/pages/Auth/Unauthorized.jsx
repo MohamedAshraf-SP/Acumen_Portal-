@@ -1,7 +1,8 @@
 import { Link } from "react-router-dom";
 import notfoundImg from "/images/Not found/error-401.png";
 import { useAuth } from "../../Contexts/AuthContext";
- 
+import { IoIosHome } from "react-icons/io";
+
 export default function Unauthorized() {
   const { user } = useAuth();
   return (
@@ -17,9 +18,10 @@ export default function Unauthorized() {
           <img src={notfoundImg} alt="not found img" loading="lazy" />
         </div>
         <Link
-          to={`${user?.role}/dashboard`}
-          className="px-4 py-3 bg-[#1C252E] text-white rounded-md cursor-pointer hover:bg-slate-950  transition-all duration-300 font-medium"
+          to={`/${user?.role}/dashboard`}
+          className=" p-3 bg-[#1C252E] text-white rounded-md cursor-pointer hover:bg-slate-950  transition-all duration-300 font-normal text-sm flex items-center justify-center gap-1"
         >
+          <IoIosHome size={18} />
           Take me back
         </Link>
       </div>
