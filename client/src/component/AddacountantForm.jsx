@@ -96,8 +96,6 @@ export default function AddacountantForm() {
           addNewData({ path: "accountants", itemData: values })
         ).unwrap();
 
-        console.log("Accountant added successfully:", result);
-
         // Show success alert
         setalert({
           msg: "Accountant added successfully",
@@ -107,7 +105,6 @@ export default function AddacountantForm() {
         resetForm(); // Reset form only on success
         return result; // Return result for further use if needed
       } catch (error) {
-        
         // Extract meaningful error message
         const errorMsg = error || "Failed to add accountant";
         // Show error alert

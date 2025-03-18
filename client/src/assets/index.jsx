@@ -14,6 +14,9 @@ import { MdEmail } from "react-icons/md";
 import { IoSettingsOutline } from "react-icons/io5";
 // cliets icons
 import { IoDocuments } from "react-icons/io5";
+import { FaUserFriends } from "react-icons/fa";
+import { IoMdNotifications } from "react-icons/io";
+import { RiAccountPinCircleFill } from "react-icons/ri";
 
 // ------------- dashboard overciew icons
 import { FaUserTie } from "react-icons/fa6";
@@ -182,40 +185,41 @@ export const AppColors = [
 // Dashboard Overview
 export const dashboardAnalytics = [
   {
-    icon: <FaUserTie />,
-    Title: "Clients",
+    icon: <FaUserFriends />,
+    Title: "Total Clients",
     endpoint: "Clients",
     count: "77",
-    bgColor: "#D6F1E3",
-    iconColor: "#aaacad",
-    titleColor: "#1C1C1C",
+    bgColor: "#FFE4EC",
+
+    iconColor: "#916FE6",
+    titleColor: "#9298A2",
   },
   {
-    icon: <MdManageAccounts />,
-    Title: "Accountants",
+    icon: <RiAccountPinCircleFill />,
+    Title: "Total Accountants",
     endpoint: "Accountants",
     count: "11",
-    bgColor: "#E5ECF6",
-    iconColor: "#aaacad",
-    titleColor: "#1C1C1C",
+    bgColor: "#E7E2F3",
+    iconColor: "#FF6B96",
+    titleColor: "#9298A2",
   },
   {
     icon: <FaBuildingShield />,
-    Title: "Companies",
+    Title: "Total Companies",
     endpoint: "Companies",
     count: "77",
-    bgColor: "#E2E1DE",
-    iconColor: "#aaacad",
-    titleColor: "#1C1C1C",
+    bgColor: "#D2F9F4",
+    iconColor: "#00CEB6",
+    titleColor: "#9298A2",
   },
   {
-    icon: <MdEmail />,
-    Title: "Alerts",
+    icon: <IoMdNotifications />,
+    Title: "Total Alerts",
     endpoint: "helpers/email/logs",
     count: "58",
-    bgColor: "#EBE4FF",
-    iconColor: "#aaacad",
-    titleColor: "#1C1C1C",
+    bgColor: "#E5F5FF",
+    iconColor: "#0BA5FF",
+    titleColor: "#9298A2",
   },
 ];
 

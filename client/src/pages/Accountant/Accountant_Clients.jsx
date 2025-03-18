@@ -36,7 +36,7 @@ const Accountant_Clients = () => {
   const onPageChange = (page, pageSize) => {
     setPagination({ current: page, pageSize });
   };
-
+  console.log(user, clients);
   // Fetch department clients
   const fetDepartmentClients = async (page, pageSize) => {
     setLoadingStatus("loading");
@@ -46,7 +46,7 @@ const Accountant_Clients = () => {
         pageSize,
         user?.department
       );
- 
+      console.log(response);
       if (response && response?.clients) {
         setClients(response?.clients);
         setTotalClients(response?.totalClients);

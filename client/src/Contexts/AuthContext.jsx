@@ -3,8 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
 import Cookies from "js-cookie";
-const api = import.meta.env.VITE_API_URL;
 
+const api = import.meta.env.VITE_API_URL;
 const AuthContext = createContext();
 
 export const AuthContextProvider = ({ children }) => {
@@ -35,39 +35,54 @@ export const AuthContextProvider = ({ children }) => {
       if (response.data) {
         const { accessToken } = response.data;
         const decodedUser = decodedToken(accessToken);
+
+        if (!decodedUser) {
+          throw new Error("Invalid token received");
+        }
+
         setAccessToken(accessToken);
         setUser(decodedUser);
         axios.defaults.headers.common[
           "Authorization"
         ] = `Bearer ${accessToken}`;
-        navigate(`${decodedUser.role}/dashboard`);
+
+        // Navigate AFTER user state updates
+        setTimeout(() => {
+          navigate(`/${decodedUser.role}/dashboard`);
+        }, 100);
       }
-      return response;
     } catch (error) {
-     // console.error("Login failed. Please try again.", error);
-      return error;
+      // console.error("Login failed:", error);
+      throw error;
     } finally {
       setLoading(false);
     }
   };
+
   const logout = async () => {
     setLoading(true);
     try {
-      await axios.get(`${api}/auth/logout`, {}, { withCredentials: true });
+      await axios.get(`${api}/auth/logout`, { withCredentials: true });
       setUser(null);
       setAccessToken(null);
+      Cookies.remove("refreshToken"); // Ensure refresh token is removed
       navigate("/auth/login");
-      setLoading(false);
     } catch (error) {
       console.error("Logout failed:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const refreshAccessToken = async (refreshToken) => {
+  const refreshAccessToken = async () => {
     try {
+      const refreshToken = Cookies.get("refreshToken");
+      if (!refreshToken) return null; // No token available, skip refresh
+
       const response = await axios.post(`${api}/auth/refreshtoken`, {
         refreshToken,
       });
+
       if (response.data) {
         const { newAccessToken } = response.data;
         setAccessToken(newAccessToken);
@@ -77,24 +92,30 @@ export const AuthContextProvider = ({ children }) => {
         return newAccessToken;
       }
     } catch (error) {
-    //   console.error("Failed to refresh access token:", error);
+      console.error("Failed to refresh access token:", error);
+      return null;
     }
   };
-  // ask for new accesss Token
- 
+
   useEffect(() => {
     const initializeAuth = async () => {
-      const refreshToken = Cookies.get("refreshToken");
-      const newAccessToken = await refreshAccessToken(refreshToken);
-      if (newAccessToken) {
-        const decodedUser = decodedToken(newAccessToken);
-        setUser(decodedUser);
+      setLoading(true);
+      try {
+        const newAccessToken = await refreshAccessToken();
+        if (newAccessToken) {
+          const decodedUser = decodedToken(newAccessToken);
+          setUser(decodedUser);
+        }
+      } catch (error) {
+        console.error("Auth initialization failed:", error);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
 
     initializeAuth();
   }, []);
+
   return (
     <AuthContext.Provider
       value={{ user, accessToken, handleLogin, logout, loading }}

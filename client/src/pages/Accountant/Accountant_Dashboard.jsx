@@ -10,7 +10,7 @@ import { useAuth } from "../../Contexts/AuthContext";
 
 // Lazy load each table
 const AccountantClient = lazy(() => import("./Accountant_Clients"));
-const DocumentTable = lazy(() => import("../Documents"));
+const AccountDocument = lazy(() => import("./Accountants_Documents"));
 
 export default function Accountant_Dashboard() {
   const { user, loading } = useAuth();
@@ -76,7 +76,7 @@ export default function Accountant_Dashboard() {
                 <Skeleton height="2rem" className="mb-2" />
               </div>
             ))
-          : OverViewAnalysis.map((block, index) => {
+          : OverViewAnalysis?.map((block, index) => {
               const countData = usersCount[index];
               return (
                 <Block_Count
@@ -97,7 +97,7 @@ export default function Accountant_Dashboard() {
       <div className="container overflow-hidden">
         {/* Render tables independently */}
         <LazyTable component={AccountantClient} />
-        <LazyTable component={DocumentTable} />
+        <LazyTable component={AccountDocument} />
       </div>
     </div>
   );
