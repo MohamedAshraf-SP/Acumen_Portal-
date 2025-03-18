@@ -32,24 +32,6 @@ export default function Navbar() {
     { title: "Profile", href: "/Profile" },
     { title: "Settings", href: "/settings" },
   ];
-  // get logged user Details
-  const fetchUserDetails = async () => {
-    try {
-      const userData = await getItem("users", user?.id);
-
-      if (userData) {
-        setUserDetails(userData);
-      }
-    } catch (error) {
-      console.error("Error fetching user details", error);
-    }
-  };
-
-  useEffect(() => {
-    if (user?.id) {
-      fetchUserDetails();
-    }
-  }, [user?.id]);
 
   useEffect(() => {
     dispatch(setScreenSize(window.innerWidth));
@@ -126,11 +108,10 @@ export default function Navbar() {
               src={userimg}
               alt="user-profile"
             />
-            <p className="text-gray-400 text-14">
+            <p className="text-gray-400 font-normal text-14">
               Hi,{" "}
               <span className="font-bold ml-1">
-                {" "}
-                {userDetails?.userName?.split("").slice(0, 10).join("")}
+                {user?.name ? user?.name : "admin"}
               </span>
             </p>
             <MdKeyboardArrowDown className="text-gray-400 text-14" />
@@ -146,11 +127,9 @@ export default function Navbar() {
                 loading="lazy"
               />
               <div className="flex flex-col justify-center gap-1">
-                <h1 className="text-sm">
-                  {userDetails?.userName?.split("").slice(0, 10).join("")}
-                </h1>
+                <h1 className="text-sm">{user?.name ? user?.name : "admin"}</h1>
                 <p className="text-sm font-medium text-center text-[#389e7c] bg-[#e4fcf0] p-1 rounded-lg capitalize">
-                  {userDetails?.userRole}
+                  {user?.role}
                 </p>
               </div>
             </div>

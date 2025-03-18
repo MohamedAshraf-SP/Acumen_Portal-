@@ -1,4 +1,5 @@
 import axios from "axios";
+
 const api = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
 // Centralized error handling function
@@ -24,7 +25,6 @@ const apiCall = async (
     data,
     headers: { ...headers },
   };
-
   try {
     // If data is FormData, set the Content-Type header to multipart/form-data
     if (data instanceof FormData) {
@@ -75,6 +75,16 @@ export const deleteItem = (path, itemId) => {
 };
 
 // get All department client
-export const getDepartmentClients = (department) => {
-  return apiCall("POST", "/clients/ofdepartment", department);
+export const getDepartmentClients = (page, limit, department) => {
+  return apiCall(
+    "GET",
+    `clients/ofdepartment?page=${page}&limit=${limit}&department=${encodeURIComponent(
+      department
+    )}`,
+
+    page,
+    limit,
+    department
+  );
 };
+export const getClientDocuments = (page, limit, department) => {};

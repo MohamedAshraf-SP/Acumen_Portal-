@@ -18,9 +18,7 @@ registerLicense(
 createRoot(document.getElementById("root")).render(
   <Provider store={store}>
     <BrowserRouter>
-      <AuthContextProvider>
-        <App />
-      </AuthContextProvider>
-        </BrowserRouter>
+      <App />
+    </BrowserRouter>
   </Provider>
 );

@@ -68,7 +68,6 @@ export const AuthContextProvider = ({ children }) => {
       const response = await axios.post(`${api}/auth/refreshtoken`, {
         refreshToken,
       });
-
       if (response.data) {
         const { newAccessToken } = response.data;
         setAccessToken(newAccessToken);
@@ -82,7 +81,7 @@ export const AuthContextProvider = ({ children }) => {
     }
   };
   // ask for new accesss Token
-
+ 
   useEffect(() => {
     const initializeAuth = async () => {
       const refreshToken = Cookies.get("refreshToken");

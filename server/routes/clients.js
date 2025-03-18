@@ -16,8 +16,8 @@ export const clientRoute = express.Router();
 // Clients Management
 clientRoute.get("/", roleMiddleware(["admin"]), getClients);
 clientRoute.get("/count", roleMiddleware(["admin", "accountant"]), getClientsCount);
-clientRoute.get("/ofdepartment", roleMiddleware(["admin", "accountant"]),accountantRoleMiddleware,  getDepartmentClients);
-clientRoute.get("/:id/companies", roleMiddleware(["admin", "accountant", "client"]),accountantDepartmentSetMiddleware, getClientCompanies);
+clientRoute.get("/ofdepartment", roleMiddleware(["admin", "accountant"]), accountantRoleMiddleware, getDepartmentClients);
+clientRoute.get("/:id/companies", roleMiddleware(["admin", "accountant", "client"]), accountantDepartmentSetMiddleware, getClientCompanies);
 clientRoute.get("/:id", roleMiddleware(["admin", "accountant"]), getClient);
 
 clientRoute.post("/", roleMiddleware(["admin", "accountant", "client"]), upload.single("LOEfile"), addClient);

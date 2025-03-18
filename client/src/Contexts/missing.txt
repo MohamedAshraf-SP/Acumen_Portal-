@@ -1,4 +1,12 @@
-- in adding accountant response is bad
-- in adding client it didn't add response is bad
+- in adding accountant response is bad               (Done)
+- in adding client it didn't add response is bad      (Done)
+- in accountant fetch counts           (FE)
+- task documents                       (BE)
+- fetch users Company                  (BE)
+- when logout refreshToken isn't clear (BE)
+
+
+
+  clear syncfusion
 - make checking email if exist as a hook
  - in update client or accountant shodldn't add exist email

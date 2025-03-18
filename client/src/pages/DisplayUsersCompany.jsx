@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { Table, Empty, Pagination } from "antd";
 import axios from "axios";
 // import icons
@@ -16,7 +16,8 @@ import { useAuth } from "../Contexts/AuthContext";
 
 export default function DisplayUsersCompany() {
   const api = import.meta.env.VITE_API_URL;
-  ("");
+  const location = useLocation();
+  const isDashboard = location.pathname.endsWith("dashboard");
   const routes = ["Companies", "Client Company"];
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -55,9 +56,8 @@ export default function DisplayUsersCompany() {
     } catch (error) {
       console.error("Error fetching companies:", error);
       setStatus("failed");
-    }finally
-    {
-      setStatus('idle')
+    } finally {
+      setStatus("idle");
     }
   };
 
@@ -176,24 +176,28 @@ export default function DisplayUsersCompany() {
         {/* Header */}
         <div className="p-4 flex flex-row items-center justify-between  ">
           <div>
-            <h1 className="text-xl font-semibold text-gray-700">My Companies</h1>
-            <ul className="flex flex-row items-center space-x-1 text-sm py-2">
-              {routes?.map((route, index) => (
-                <li
-                  key={index}
-                  className={`flex flex-row items-center ${
-                    index === routes?.length - 1
-                      ? "text-gray-400"
-                      : "text-slate-900 dark:text-gray-200"
-                  }`}
-                >
-                  {index > 0 && (
-                    <LuDot className="text-lg text-gray-400 font-bold" />
-                  )}
-                  {route}
-                </li>
-              ))}
-            </ul>
+            <h1 className="text-xl font-semibold text-gray-700">
+              My Companies
+            </h1>
+            {!isDashboard && (
+              <ul className="flex flex-row items-center space-x-1 text-sm py-2">
+                {routes?.map((route, index) => (
+                  <li
+                    key={index}
+                    className={`flex flex-row items-center ${
+                      index === routes?.length - 1
+                        ? "text-gray-400"
+                        : "text-slate-900 dark:text-gray-200"
+                    }`}
+                  >
+                    {index > 0 && (
+                      <LuDot className="text-lg text-gray-400 font-bold" />
+                    )}
+                    {route}
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
           <Link to="/clients/add-Client" className="blackbutton">
             <GoPlus size={16} /> Add Company
