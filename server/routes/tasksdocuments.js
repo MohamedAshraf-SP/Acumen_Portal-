@@ -9,14 +9,14 @@ import {
   downloadTaskById,
   getTasksCount,
 } from "../controllers/tasksDocuments.js";
-import { roleMiddleware } from "../middlewares/autherization.js";
+import { accountantDepartmentSetMiddleware, roleMiddleware } from "../middlewares/autherization.js";
 
 const tasksRouter = express.Router();
 
 // Routes
 
 tasksRouter.get('/count',roleMiddleware(["admin"]), getTasksCount)
-tasksRouter.get('/',roleMiddleware(["admin","accountant","client"]), getAllTasks);
+tasksRouter.get('/',roleMiddleware(["admin","accountant","client"]),accountantDepartmentSetMiddleware, getAllTasks);
 tasksRouter.get('/:id',roleMiddleware(["admin","accountant","client"]), getTaskById);
 tasksRouter.get('/download/:id',roleMiddleware(["admin","accountant","client"]), downloadTaskById);
 tasksRouter.post('/',roleMiddleware(["admin","accountant","client"]), upload.single('file'), addTask);

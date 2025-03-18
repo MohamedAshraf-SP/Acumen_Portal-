@@ -17,6 +17,7 @@ const redisExpirePeriod = process.env.REDIS_EXPIRATION_PERIOD
 export const login = async (req, res) => {
     try {
 
+        let fullUser = {}
         const { email, password } = req.body;
         const user = await User.findOne({ userName: email });
         if (!user || !(await bcrypt.compare(password, user.password))) {
@@ -27,20 +28,23 @@ export const login = async (req, res) => {
         if (user.userRole == "client") {
             dataObj = await Client.findOne({ userID: user._id }).select({ name: 1, _id: 1 });
         } else if (user.userRole == "accountant") {
-            dataObj = await Accountant.findOne({ userID: user._id }).select({ name: 1, _id: 1 });
+
+            dataObj = await Accountant.findOne({ userID: user._id }).select({ name: 1,department:1, _id: 1 });
+           // if (dataObj) console.log(fullUser["department"]); 
+           console.log(dataObj.department);
         }
 
 
-        let fullUser = {
+        fullUser = {
 
             "id": user._id,
             "role": user.userRole,
             "dataId": dataObj?._id || null,
             "name": dataObj?.name || null,
-
+            "department":dataObj.department||null
 
         }
-        ///  console.log(fullUser);
+      
 
 
         const accessToken = generateAccessToken(fullUser);

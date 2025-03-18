@@ -37,3 +37,24 @@ export const roleMiddleware = (requiredRoles) => {
         next();
     };
 };
+
+export const accountantRoleMiddleware = (req, res, next) => {
+    if (req.user.role !== "accountant") {
+        return res.status(403).json({
+            message: "Forbidden: You do not have accountant permissions!"
+        });
+    } else {
+        req.query.department = req.user.department
+    }
+    next(); // ✅ Allow request to continue
+};
+
+export const accountantDepartmentSetMiddleware = (req, res, next) => {
+  //  console.log(req.user);
+    if ((req.query.accountantDepartment))
+        if (req.user.role == "accountant") {
+            req.query.department = req.user.department
+        }
+
+    next(); // ✅ Allow request to continue
+};

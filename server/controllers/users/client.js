@@ -200,8 +200,8 @@ export const getClientsCount = async (req, res) => {
 
 export const getClientCompanies = async (req, res) => {
     try {
-        const { department } = req.body;
-        const { page = 1, limit = 10 } = req.query; // Default: page 1, limit 10
+
+        const { page = 1, limit = 10, department } = req.query; // Default: page 1, limit 10
         const skip = (page - 1) * limit; // Calculate the number of items to skip
 
         let filter = { _id: req.params.id };
@@ -243,14 +243,16 @@ export const getDepartmentClients = async (req, res) => {
         const page = Number(req.query.page) || 1;
         const limit = Number(req.query.limit) || 10;
         const skip = (page - 1) * limit;
-        if (!req.body.department) {
+
+        console.log(req.user.department);
+        if (!req.query.department) {
             return res.status(200).json({ message: "department required" })
         }
 
         const clients = await Client.aggregate([
             {
                 $match: {
-                    departments: { $in: [req.body.department] }
+                    departments: { $in: [req.query.department] }
                 }
 
             },
@@ -264,7 +266,7 @@ export const getDepartmentClients = async (req, res) => {
             },
             {
                 $addFields: {
-                    Department: req.body.department // Add the requested department
+                    Department: req.query.department // Add the requested department
                 }
             }
         ]).skip(skip)

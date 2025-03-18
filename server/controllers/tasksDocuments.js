@@ -61,18 +61,20 @@ export const addTask = async (req, res) => {
 // READ: Get all tasks
 export const getAllTasks = async (req, res) => {
     try {
+
+      
         const page = req.query.page || 1;
         const limit = req.query.limit || 100;
         const skip = (page - 1) * limit;
 
-        let filter ={}
+        let filter = {}
         const clientID = req.query.clientID
         const companyID = req.query.companyID
         const department = req.query.department
-
-        if(clientID)filter.clientID=req.query.clientID
-        if(companyID)filter.companyID=req.query.companyID
-        if(department)filter.department=req.query.department
+        console.log(department);
+        if (clientID) filter.clientID = req.query.clientID
+        if (companyID) filter.companyID = req.query.companyID
+        if (department) filter.department = req.query.department
 
 
 
@@ -90,10 +92,11 @@ export const getAllTasks = async (req, res) => {
 
         // Skip the specified number of documents.limit(limit);;
         res.status(200).json({
+            TasksDocumentCount,
             currentPage: page,
             pagesCount: pagesCount,
-            TasksDocuments: TasksDocuments,
-            TasksDocumentCount,
+            TasksDocuments: TasksDocuments
+
         });
 
     } catch (error) {
