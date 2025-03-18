@@ -29,9 +29,9 @@ export const login = async (req, res) => {
             dataObj = await Client.findOne({ userID: user._id }).select({ name: 1, _id: 1 });
         } else if (user.userRole == "accountant") {
 
-            dataObj = await Accountant.findOne({ userID: user._id }).select({ name: 1,department:1, _id: 1 });
-           // if (dataObj) console.log(fullUser["department"]); 
-           console.log(dataObj.department);
+            dataObj = await Accountant.findOne({ userID: user._id }).select({ name: 1, department: 1, _id: 1 });
+            // if (dataObj) console.log(fullUser["department"]); 
+            console.log(dataObj.department);
         }
 
 
@@ -41,10 +41,10 @@ export const login = async (req, res) => {
             "role": user.userRole,
             "dataId": dataObj?._id || null,
             "name": dataObj?.name || null,
-            "department":dataObj.department||null
+            "department": dataObj.department || null
 
         }
-      
+
 
 
         const accessToken = generateAccessToken(fullUser);
