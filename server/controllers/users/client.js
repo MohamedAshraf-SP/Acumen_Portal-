@@ -244,9 +244,9 @@ export const getDepartmentClients = async (req, res) => {
         const limit = Number(req.query.limit) || 10;
         const skip = (page - 1) * limit;
 
-        console.log(req.user.department);
+        ///console.log(req.user.department);
         if (!req.query.department) {
-            return res.status(200).json({ message: "department required" })
+            return res.status(400).json({ message: "department required" })
         }
 
         const clients = await Client.aggregate([
