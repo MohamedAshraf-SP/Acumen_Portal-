@@ -1,0 +1,2868 @@
+{
+	"info": {
+		"_postman_id": "af0473d0-6f4d-4c98-a730-9465235f525e",
+		"name": "Accumen Portal",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "19952273",
+		"_collection_link": "https://faezoon.postman.co/workspace/faezoon-Workspace~363d2b31-641a-4f96-9215-c63493672946/collection/19952273-af0473d0-6f4d-4c98-a730-9465235f525e?action=share&source=collection_link&creator=19952273"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Authentication",
+					"item": [
+						{
+							"name": "Login",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n \"email\":\"mohamed.ashrafsp@gmail.com\",\r\n    \"password\": \"PFbF0ZmRDSHs\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/auth/login",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"auth",
+										"login"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Refresh Token",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"refreshToken\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3YzhjNTljOWIzNzgxNTYwZThjNzMzMiIsImlhdCI6MTc0MTc1NTMzMiwiZXhwIjoxNzQyOTY0OTMyfQ.lF8PTZNcpPxkHAtcW7quFyTU5-eZIhaErMrPudo3Jsc\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/auth/refreshtoken",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"auth",
+										"refreshtoken"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Reset Password",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"email\":\"mohamed.aswwwhrafsp@gmail.com\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/auth/resetpassword",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"auth",
+										"resetpassword"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "logout",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ODgwZjkzMTEzZTNhY2QyZWU0ZTAzNyIsInJvbGUiOiJjbGllbnQiLCJpYXQiOjE3MzY5NzAyODAsImV4cCI6MTczNjk3Mzg4MH0.vdfvurR7wV_oTS9imqtlqThDwto-amuzw4-SebM2DHo",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"refreshToken\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ODgwZjkzMTEzZTNhY2QyZWU0ZTAzNyIsInJvbGUiOiJjbGllbnQiLCJpYXQiOjE3MzY5NzAyODAsImV4cCI6MTczNjk3Mzg4MH0.vdfvurR7wV_oTS9imqtlqThDwto-amuzw4-SebM2DHo\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/auth/logout",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"auth",
+										"logout"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Users",
+					"item": [
+						{
+							"name": "Add",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"userName\": \"4444444\",\r\n    \"password\": \"444444\",\r\n    \"role\": \"admin\" //,\"user\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{localhost}}/users",
+									"host": [
+										"{{localhost}}"
+									],
+									"path": [
+										"users"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"userName\": \"userName,2\",\r\n    \"oldPassword\": \"password\",\r\n    \"newPassword\": \"passwordxxx\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{localhost}}/users/67c6f8a1c3416eec88eb5402",
+									"host": [
+										"{{localhost}}"
+									],
+									"path": [
+										"users",
+										"67c6f8a1c3416eec88eb5402"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get All",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{localhost}}/users",
+									"host": [
+										"{{localhost}}"
+									],
+									"path": [
+										"users"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get User",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{localhost}}/users/679f8b6ed8c53340186ce5fa",
+									"host": [
+										"{{localhost}}"
+									],
+									"path": [
+										"users",
+										"679f8b6ed8c53340186ce5fa"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"userName\": \"userName,\",\r\n      \"password\": \"password\",\r\n      \"role\": \"admin\"//,\"user\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{localhost}}/users/67b48b0f811429ddea7d7f8b",
+									"host": [
+										"{{localhost}}"
+									],
+									"path": [
+										"users",
+										"67b48b0f811429ddea7d7f8b"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Accountants",
+					"item": [
+						{
+							"name": "Get Count",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/accountants/count",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"accountants",
+										"count"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get By ID",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzE4OWM4MDUxY2Q1NDAxYjAxNGY4ZDciLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3Mjk2NjcxNzcsImV4cCI6MTc2MTIyNDc3N30.WxxISC40YqRswIlBpMysjzgNeQbuMbfREbDyF3GxSB4",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/accountants/6748ecb841adf7a001d6b7a7",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"accountants",
+										"6748ecb841adf7a001d6b7a7"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get All",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{acesstoken Accumen 1 year}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/accountants/?page=1&limit=5",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"accountants",
+										""
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "1"
+										},
+										{
+											"key": "limit",
+											"value": "5"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Add New",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{acesstoken Accumen 1 year}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"mohamed\",\r\n     \"email\": \"mohamed.ashrafspx@gmail.com\",\r\n    \"phone\": \"0100110011\",\r\n    \"department\": \"Finance department\"  \r\n    /* enum   departments: [\r\n      'Annual accounts, CT and Director department',\r\n      'Finance department',\r\n      'General and administrative matters',\r\n      'Paye, Pension and CIS department department',\r\n      'Self-employed and partnership department',\r\n      'Vat department'\r\n    ],*/\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/accountants/",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"accountants",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update By ID",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzE4OWM4MDUxY2Q1NDAxYjAxNGY4ZDciLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3Mjk2NjcxNzcsImV4cCI6MTc2MTIyNDc3N30.WxxISC40YqRswIlBpMysjzgNeQbuMbfREbDyF3GxSB4",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"mohamed\",\r\n    \"email\": \"mxx@mxx.com\",\r\n    \"phone\": \"0100110011\",\r\n    \"department\": \"Finance department\"  \r\n    /* enum   departments: [\r\n      'Annual accounts, CT and Director department',\r\n      'Finance department',\r\n      'General and administrative matters',\r\n      'Paye, Pension and CIS department department',\r\n      'Self-employed and partnership department',\r\n      'Vat department'\r\n    ],*/\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/accountants/6748ecb841adf7a001d6b7a7",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"accountants",
+										"6748ecb841adf7a001d6b7a7"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete By ID",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzE4OWM4MDUxY2Q1NDAxYjAxNGY4ZDciLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3Mjk2NjcxNzcsImV4cCI6MTc2MTIyNDc3N30.WxxISC40YqRswIlBpMysjzgNeQbuMbfREbDyF3GxSB4",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/accountants/6748ed8e4f7d9678e7b74df4",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"accountants",
+										"6748ed8e4f7d9678e7b74df4"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Clients",
+					"item": [
+						{
+							"name": "Get Count",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{acesstoken Accumen 1 year}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/clients/count",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"clients",
+										"count"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get By ID",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{acesstoken Accumen 1 year}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/clients/679f8b6ed8c53340186ce5fe",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"clients",
+										"679f8b6ed8c53340186ce5fe"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get All",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{acesstoken Accumen 1 year}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/clients",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"clients"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Add New",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{accountant  token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "name",
+											"value": "testing clients",
+											"type": "text"
+										},
+										{
+											"key": "email",
+											"value": "d@gmail.com",
+											"type": "text"
+										},
+										{
+											"key": "phone",
+											"value": "123123",
+											"type": "text"
+										},
+										{
+											"key": "notification",
+											"value": "1",
+											"type": "text"
+										},
+										{
+											"key": "department",
+											"value": "General and administrative matters",
+											"type": "text"
+										},
+										{
+											"key": "LOEfile",
+											"type": "file",
+											"src": "postman-cloud:///1efbb452-9f38-4f20-9edf-941561af652e"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{url}}/clients/",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"clients",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update By ID",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzE4OWM4MDUxY2Q1NDAxYjAxNGY4ZDciLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3Mjk2NjcxNzcsImV4cCI6MTc2MTIyNDc3N30.WxxISC40YqRswIlBpMysjzgNeQbuMbfREbDyF3GxSB4",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"mohamed\",\r\n    \"email\": \"m@m.com\",\r\n    \"notification\":1, ////1:email .2:sms  .3:both\r\n    \"department\": \"Finance department\"  \r\n    /* enum   departments: [\r\n      'Annual accounts, CT and Director department',\r\n      'Finance department',\r\n      'General and administrative matters',\r\n      'Paye, Pension and CIS department department',\r\n      'Self-employed and partnership department',\r\n      'Vat department'\r\n    ],*/\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/clients/6748ce5b587951d6932a32b8",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"clients",
+										"6748ce5b587951d6932a32b8"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete By ID",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzE4OWM4MDUxY2Q1NDAxYjAxNGY4ZDciLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3Mjk2NjcxNzcsImV4cCI6MTc2MTIyNDc3N30.WxxISC40YqRswIlBpMysjzgNeQbuMbfREbDyF3GxSB4",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/clients/677d58047dd421a8591a5bfd",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"clients",
+										"677d58047dd421a8591a5bfd"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Companies",
+			"item": [
+				{
+					"name": "Company and duedates",
+					"item": [
+						{
+							"name": "Get Count",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{accountant  token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/companies/count",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"companies",
+										"count"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get By ID",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/Companies/679f827a303455622f7db364",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"Companies",
+										"679f827a303455622f7db364"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get All",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{accountant  token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/Companies",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"Companies"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Add New",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{accountant  token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"clientID\": \"67cc4ce7f05320ab981981e2\",\r\n    \"clientName\": \"John Doe Enterprises\",\r\n    \"companyName\": \"John Doe Ltd\",\r\n    \"registrationDate\": \"2020-05-15T00:00:00.000Z\",\r\n    \"incorporationDate\": \"2020-06-01T00:00:00.000Z\",\r\n    \"accountingReferenceDate\": \"2021-12-31T00:00:00.000Z\",\r\n    // \"departments\":[\"Annual accounts, CT and Director department\",\r\n    // \"Paye, Pension and CIS department department\"],\r\n    \"departments\":[\r\n    \"Finance department\"],\r\n    \"registrationNumber\": \"12345678\",\r\n    \"AuthCode\": \"XYZ1234ABC\",\r\n    \"CISRegistrationNumber\": \"CIS987654321\",\r\n    \"AccountsOfficeReference\": \"AOR12345\",\r\n    \"natureOfBusiness\": \"Consulting Services\",\r\n    \"employerPAYEReference\": \"123/AB4567\",\r\n    \"status\": \"Active\",\r\n    \"corporationTax_UTR\": \"0987654321\",\r\n    \"VATRegistered\": true,\r\n    //contact\r\n    \"contactName\": \"Jane Smith\",\r\n    \"phone\": \"+44 123 456 7890\",\r\n    \"entryDate\": \"2020-06-10T00:00:00.000Z\",\r\n    //address\r\n    \"businessAddress\": \"123 Business Road, London, UK\",\r\n    \"registeredOfficeAddress\": \"456 Corporate Lane, London, UK\",\r\n    \"telephone\": \"+44 20 7946 1234\",\r\n    \"email\": \"contact@johndoe.com\",\r\n    \"website\": \"http://www.johndoe.com\",\r\n    //bank\r\n    \"bName\": \"Bank of Example\",\r\n    \"accountNumber\": \"12345678\",\r\n    \"accountHolder\": \"John Doe Ltd\",\r\n    \"sortCode\": \"12-34-56\"\r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/Companies/",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"Companies",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update By ID",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    // \"AccountsOfficeReference\": \"0\",\r\n    //  \"AuthCode\": \"0\",\r\n    // \"CISRegistrationNumber\": \"0\",\r\n    // \"RMdepartments\": \"6748ce5b587951d6932a32d1\",\r\n    \"VATRegistered\": true,\r\n    // \"accountingReferenceDate\": \"1990-01-05T00:00:00.000Z\",\r\n    // \"bankDetails\": \"6748ce5b587951d6932a32d7\",\r\n     \"companyName\": \"test for test updateddddd\",\r\n    // \"contactName\": \"0\",\r\n     \"departments\": [\r\n                \"Annual accounts, CT and Director department\",\r\n            \"Self-employed and partnership department\"\r\n            ]\r\n    // \"corporationTax_UTR\": \"0\",\r\n    // \"dueDates\": \"6748ce5b587951d6932a32d3\",\r\n    // \"employerPAYEReference\": \"\",\r\n    // \"entryDate\": \"1990-01-04T00:00:00.000Z\",\r\n    // \"incorporationDate\": \"1990-01-05T00:00:00.000Z\",\r\n    // \"natureOfBusiness\": \"0\",\r\n    // \"phone\": \"0\",\r\n    // \"registrationDate\": \"1990-01-05T00:00:00.000Z\",\r\n    // \"registrationNumber\": \"0\",\r\n    // \"status\": \"\"\r\n\r\n     //contact\r\n//   contactName: String,\r\n//   phone: String,\r\n//   entryDate: Date,\r\n\r\n  //address\r\n  /*businessAddress: String,\r\n  registeredOfficeAddress: String,\r\n  telephone: String,\r\n  email: String,\r\n  website: String,\r\n\r\n  //bankDetails\r\n  bName: String,\r\n  accountNumber: String,\r\n  accountHolder: String,\r\n  sortCode: String,\r\n  */\r\n   \r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/Companies/67cc5100f05320ab981981e9",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"Companies",
+										"67cc5100f05320ab981981e9"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete By ID",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/Companies/67ccacd430798384010e38fb",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"Companies",
+										"67ccacd430798384010e38fb"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get DueDates By company ID",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{accountant  token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/Companies/67ccacd430798384010e38fb/duedates",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"Companies",
+										"67ccacd430798384010e38fb",
+										"duedates"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update DueDates By company ID",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n        \"vatNumber\": \"String\",\r\n        \"vatReturnsPeriod\": \"annual\", // annual, quarterly\r\n        \"quarter1DueBy\": \"1990-01-01\",\r\n        \"quarter2DueBy\": \"1990-01-01\",\r\n        \"quarter3DueBy\": \"1990-01-01\",\r\n        \"quarter4DueBy\": \"1990-01-04\",\r\n        \"confirmationStatementDueBy\": \"1990-01-01\",\r\n        \"annualVatDueBy\": \"1990-01-01\"\r\n   \r\n}\r\n\r\n\r\n        // \"vatNumber\"\r\n        // \"vatReturnsPeriod\" // annual, quarterly\r\n        // \"quarter1DueBy\"\r\n        // \"quarter2DueBy\"\r\n        // \"quarter3DueBy\"\r\n        // \"quarter4DueBy\"\r\n        // \"confirmationStatementDueBy\"\r\n        // \"annualVatDueBy\"",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/Companies/67ccacd430798384010e38fb/duedates",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"Companies",
+										"67ccacd430798384010e38fb",
+										"duedates"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Directors",
+					"item": [
+						{
+							"name": "Get Count",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/companies/67706c96ae657552cbac30e5/directors/count",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"companies",
+										"67706c96ae657552cbac30e5",
+										"directors",
+										"count"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get By ID",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "0d6425af-e693-4a5e-b865-ddc04e5b3ec5",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{url}}/Companies/directors/677daacda56ffc451627603d",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"Companies",
+										"directors",
+										"677daacda56ffc451627603d"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get All company directors",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/Companies/677d6c7499072531043873e6/directors",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"Companies",
+										"677d6c7499072531043873e6",
+										"directors"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Add New Company directors",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"dTitle\": \"String\",\r\n    \"dName\": \"String\",\r\n    \"dUTR\": \"String\",\r\n    \"dUTR_ID\": \"String\",\r\n    \"dUTR_Password\": \"String\",\r\n    \"dNIN\": \"String\",\r\n    \"dDateOfBirth\": \"1990-01-01\",\r\n    \"dateOfAppointment\": \"1990-01-01\",\r\n    \"dateRegistrationForSE\": \"1990-01-01\",\r\n    \"dateOfResignation\": \"1990-01-01\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/Companies/67706c96ae657552cbac30e5/directors/",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"Companies",
+										"67706c96ae657552cbac30e5",
+										"directors",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update directors By ID",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"dTitle\": \"zz\",\r\n    \"dName\": \"zz\",\r\n    \"dUTR\": \"zz\",\r\n    \"dUTR_ID\": \"zz\",\r\n    \"dUTR_Password\": \"zz\",\r\n    \"dNIN\": \"zz\",\r\n    \"dDateOfBirth\": \"2990-02-02\",\r\n    \"dateOfAppointment\": \"2990-02-02\",\r\n    \"dateRegistrationForSE\": \"2990-02-02\",\r\n    \"dateOfResignation\": \"2990-02-02\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/Companies/directors/67706c96ae657552cbac30f0/",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"Companies",
+										"directors",
+										"67706c96ae657552cbac30f0",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete directors By ID",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzE4OWM4MDUxY2Q1NDAxYjAxNGY4ZDciLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3Mjk2NjcxNzcsImV4cCI6MTc2MTIyNDc3N30.WxxISC40YqRswIlBpMysjzgNeQbuMbfREbDyF3GxSB4",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/Companies/directors/6774014985705d0e1750903f",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"Companies",
+										"directors",
+										"6774014985705d0e1750903f"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Share Holders",
+					"item": [
+						{
+							"name": "Get Count",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/companies/675098b9edbb08bb51042878/Shareholders/count",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"companies",
+										"675098b9edbb08bb51042878",
+										"Shareholders",
+										"count"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get By ID",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzE4OWM4MDUxY2Q1NDAxYjAxNGY4ZDciLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3Mjk2NjcxNzcsImV4cCI6MTc2MTIyNDc3N30.WxxISC40YqRswIlBpMysjzgNeQbuMbfREbDyF3GxSB4",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/Companies/shareholders/6781441366d0d7611d033233",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"Companies",
+										"shareholders",
+										"6781441366d0d7611d033233"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get All company Shareholders",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/Companies/677d6c7499072531043873e6/shareholders",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"Companies",
+										"677d6c7499072531043873e6",
+										"shareholders"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Add New Company Shareholder",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n     \"shName\": \"String\",\r\n    \"numberOfShares\": \"2\",\r\n    \"shareClass\": \"String\"\r\n   \r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/Companies/677d6c7499072531043873e6/shareholders",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"Companies",
+										"677d6c7499072531043873e6",
+										"shareholders"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update shareholder By ID",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"shName\": \"string updated\",\r\n    \"numberOfShares\": \"611200\",\r\n    \"shareClass\": \"Mabrook\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/Companies/shareholders/6781441366d0d7611d033233/",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"Companies",
+										"shareholders",
+										"6781441366d0d7611d033233",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete shareholder By ID",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/Companies/shareholders/67705d10f6b8cce9ce668862",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"Companies",
+										"shareholders",
+										"67705d10f6b8cce9ce668862"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"auth": {
+						"type": "bearer",
+						"bearer": [
+							{
+								"key": "token",
+								"value": "{{client token}}",
+								"type": "string"
+							}
+						]
+					},
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"packages": {},
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"packages": {},
+								"exec": [
+									""
+								]
+							}
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Helpers",
+			"item": [
+				{
+					"name": "Consts",
+					"item": [
+						{
+							"name": "Get by Value or All",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{acesstoken Accumen 1 year}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": []
+								},
+								"url": {
+									"raw": "{{url}}/helpers/consts/",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"helpers",
+										"consts",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Add New",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\":\"Email From\",\r\n    \"value\":\"no-reply@acumenportal.co.uk\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/helpers/consts",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"helpers",
+										"consts"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update By Id",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\":\"Email From1\",\r\n\"value\": \"<p>no-reply@acumenportal.co.uk</p>\" \r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/helpers/consts/67814b0014e9a70728fb7fbc",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"helpers",
+										"consts",
+										"67814b0014e9a70728fb7fbc"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete By Id",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/helpers/consts/67814b0014e9a70728fb7fbc",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"helpers",
+										"consts",
+										"67814b0014e9a70728fb7fbc"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "CSV",
+					"item": [
+						{
+							"name": "Import Clients and Companies from File",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{acesstoken Accumen 1 year}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "clients",
+											"type": "file",
+											"src": "postman-cloud:///1efcd149-b85e-4c60-8dcc-519cd5602142"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{url}}/helpers/importCSV/?start=1&start=10",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"helpers",
+										"importCSV",
+										""
+									],
+									"query": [
+										{
+											"key": "start",
+											"value": "1"
+										},
+										{
+											"key": "clients",
+											"value": null,
+											"disabled": true
+										},
+										{
+											"key": "start",
+											"value": "10"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Others",
+					"item": [
+						{
+							"name": "Check if Email exists",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"email\":\"mohamzed.ashra5fsp@Gmail.com\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/helpers/checkemail",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"helpers",
+										"checkemail"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Forms Files",
+			"item": [
+				{
+					"name": "Get Count",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accountant  token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/forms/count",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"forms",
+								"count"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get By ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzE4OWM4MDUxY2Q1NDAxYjAxNGY4ZDciLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3Mjk2NjcxNzcsImV4cCI6MTc2MTIyNDc3N30.WxxISC40YqRswIlBpMysjzgNeQbuMbfREbDyF3GxSB4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/forms/67698ff40d6926d5387e31ef",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"forms",
+								"67698ff40d6926d5387e31ef"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Form",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzE4OWM4MDUxY2Q1NDAxYjAxNGY4ZDciLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3Mjk2NjcxNzcsImV4cCI6MTc2MTIyNDc3N30.WxxISC40YqRswIlBpMysjzgNeQbuMbfREbDyF3GxSB4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": " ",
+									"type": "text"
+								},
+								{
+									"key": "additionalName",
+									"value": "Starter Checklist",
+									"type": "text"
+								},
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/C:/Users/jhoss/OneDrive/Desktop/Acuman forms/Starter checklist.pdf"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/forms/",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"forms",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Download",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/forms/download/676af6aa3071188b2482ebb9",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"forms",
+								"download",
+								"676af6aa3071188b2482ebb9"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzE4OWM4MDUxY2Q1NDAxYjAxNGY4ZDciLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3Mjk2NjcxNzcsImV4cCI6MTc2MTIyNDc3N30.WxxISC40YqRswIlBpMysjzgNeQbuMbfREbDyF3GxSB4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/forms/",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"forms",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update By ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzE4OWM4MDUxY2Q1NDAxYjAxNGY4ZDciLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3Mjk2NjcxNzcsImV4cCI6MTc2MTIyNDc3N30.WxxISC40YqRswIlBpMysjzgNeQbuMbfREbDyF3GxSB4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "postman-cloud:///1efbb41a-949f-4740-9bd3-56f8fe980459"
+								},
+								{
+									"key": "name",
+									"value": "x",
+									"type": "text"
+								},
+								{
+									"key": "additionalName",
+									"value": "xx",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/forms/67698ff40d6926d5387e31ef",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"forms",
+								"67698ff40d6926d5387e31ef"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete By ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzE4OWM4MDUxY2Q1NDAxYjAxNGY4ZDciLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3Mjk2NjcxNzcsImV4cCI6MTc2MTIyNDc3N30.WxxISC40YqRswIlBpMysjzgNeQbuMbfREbDyF3GxSB4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/forms/67699013bedbe6557f8f9f7b",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"forms",
+								"67699013bedbe6557f8f9f7b"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Tasks Documents",
+			"item": [
+				{
+					"name": "Get Count",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/tasksDocuments/count",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"tasksDocuments",
+								"count"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get By ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/tasksDocuments/67cc4ce7f05320ab981981e2",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"tasksDocuments",
+								"67cc4ce7f05320ab981981e2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add doc",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{acesstoken Accumen 1 year}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"description": "file itself",
+									"type": "file",
+									"src": "postman-cloud:///1efbb452-9f38-4f20-9edf-941561af652e"
+								},
+								{
+									"key": "name",
+									"value": "filename",
+									"description": "file name",
+									"type": "text"
+								},
+								{
+									"key": "additionalName",
+									"value": "additionalName",
+									"type": "text"
+								},
+								{
+									"key": "clientID",
+									"value": "67cca19c15104e5ee8572d40",
+									"description": " current user id",
+									"type": "text"
+								},
+								{
+									"key": "clientName",
+									"value": "mo",
+									"description": "current user name",
+									"type": "text"
+								},
+								{
+									"key": "companyName",
+									"value": "mo_company",
+									"description": "company name ",
+									"type": "text"
+								},
+								{
+									"key": "title",
+									"value": "title",
+									"type": "text"
+								},
+								{
+									"key": "status",
+									"value": "",
+									"description": "[\"pending\", \"active\", \"finished\"]",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "userKey",
+									"value": "123",
+									"type": "text"
+								},
+								{
+									"key": "accountantName",
+									"value": "123",
+									"description": "name of the person who did action",
+									"type": "text"
+								},
+								{
+									"key": "action",
+									"value": "",
+									"description": "['pending', 'seen', 'downloaded']",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "companyID",
+									"value": "675f7dc1907506d99e91019c",
+									"description": " asociated compnay id",
+									"type": "text"
+								},
+								{
+									"key": "department",
+									"value": "Finance department",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/tasksDocuments/",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"tasksDocuments",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Download",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{acesstoken Accumen 1 year}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/tasksDocuments/download/6769cfbc2452ffc486d86833",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"tasksDocuments",
+								"download",
+								"6769cfbc2452ffc486d86833"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update By ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzE4OWM4MDUxY2Q1NDAxYjAxNGY4ZDciLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3Mjk2NjcxNzcsImV4cCI6MTc2MTIyNDc3N30.WxxISC40YqRswIlBpMysjzgNeQbuMbfREbDyF3GxSB4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/C:/Users/Mahmoud/Downloads/668856e9ebf62.pdf"
+								},
+								{
+									"key": "status",
+									"value": "seen",
+									"type": "text"
+								},
+								{
+									"key": "action",
+									"value": "seen",
+									"type": "text"
+								},
+								{
+									"key": "companyID",
+									"value": "679f8c89d02ffa49a1f1de17",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/tasksDocuments/6770722ae3ead1c4a72bb5f4",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"tasksDocuments",
+								"6770722ae3ead1c4a72bb5f4"
+							],
+							"query": [
+								{
+									"key": "file",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete By ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{acesstoken Accumen 1 year}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/tasksDocuments/675c85aec90564d69a6b7886",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"tasksDocuments",
+								"675c85aec90564d69a6b7886"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{acesstoken Accumen 1 year}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Email Templates",
+			"item": [
+				{
+					"name": "Get Count",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzE4OWM4MDUxY2Q1NDAxYjAxNGY4ZDciLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3Mjk2NjcxNzcsImV4cCI6MTc2MTIyNDc3N30.WxxISC40YqRswIlBpMysjzgNeQbuMbfREbDyF3GxSB4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/emailtemplates/count",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"emailtemplates",
+								"count"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get By ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzE4OWM4MDUxY2Q1NDAxYjAxNGY4ZDciLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3Mjk2NjcxNzcsImV4cCI6MTc2MTIyNDc3N30.WxxISC40YqRswIlBpMysjzgNeQbuMbfREbDyF3GxSB4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/emailtemplates/675ca16de503ad6c3f68f4f9",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"emailtemplates",
+								"675ca16de503ad6c3f68f4f9"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzE4OWM4MDUxY2Q1NDAxYjAxNGY4ZDciLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3Mjk2NjcxNzcsImV4cCI6MTc2MTIyNDc3N30.WxxISC40YqRswIlBpMysjzgNeQbuMbfREbDyF3GxSB4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/emailtemplates/",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"emailtemplates",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add New",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzE4OWM4MDUxY2Q1NDAxYjAxNGY4ZDciLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3Mjk2NjcxNzcsImV4cCI6MTc2MTIyNDc3N30.WxxISC40YqRswIlBpMysjzgNeQbuMbfREbDyF3GxSB4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"Self Assessment Dueؤ\",\r\n  \"documentType\": \"sms\", //SMS,EMAIL\r\n  \"subject\": \"m@m.com\",\r\n  \"content\": \"Hi, Your self assessment is due now. Please upload all the documents by login to your account.<br><p>#LOGINLINK#</p><br><p>#COMPANYNAME#</p>\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/emailtemplates/",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"emailtemplates",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update By ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzE4OWM4MDUxY2Q1NDAxYjAxNGY4ZDciLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3Mjk2NjcxNzcsImV4cCI6MTc2MTIyNDc3N30.WxxISC40YqRswIlBpMysjzgNeQbuMbfREbDyF3GxSB4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Account Returns Due \",\r\n     \"content\": \"Good Evening <b>#NAME#</b><br><br>We would like to update you that the Annual Accounts for the period <b>#PERIOD#</b> are due on<b>#DUEON#</b>. In order to prepare the Annual Accounts we would require the following documentation:<br><br>1. Bank statements (csv format)<br>Please note, there will be an additional charge if bank statement will not be provided in excel format. If there are any problems with downloading this format, please contact us for further instruction.<br><br>2. List of any addition of assets value and invoices paid personally,<br><br>3. Income Invoices,<br><br>4. Cheque books (counter part) if used,<br><br> 5. List of all your business expenses including invoices (paid both by cash and from bank),<br><br> 6. Mileage log.<br><br> Bank statements and sales invoices can be sent via e-mail.<br><br> Expenses invoices, bills and receipts can be hand delivered or posted to our office directly at the address below:<br><b>#COMPANYADDRESS#</b><br><br>If company did not trade and was dormant we will need written confirmation to finalize submission. Cost of dormant submission is <b>£250</b> . That includes submission of confirmation statement, annual account, corporation tax and nil director s tax return.<br><br> If we prepare VAT returns for your company and the documents are delivered to us on a quarterly basis, then please ignore this email as we will only contact you if there is any need for additional information.<br><br> Please arrange to deliver the documents by <b>#DOCUMENTSSENTBY#</b> to ensure on time submission.In the event of failure to provide the above-mentioned documents within the requested deadline, the company accounts may not be submitted on time which may result in financial penalties being imposed for which Acumen+ will not accept any responsibility.<br><br> Please note that if the documents will be provided within the last month of submission deadline, there will be an extra charge of <b>£150</b>.<br><br><br> Please also update us on any other income received personally (excluding from your company),ÂÂÂÂÂÂÂÂÂÂÂ<br>such as rental income, interest received, etc, which we should be aware of, in order to prepare your personal tax return for tax year #TAXDATES#.<br><br> If you have any queries please do not hesitate to contact me.<br><br> Kind regards<br><br>Regards<br><br> Annual Accounts Team<p>#COMPANYADDRESS#</p>\"\r\n   \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/emailtemplates/675ca16de503ad6c3f68f4f9",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"emailtemplates",
+								"675ca16de503ad6c3f68f4f9"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete By ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzE4OWM4MDUxY2Q1NDAxYjAxNGY4ZDciLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3Mjk2NjcxNzcsImV4cCI6MTc2MTIyNDc3N30.WxxISC40YqRswIlBpMysjzgNeQbuMbfREbDyF3GxSB4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/emailtemplates/675ca0fe8714feeff26412ae",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"emailtemplates",
+								"675ca0fe8714feeff26412ae"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Notifications",
+			"item": [
+				{
+					"name": "Get Email Logs",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/helpers/email/logs/",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"helpers",
+								"email",
+								"logs",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Email Logs Count",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/helpers/email/logs/count",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"helpers",
+								"email",
+								"logs",
+								"count"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Accountant and Client Dashbord",
+			"item": [
+				{
+					"name": "Get Clients With Accountant Department",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accountant  token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"department\":  \"General and administrative matters\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/clients/ofdepartment",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"clients",
+								"ofdepartment"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Companies of a Client  and for accountant with department",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"department\":\"Finance department\"//optional for accountant user\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/clients/67cc4ce7f05320ab981981e2/companies?page=1&limit=1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"clients",
+								"67cc4ce7f05320ab981981e2",
+								"companies"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Department Clients",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accountant  token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/clients/ofdepartment?page=1&limit=10",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"clients",
+								"ofdepartment"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get  All  TASKS  or Get all for client or by department",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/tasksDocuments/",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"tasksDocuments",
+								""
+							],
+							"query": [
+								{
+									"key": "clientID",
+									"value": "67cc4ce7f05320ab981981e2",
+									"disabled": true
+								},
+								{
+									"key": "companyID",
+									"value": "67cc4ce7f05320ab981981e0",
+									"disabled": true
+								},
+								{
+									"key": "department",
+									"value": "General and administrative matters",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "API integrations",
+			"item": [
+				{
+					"name": "Company House API",
+					"item": [
+						{
+							"name": "Search Company With code Name",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "e06d77fd-fd5c-403d-b822-9bd7f6b295c3",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{company house API domain}}/search/companies?q=5apart",
+									"host": [
+										"{{company house API domain}}"
+									],
+									"path": [
+										"search",
+										"companies"
+									],
+									"query": [
+										{
+											"key": "q",
+											"value": "5apart"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Company Data With code",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "e06d77fd-fd5c-403d-b822-9bd7f6b295c3",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{company house API domain}}/company/09488156",
+									"host": [
+										"{{company house API domain}}"
+									],
+									"path": [
+										"company",
+										"09488156"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Company Directors With code",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "e06d77fd-fd5c-403d-b822-9bd7f6b295c3",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{company house API domain}}/company/09488156/officers",
+									"host": [
+										"{{company house API domain}}"
+									],
+									"path": [
+										"company",
+										"09488156",
+										"officers"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "deprecated",
+			"item": [
+				{
+					"name": "C Documents",
+					"item": [
+						{
+							"name": "Get Count",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/companies/67706c96ae657552cbac30e5/documents/count",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"companies",
+										"67706c96ae657552cbac30e5",
+										"documents",
+										"count"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get By ID",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/Companies/directors/675098b9edbb08bb51042878",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"Companies",
+										"directors",
+										"675098b9edbb08bb51042878"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "download By ID",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/Companies/documents/download/677417b40fb5509f8b8556f0",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"Companies",
+										"documents",
+										"download",
+										"677417b40fb5509f8b8556f0"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get All company documents",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/Companies/67c6fb0887b5096c18013e44/documents",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"Companies",
+										"67c6fb0887b5096c18013e44",
+										"documents"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Add New Company directors",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "title",
+											"value": "this is a test document",
+											"type": "text"
+										},
+										{
+											"key": "file",
+											"type": "file",
+											"src": "postman-cloud:///1efbb452-9f38-4f20-9edf-941561af652e"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{url}}/Companies/67706c96ae657552cbac30e5/documents/",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"Companies",
+										"67706c96ae657552cbac30e5",
+										"documents",
+										""
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Get All Abstracted",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"department\":\"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/Companies/abstracted/",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Companies",
+								"abstracted",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Companies of a Client",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"department\":\"\"//optional\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/clients/6787d3c50d31a96b614ceecb/companies",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"clients",
+								"6787d3c50d31a96b614ceecb",
+								"companies"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Abstracted",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"department\":\"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/Companies/abstracted/",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Companies",
+								"abstracted",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Department Clients Copy",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accountant  token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"department\":  \"General and administrative matters\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/clients/ofdepartment",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"clients",
+								"ofdepartment"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All  or Get all for client or by department",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{acesstoken Accumen 1 year}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  //  \"department\": \"Finance department\",\r\n   // \"clientID\": \"67cca19c15104e5ee8572d40\"\r\n    \"companyID\": \"675f7dc1907506d99e91019c\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/tasksDocuments",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"tasksDocuments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get  All  TASKS  or Get all for client or by department",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{acesstoken Accumen 1 year}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  //  \"department\": \"Finance department\",\r\n  \"clientID\": \"67c2f44cfdcfd86977e52361\"\r\n    //\"companyID\": \"67c2f44cfdcfd86977e52352\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/tasksDocuments",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"tasksDocuments"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{client token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "company house API domain",
+			"value": "https://api.company-information.service.gov.uk"
+		},
+		{
+			"key": "compnay house sand box Email",
+			"value": "https://api-sandbox.company-information.service.gov.uk/"
+		},
+		{
+			"key": "acesstoken Accumen 1 year",
+			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ODgwZjkzMTEzZTNhY2QyZWU0ZTAzNyIsInJvbGUiOiJjbGllbnQiLCJpYXQiOjE3MzY5Nzg2NjYsImV4cCI6MTc2ODUzNjI2Nn0.y2WOIIAeLKmXTlxTGJrUesR7LylrkqZi66l6EuTKyT4"
+		},
+		{
+			"key": "accountant  token",
+			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ODgwZjkzMTEzZTNhY2QyZWU0ZTAzNyIsInJvbGUiOiJhY2NvdW50YW50IiwiaWF0IjoxNzM2OTc5MTkxLCJleHAiOjE3Njg1MzY3OTF9.6m7kPAZrNszI7glqihMe1xIpIz-l_3AxD-8yYAFAi0I"
+		},
+		{
+			"key": "client token",
+			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ODgwZjkzMTEzZTNhY2QyZWU0ZTAzNyIsInJvbGUiOiJjbGllbnQiLCJpYXQiOjE3MzY5ODAzOTUsImV4cCI6MTc2ODUzNzk5NX0.5tItDZ1gjMs_dFrifLJi70kYOToRnd-jwRwgzN9ybOc"
+		}
+	]
+}
