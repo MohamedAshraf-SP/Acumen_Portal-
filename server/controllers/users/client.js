@@ -198,6 +198,42 @@ export const getClientsCount = async (req, res) => {
 };
 
 
+export const getfullClientsCompaniesCount = async (req, res) => {
+    try {
+
+       
+        const departmentClientsCount = (await Client.countDocuments({ departments: { $in: [req.query.department] } }));
+        const departmentCompaniesCount = (await Client.countDocuments({ "client.companies": { $in: [req.query.companyID] } }));
+                       
+
+        const clients = await Client.aggregate([
+            {
+                $match: {
+                    $or: [
+                        { _id: req.query.clientID },
+                        { "client.companies": { $in: [req.query.companyID] } },
+                        { departments: { $in: [req.query.department] } }
+                    ]
+                }
+
+            },
+            {
+                $facet: {
+                    totalClients: [{ $count: "count" }], // Count total clients matching the condition
+                    totalCompanies: [
+                        { $unwind: "$client.companies" }, // Flatten companies array
+                        { $group: { _id: null, count: { $sum: 1 } } } // Count companies
+                    ]
+                }
+            }
+        ])
+        console.log(clients);
+        res.status(200).json({departmentClientsCount,departmentCompaniesCount,x:req.query.department});
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
 export const getClientCompanies = async (req, res) => {
     try {
 

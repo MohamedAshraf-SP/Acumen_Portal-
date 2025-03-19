@@ -81,7 +81,7 @@ export const refreshToken = async (req, res) => {
             if (userObj.userRole == "client") {
                 dataObj = await Client.findOne({ userID: userObj._id }).select({ name: 1, _id: 1 });
             } else if (userObj.userRole == "accountant") {
-                dataObj = await Accountant.findOne({ userID: userObj._id }).select({ name: 1, _id: 1 });
+                dataObj = await Accountant.findOne({ userID: userObj._id }).select({ name: 1, department: 1, _id: 1 });
             }
 
 
@@ -91,6 +91,7 @@ export const refreshToken = async (req, res) => {
                 "role": userObj.userRole,
                 "dataId": dataObj?._id || null,
                 "name": dataObj?.name || null,
+                "department": dataObj?.department || null
 
 
             }
