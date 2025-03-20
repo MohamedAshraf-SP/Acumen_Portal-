@@ -62,7 +62,7 @@ export const addTask = async (req, res) => {
 export const getAllTasks = async (req, res) => {
     try {
 
-      
+
         const page = req.query.page || 1;
         const limit = req.query.limit || 100;
         const skip = (page - 1) * limit;
@@ -71,21 +71,24 @@ export const getAllTasks = async (req, res) => {
         const clientID = req.query.clientID
         const companyID = req.query.companyID
         const department = req.query.department
-        console.log(department);
+        const sort = req.query.sort === "true";
+         console.log(sort);
         if (clientID) filter.clientID = req.query.clientID
         if (companyID) filter.companyID = req.query.companyID
         if (department) filter.department = req.query.department
 
 
 
+
         const TasksDocumentCount = await TasksDocument.countDocuments(filter);
-        console.log(TasksDocumentCount)
+        console.log(sort ,sort ? { createdAt: -1 } : { createdAt: 1 })
 
         const pagesCount = Math.ceil(TasksDocumentCount / limit) || 0;
 
 
 
         const TasksDocuments = await TasksDocument.find(filter)
+            .sort((sort) ? { createdAt: -1 } : { createdAt: 1 })
             .skip(skip)
             .limit(limit);
 

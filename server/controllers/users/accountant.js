@@ -3,6 +3,9 @@ import Accountant from "../../models/users/accountants.js"; // Import the Accoun
 import { sendEmail } from "../../helpers/emailSender.js";
 import { addEmailLog } from "../../helpers/emailLogs.js";
 import { checkIfEmailExist, generateRandomPassword, hashPassword } from "../../Services/auth/authentication.js";
+import TasksDocument from "../../models/tasksDocuments.js";
+import Client from "../../models/users/clients.js";
+import { Company } from "../../models/company/index.js";
 
 // Get a Accountant by ID
 export const getAccountant = async (req, res) => {
@@ -150,6 +153,19 @@ export const getAccountantsCount = async (req, res) => {
   try {
     const count = (await Accountant.countDocuments());
     res.status(200).json({ count });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+export const getAccountantsDashboardCounts = async (req, res) => {
+  try {
+    //console.log(req.user)
+    const documentsCount = (await TasksDocument.countDocuments({ department: { $in: [req.user.department] } }));
+    const CompaniesCount = (await Company.countDocuments({ departments: { $in: [req.user.department] } }));
+    const ClientsCount = (await Client.countDocuments({ departments: { $in: [req.user.department] } }));
+
+    res.status(200).json({ ClientsCount, documentsCount, CompaniesCount });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

@@ -141,7 +141,7 @@ export const resetPassword = async (req, res) => {
                 Thank you
                 accumen portal team.
             `,
-          "reply to Accumen Portal Email"
+          "reply to AMS Portal Email"
         ))
       ) {
         return res.status(400).json({ message: "Invalid Email!!" });

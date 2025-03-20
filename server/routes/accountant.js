@@ -6,6 +6,7 @@ import {
   updateAccountant,
   deleteAccountant,
   addAccountant,
+  getAccountantsDashboardCounts,
 } from "../controllers/users/accountant.js";
 import { authMiddleware, roleMiddleware } from "../middlewares/autherization.js";
 
@@ -13,6 +14,7 @@ export const accountantRoute = express.Router();
 
 
 accountantRoute.get("/count", roleMiddleware(["admin", "accountant"]), getAccountantsCount);
+accountantRoute.get("/dashboardCounts", roleMiddleware(["admin", "accountant", "client"]), getAccountantsDashboardCounts);
 accountantRoute.get("/:id", roleMiddleware(["admin", "accountant"]), getAccountant);
 accountantRoute.get("/", roleMiddleware(["admin"]), getAccountants);
 accountantRoute.post("/", roleMiddleware(["admin"]), addAccountant);

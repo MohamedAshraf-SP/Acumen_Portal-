@@ -70,6 +70,8 @@ export const updateUser = async (req, res) => {
       return res.status(404).json({ message: "user not found" });
     }
 
+
+
     const data = {
       userName: req.body.userName
     }
@@ -77,9 +79,10 @@ export const updateUser = async (req, res) => {
     if (req.body.newPassword && (await bcrypt.compare(req.body.oldPassword, current.password))) {
       data.password = await hashPassword(req.body.newPassword)
     } else {
-      return res.status(401).json({ message: "invalid old password or new password is missing" })
+      return res.status(401).json({ message: "invalid old password or new password is missing!" })
     }
 
+    console.log(data);
     const updateduser = await user.findByIdAndUpdate(id, data, {
       new: true,
     });

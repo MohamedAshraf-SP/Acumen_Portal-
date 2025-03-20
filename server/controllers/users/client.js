@@ -9,6 +9,7 @@ import mongoose from "mongoose";
 import TasksDocument from "../../models/tasksDocuments.js";
 import { checkIfEmailExist, generateRandomPassword, hashPassword } from "../../Services/auth/authentication.js";
 
+
 // Get a Client by ID
 export const getClient = async (req, res) => {
     try {
@@ -159,13 +160,15 @@ export const deleteClient = async (req, res) => {
         let result1
         if (result) {
             result1 = await user.findByIdAndDelete(result.userID);
+            // result2 = await TasksDocument.findManyAndDelete({clientID:result._id})
+            // result3 = await Company.findByIdAndDelete({clientID:result._id})
         }
 
         // console.log(result, result1)
         if (!result) {
             return res.status(404).json({ message: "Client not found" });
         }
-        res.status(200).json({ message: "Client deleted successfully" });
+        res.status(200).json({ message: "Client and associated documents , companies deleted successfully" });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
@@ -198,37 +201,12 @@ export const getClientsCount = async (req, res) => {
 };
 
 
-export const getfullClientsCompaniesCount = async (req, res) => {
+export const getClientsDashboardCounts = async (req, res) => {
     try {
+        const documentsCount = (await TasksDocument.countDocuments({ clientID: req.user.id }));
+        const CompaniesCount = (await Company.countDocuments({ clientID: req.user.id }));
 
-       
-        const departmentClientsCount = (await Client.countDocuments({ departments: { $in: [req.query.department] } }));
-        const departmentCompaniesCount = (await Client.countDocuments({ "client.companies": { $in: [req.query.companyID] } }));
-                       
-
-        const clients = await Client.aggregate([
-            {
-                $match: {
-                    $or: [
-                        { _id: req.query.clientID },
-                        { "client.companies": { $in: [req.query.companyID] } },
-                        { departments: { $in: [req.query.department] } }
-                    ]
-                }
-
-            },
-            {
-                $facet: {
-                    totalClients: [{ $count: "count" }], // Count total clients matching the condition
-                    totalCompanies: [
-                        { $unwind: "$client.companies" }, // Flatten companies array
-                        { $group: { _id: null, count: { $sum: 1 } } } // Count companies
-                    ]
-                }
-            }
-        ])
-        console.log(clients);
-        res.status(200).json({departmentClientsCount,departmentCompaniesCount,x:req.query.department});
+        res.status(200).json({ documentsCount, CompaniesCount });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
@@ -271,6 +249,19 @@ export const getClientCompanies = async (req, res) => {
     }
 };
 
+
+export const getClientLOE = async (req, res) => {
+    try {
+        const clientID = req.params.id
+        const LOE = await TasksDocument.findOne({ clientID, title: "LOE" })
+        if (!LOE) return res.status(400).json({ message: "LOE not found or Client not exits!" })
+        res.status(200).json({ path: LOE.path })
+
+    } catch (error) {
+        res.status(400).json({ message: error.message })
+    }
+
+}
 
 
 export const getDepartmentClients = async (req, res) => {
