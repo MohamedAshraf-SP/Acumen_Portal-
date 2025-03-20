@@ -206,7 +206,9 @@ const Accountants_Documents = () => {
           </div>
         )}
         {loadingStatus === "failed" && (
-          <p className="text-red-600 text-center">Failed to load data.</p>
+          <p className="text-red-600 text-center">
+            Failed to load your documents.
+          </p>
         )}
         {loadingStatus === "success" && accountantsDocuments?.length === 0 && (
           <Empty

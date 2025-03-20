@@ -30,3 +30,5 @@ clientRoute.put("/:id", roleMiddleware(["admin", "accountant", "client"]), updat
 clientRoute.delete("/:id", roleMiddleware(["admin", "accountant", "client"]), deleteClient);
 
 export default clientRoute;
+
+

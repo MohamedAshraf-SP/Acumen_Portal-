@@ -38,17 +38,17 @@ export const login = async (req, res) => {
         _id: 1,
       });
       // if (dataObj) console.log(fullUser["department"]);
-      console.log(dataObj.department);
+      console.log('department here',dataObj.department);
     }
-
+    console.log('data obj here', dataObj);
     fullUser = {
       id: user._id,
       role: user.userRole,
       dataId: dataObj?._id || null,
       name: dataObj?.name || null,
-      department: dataObj.department || null,
+      department: dataObj?.department || null,
     };
-
+    console.log('full user here',fullUser);
     const accessToken = generateAccessToken(fullUser);
     const refreshToken = generateRefreshToken(fullUser);
     res.cookie("refreshToken", refreshToken, {
