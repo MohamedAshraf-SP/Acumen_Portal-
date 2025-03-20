@@ -65,7 +65,7 @@ const Accountant_Companies = () => {
     } else if (actionType === "edit") {
       dispatch(seteditItemForm(true));
     } else if (actionType === "show") {
-      navigate(`/companies/${itemId}`);
+      navigate(`/companies/${itemId}`);d
     }
   };
 

@@ -11,6 +11,7 @@ import { BiShow } from "react-icons/bi";
 import { MdOutlineModeEditOutline } from "react-icons/md";
 import { Table, Pagination, Empty } from "antd";
 import Nodataimg from "/images/table/No data.svg";
+import Contentloader from "./Contentloader";
 
 const ClientTable = () => {
   const navigate = useNavigate();
@@ -137,9 +138,9 @@ const ClientTable = () => {
       <div className="my-8 rounded-lg shadow-sm bg-white overflow-hidden">
         {/* Header */}
         <div className="flex justify-between items-center p-2 border-b">
-          <h4 className="text-xl font-semibold text-gray-700">Clients</h4>
+          <h4 className="text-xl font-semibold text-gray-600">Clients</h4>
           <Link to="/clients/add-Client" className="blackbutton">
-            <GoPlus />
+            <GoPlus size={18}/>
             Add Client
           </Link>
         </div>
@@ -148,9 +149,7 @@ const ClientTable = () => {
         <div className="mb-10">
           {/* Loading Status */}
           {status === "loading" && (
-            <div className="flex justify-center h-64 items-center">
-              <div className="animate-spin h-8 w-8 border-4 border-gray-300 border-t-slate-900 rounded-full"></div>
-            </div>
+           <Contentloader/>
           )}
 
           {status === "failed" && (

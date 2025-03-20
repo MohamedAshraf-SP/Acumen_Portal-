@@ -75,16 +75,19 @@ export const deleteItem = (path, itemId) => {
 };
 
 // get All department client
-export const getDepartmentClients = (page, limit, department) => {
-  return apiCall(
-    "GET",
-    `clients/ofdepartment?page=${page}&limit=${limit}&department=${encodeURIComponent(
-      department
-    )}`,
 
-    page,
-    limit,
-    department
-  );
+export const getDepartmentClients = (page, limit) => {
+  return apiCall("GET", `clients/ofdepartment`, page, limit, {});
 };
-export const getClientDocuments = (page, limit, department) => {};
+
+export const getDocuments = (page, limit, endpoint, department) => {
+  console.log("page is ", page, "limit is ", limit);
+  let url = `tasksDocuments?page=${page}&limit=${limit}`;
+
+  if (endpoint && department) {
+    url += `&${encodeURIComponent(endpoint)}=${encodeURIComponent(department)}`;
+  }
+  console.log(url);
+
+  return apiCall("GET", url);
+};

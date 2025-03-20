@@ -24,7 +24,7 @@ const dbURI = process.env.DB_URI;
 console.log(dbURI)
 const app = express();
   const corsOptions = {
-    origin: "http://localhost:5173", // ✅ Explicitly specify your frontend URL
+    origin: "http://localhost:5174", // ✅ Explicitly specify your frontend URL
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true, // ✅ Allows cookies/auth headers

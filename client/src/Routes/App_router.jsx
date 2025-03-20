@@ -14,7 +14,7 @@ const AdminDashboard = lazy(() => import("../pages/Admin/Admin_Dashboard"));
 const AdminAccounts = lazy(() => import("../pages/Admin/Accountants"));
 const AddClient = lazy(() => import("../component/AddClientform"));
 const AdminClients = lazy(() => import("../pages/Admin/Clients"));
-const AdminCompaines = lazy(() => import("../pages/Admin/Compaines"));
+const AdminCompaines = lazy(() => import("../component/Companytable"));
 const AdminNotifications = lazy(() => import("../pages/Admin/Notifications"));
 const AdminHistory = lazy(() => import("../pages/Admin/History"));
 const AdminSettings = lazy(() => import("../pages/Admin/Settings"));
@@ -49,10 +49,8 @@ const Invoices = lazy(() => import("../pages/Invoices"));
 const Documents = lazy(() => import("../pages/Documents"));
 const DisplayUsersCompany = lazy(() => import("../pages/DisplayUsersCompany"));
 
-
 const AppRouter = () => {
   const { loading, user } = useAuth();
-
   if (loading) {
     return <Loader />;
   }
@@ -64,14 +62,21 @@ const AppRouter = () => {
         <Route
           path="/"
           element={
-            user && user?.role && <Navigate to={`/${user?.role}/dashboard`} />
+            loading ? (
+              <Loader />
+            ) : user ? (
+              <Navigate to={`/${user.role}/dashboard`} />
+            ) : (
+              <Navigate to="/auth/login" />
+            )
           }
         />
+
         {/* Catch-all route for non-existent pages */}
         <Route path="/auth/login" element={<Login />} />
         <Route path="/auth/unauthorized" element={<Unauthorized />} />
         <Route path="*" element={<NotFind />} />
-
+        {/* start our routes */}
         <Route element={<MainLayout />}>
           {/* Admin Routes */}
           <Route element={<ProtectedRoute allowedTo={["admin"]} />}>

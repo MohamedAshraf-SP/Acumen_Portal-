@@ -7,7 +7,6 @@ import { BiShow } from "react-icons/bi";
 import { MdOutlineModeEditOutline } from "react-icons/md";
 import { Table, Pagination, Empty } from "antd";
 import Nodataimg from "/images/table/No data.svg";
-import { getDepartmentClients } from "../../services/globalService";
 import ConfirmDelete from "../../component/ConfirmDelete";
 import EditClient from "../../component/EditClient";
 import {
@@ -15,56 +14,38 @@ import {
   seteditItemForm,
 } from "../../Rtk/slices/settingSlice";
 import { useAuth } from "../../Contexts/AuthContext";
+import Contentloader from "../../component/Contentloader";
+import { getDepartmentClients } from "../../services/globalService";
 
 const Accountant_Clients = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { user } = useAuth();
   // Redux state
+  const data = useSelector((state) => state.getall.entities?.clients) || [];
+  const totalRecords =
+    useSelector((state) => state.getall.entities?.clients?.clientCount) || 0;
+  const status = useSelector((state) => state.getall?.status.clients);
   const { show, targetId } = useSelector(
     (state) => state.setting.deleteHintmsg
   );
   const { editItemForm } = useSelector((state) => state.setting);
+
   // Local state
   const [selectedItem, setSelectedItem] = useState(null);
-  const [pagination, setPagination] = useState({ current: 1, pageSize: 10 });
-  const [clients, setClients] = useState([]);
-  const [totalClients, setTotalClients] = useState(null);
-  const [loadingStatus, setLoadingStatus] = useState("idle");
+  const [pagination, setPagination] = useState({ current: 1, pageSize: 6 });
 
-  // Handle pagination change
+  // Handle pagination event
   const onPageChange = (page, pageSize) => {
     setPagination({ current: page, pageSize });
+    fetchData(page, pageSize);
   };
 
-  // Fetch department clients
-  const fetDepartmentClients = async (page, pageSize) => {
-    setLoadingStatus("loading");
-    try {
-      const response = await getDepartmentClients(
-        page,
-        pageSize,
-        user?.department
-      );
- 
-      if (response && response?.clients) {
-        setClients(response?.clients);
-        setTotalClients(response?.totalClients);
-        setLoadingStatus("success");
-      }
-    } catch (error) {
-      console.error("Error fetching department clients:", error);
-      setLoadingStatus("failed");
-    }
-  };
-  // Fetch data when component mounts or pagination changes
-  useEffect(() => {
-    fetDepartmentClients(pagination.current, pagination.pageSize);
-  }, [pagination]);
-
-  // Handle actions
+  // Handle actions like show, edit, and delete
   const handleAction = (actionType, path, itemId) => {
-    setSelectedItem({ actionType, path, itemId });
+    const itemData = { actionType, path, itemId };
+    setSelectedItem(itemData);
+
     if (actionType === "delete") {
       dispatch(setdeleteHintmsg({ show: true, targetId: itemId }));
     } else if (actionType === "edit") {
@@ -73,6 +54,20 @@ const Accountant_Clients = () => {
       navigate(`/companies/${itemId}`);
     }
   };
+
+  // Fetch data
+  const fetchData = (current, pageSize) => {
+    dispatch(
+      getDepartmentClients({ page: current, limit: pageSize })
+    );
+  };
+
+  // Initial fetch on component mount
+  useEffect(() => {
+    if (!data.length) {
+      fetchData(pagination.current, pagination.pageSize);
+    }
+  }, [pagination]); // Dependency array ensures re-fetching on pagination change
 
   // Table columns
   const columns = [
@@ -159,25 +154,7 @@ const Accountant_Clients = () => {
 
         {/* Table */}
         <div className="mb-10">
-          {loadingStatus === "loading" && (
-            <div className="flex justify-center items-center h-64">
-              <svg
-                aria-hidden="true"
-                className="w-8 h-8 text-gray-200 animate-spin fill-slate-900"
-                viewBox="0 0 100 101"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  fill="currentColor"
-                  d="M100 50.59C100 78.21 77.61 100.59 50 100.59 22.39 100.59 0 78.21 0 50.59 0 22.98 22.39 0.59 50 0.59 77.61 0.59 100 22.98 100 50.59Z"
-                />
-                <path
-                  fill="currentFill"
-                  d="M93.97 39.04c2.43-.64 3.89-3.13 3.03-5.49-1.71-4.73-4.13-9.18-7.18-13.2-3.97-5.23-8.93-9.63-14.6-12.94C69.54 4.1 63.28 1.94 56.77 1.05 51.77.37 46.7.45 41.73 1.28c-2.47.41-3.92 2.92-3.29 5.34.64 2.42 3.13 3.89 5.59 3.53 3.8-.56 7.67-.58 11.49-.05 5.32.73 10.45 2.5 15.08 5.2 4.64 2.7 8.71 6.29 12.03 10.58 2.33 3.07 4.2 6.46 5.59 10.06 1.03 2.36 3.49 3.84 5.92 3.2Z"
-                />
-              </svg>
-            </div>
-          )}
+          {loadingStatus === "loading" && <Contentloader />}
           {loadingStatus === "success" && clients.length === 0 && (
             <Empty
               image={Nodataimg}
