@@ -17,14 +17,20 @@ const apiCall = async (
   page = null,
   limit = null,
   data = null,
+  isDepartment = false,
   headers = {}
 ) => {
   const config = {
     method,
-    url: `${api}/${path}${page && limit ? `?page=${page}&limit=${limit}` : ""}`,
+    url: `${api}/${path}${
+      page && limit
+        ? `?page=${page}&limit=${limit}&accountantDepartment=${isDepartment}`
+        : ""
+    }`,
     data,
     headers: { ...headers },
   };
+
   try {
     // If data is FormData, set the Content-Type header to multipart/form-data
     if (data instanceof FormData) {
@@ -40,8 +46,8 @@ const apiCall = async (
 };
 
 // get All Items
-export const getAllItems = (path, page, limit) => {
-  return apiCall("GET", path, page, limit);
+export const getAllItems = (path, page, limit, isDepartment) => {
+  return apiCall("GET", path, page, limit, null, isDepartment);
 };
 
 // get One Item
@@ -72,15 +78,4 @@ export const updateItem = (path, itemId, data) => {
 // delete Item
 export const deleteItem = (path, itemId) => {
   return apiCall("DELETE", `${path}/${itemId}`);
-};
-
-export const getDocuments = (page, limit, endpoint, department) => {
- 
-  let url = `tasksDocuments?page=${page}&limit=${limit}`;
-
-  if (endpoint && department) {
-    url += `&${encodeURIComponent(endpoint)}=${encodeURIComponent(department)}`;
-  }
- 
-  return apiCall("GET", url);
 };

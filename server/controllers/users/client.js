@@ -13,7 +13,6 @@ import {
   hashPassword,
 } from "../../Services/auth/authentication.js";
 
-
 // Get a Client by ID
 export const getClient = async (req, res) => {
   try {
@@ -118,7 +117,7 @@ export const addClient = async (req, res) => {
       await Company.findByIdAndDelete(newCompany._id);
       return res
         .status(400)
-        .json({ message: "Client not added Check the Email Format!!" });
+        .json({ message: "Client not added Check Your internet connection" });
     }
 
     //add the email log
@@ -165,17 +164,14 @@ export const deleteClient = async (req, res) => {
     if (!result) {
       return res.status(404).json({ message: "Client not found" });
     }
-    res
-      .status(200)
-      .json({
-        message:
-          "Client and associated documents , companies deleted successfully",
-      });
+    res.status(200).json({
+      message:
+        "Client and associated documents , companies deleted successfully",
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
-
 
 // Update a client by ID
 export const updateClient = async (req, res) => {
@@ -203,16 +199,23 @@ export const getClientsCount = async (req, res) => {
   }
 };
 
-
 export const getClientsDashboardCounts = async (req, res) => {
-    try {
-        const documentsCount = (await TasksDocument.countDocuments({ clientID: req.user.id }));
-        const CompaniesCount = (await Company.countDocuments({ clientID: req.user.id }));
+  try {
+    const documentsCount = await TasksDocument.countDocuments({
+      clientID: req.user.id,
+    });
+    const companiesCount = await Company.countDocuments({
+      clientID: req.user.id,
+    });
 
-        res.status(200).json({ documentsCount, CompaniesCount });
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
+    res.status(200).json([
+      { label: "Documents", count: documentsCount },
+      { label: "Companies", count: companiesCount },
+      { label: "Engagement", count: "1" },
+    ]);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 };
 
 export const getClientCompanies = async (req, res) => {
@@ -254,20 +257,19 @@ export const getClientCompanies = async (req, res) => {
   }
 };
 
-
 export const getClientLOE = async (req, res) => {
-    try {
-        const clientID = req.params.id
-        const LOE = await TasksDocument.findOne({ clientID, title: "LOE" })
-        if (!LOE) return res.status(400).json({ message: "LOE not found or Client not exits!" })
-        res.status(200).json({ path: LOE.path })
-
-    } catch (error) {
-        res.status(400).json({ message: error.message })
-    }
-
-}
-
+  try {
+    const clientID = req.params.id;
+    const LOE = await TasksDocument.findOne({ clientID, title: "LOE" });
+    if (!LOE)
+      return res
+        .status(400)
+        .json({ message: "LOE not found or Client not exits!" });
+    res.status(200).json({ path: LOE.path });
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
 
 export const getDepartmentClients = async (req, res) => {
   try {

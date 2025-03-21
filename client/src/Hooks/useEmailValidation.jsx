@@ -23,7 +23,6 @@ export const useEmailValidation = () => {
   });
 
   const checkEmail = useDebounce(async (formik, email) => {
- 
     if (!email) {
       setValidation({
         loading: false,
@@ -54,16 +53,16 @@ export const useEmailValidation = () => {
       loading: false,
       valid: isAvailable,
       message: isAvailable
-        ? "✅ Email is available!"
+        ? "✔ Email is available!"
         : "❌ Email already exists!",
     });
   }, 500);
-const resetValidation = () => {
-  setValidation({
-    loading: false,
-    valid: null,
-    message: "",
-  });
-};
+  const resetValidation = () => {
+    setValidation({
+      loading: false,
+      valid: null,
+      message: "",
+    });
+  };
   return { validation, checkEmail, resetValidation };
 };

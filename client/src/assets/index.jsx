@@ -10,17 +10,12 @@ import { LiaFileInvoiceSolid } from "react-icons/lia";
 import { IoDocumentsOutline } from "react-icons/io5";
 import { PiMicrosoftExcelLogoFill } from "react-icons/pi";
 import { FaBuildingShield } from "react-icons/fa6";
-import { MdEmail } from "react-icons/md";
 import { IoSettingsOutline } from "react-icons/io5";
 // cliets icons
 import { IoDocuments } from "react-icons/io5";
 import { FaUserFriends } from "react-icons/fa";
 import { IoMdNotifications } from "react-icons/io";
 import { RiAccountPinCircleFill } from "react-icons/ri";
-
-// ------------- dashboard overciew icons
-import { FaUserTie } from "react-icons/fa6";
-import { MdManageAccounts } from "react-icons/md";
 
 // images
 import darkLightimg from "/images/SidebarSettings/modes/darkorlight.webp";
@@ -190,7 +185,6 @@ export const dashboardAnalytics = [
     endpoint: "Clients",
     count: "77",
     bgColor: "#FFE4EC",
-
     iconColor: "#916FE6",
     titleColor: "#9298A2",
   },

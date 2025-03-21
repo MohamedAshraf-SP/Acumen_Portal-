@@ -19,7 +19,7 @@ export const clientRoute = express.Router();
 clientRoute.get("/", roleMiddleware(["admin"]), getClients);
 
 clientRoute.get("/count", roleMiddleware(["admin", "accountant"]), getClientsCount);
-clientRoute.get("/dashboardCounts", roleMiddleware(["admin", "accountant", "client"]), getClientsDashboardCounts);
+clientRoute.get("/dashboard/count", roleMiddleware(["admin", "accountant", "client"]), getClientsDashboardCounts);
 clientRoute.get("/ofdepartment", roleMiddleware(["admin", "accountant"]), accountantRoleMiddleware, getDepartmentClients);
 clientRoute.get("/:id/companies", roleMiddleware(["admin", "accountant", "client"]), accountantDepartmentSetMiddleware, getClientCompanies);
 clientRoute.get("/:id/engagement", roleMiddleware(["admin", "accountant", "client"]), getClientLOE);

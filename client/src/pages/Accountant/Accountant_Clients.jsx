@@ -133,7 +133,7 @@ const Accountant_Clients = () => {
       ),
     },
   ];
-console.log(data,status)
+ 
   return (
     <>
       {show && targetId === selectedItem?.itemId && (
@@ -159,14 +159,14 @@ console.log(data,status)
         {/* Table */}
         <div className="mb-10">
           {status === "loading" && <Contentloader />}
-          {status === "success" && data.length === 0 && (
+          {status === "success" && data?.clients?.length === 0 && (
             <Empty
               image={Nodataimg}
               description="No Data Available"
               className="flex flex-col items-center justify-center"
             />
           )}
-          {status === "success" && data.length > 0 && (
+          {status === "success" && data?.clients?.length > 0 && (
             <>
               <Table columns={columns} dataSource={data} pagination={false} />
               {totalClients != null && (
@@ -174,16 +174,18 @@ console.log(data,status)
                   <Pagination
                     current={pagination.current}
                     pageSize={pagination.pageSize}
-                    total={totalClients}
+                    total={totalRecords}
                     onChange={onPageChange}
                   />
                 </div>
               )}
             </>
           )}
-          {status === "failed" && 
-          <div className="flex items-center justify-center text-center text-red-500 mt-4">failed to load your clients,try again</div>
-          }
+          {status === "failed" && (
+            <div className="flex items-center justify-center text-center text-red-500 mt-4">
+              failed to load your clients,try again
+            </div>
+          )}
         </div>
       </div>
     </>

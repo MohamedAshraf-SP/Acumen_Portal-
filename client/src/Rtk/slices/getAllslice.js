@@ -4,9 +4,9 @@ import { getAllItems } from "../../services/globalService";
 // Thunk to fetch items dynamically based on path
 export const FetchedItems = createAsyncThunk(
   "data/getAll",
-  async ({ path, page = 1, limit = 10 }, thunkAPI) => {
+  async ({ path, page = 1, limit = 10,isDepartment }, thunkAPI) => {
     try {
-      const response = await getAllItems(path, page, limit);
+      const response = await getAllItems(path, page, limit, isDepartment);
       return { path, data: response };
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response?.data ?? error.message);

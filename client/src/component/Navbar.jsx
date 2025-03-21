@@ -1,5 +1,5 @@
 import { useSelector, useDispatch } from "react-redux";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { MdOutlineSettingsSuggest, MdKeyboardArrowDown } from "react-icons/md";
 import { CiMenuFries, CiDark } from "react-icons/ci";
 import { CgProfile } from "react-icons/cg";
@@ -14,7 +14,7 @@ import {
 } from "../Rtk/slices/settingSlice";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "../Contexts/AuthContext";
-import { getItem } from "../services/globalService";
+import { IoIosLogOut } from "react-icons/io";
 
 export default function Navbar() {
   const { logout, user } = useAuth();
@@ -147,9 +147,10 @@ export default function Navbar() {
             <div className="flex justify-center py-2">
               <button
                 onClick={logout}
-                className="w-full mx-1 text-[#b71d18] bg-[#ff563052] hover:bg-[#b71d18]"
+                className="w-full mx-1 text-[#b71d18] bg-[#ff563052] hover:bg-[#b71d18] hover:text-white flex items-center justify-center gap-2"
               >
                 Log out
+                <IoIosLogOut size={15}/>
               </button>
             </div>
           </div>

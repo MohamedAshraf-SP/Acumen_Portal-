@@ -3,57 +3,48 @@ import { useDispatch, useSelector } from "react-redux";
 import { Table, Pagination, Empty } from "antd";
 import { LuDot } from "react-icons/lu";
 import { RiDownloadCloud2Line } from "react-icons/ri";
-import { AiOutlineEyeInvisible, AiOutlineEye } from "react-icons/ai"; // Updated icons
+import { AiOutlineEyeInvisible, AiOutlineEye } from "react-icons/ai";
 import Nodataimg from "/images/table/No data.svg";
 import { useLocation } from "react-router-dom";
 import { formatDate } from "../../Utils";
 import { updateTargetItem } from "../../Rtk/slices/updateItemSlice";
 import { setsuccessmsg } from "../../Rtk/slices/settingSlice";
-import { useAuth } from "../../Contexts/AuthContext";
-import { getDocuments } from "../../services/globalService";
+import { FetchedItems } from "../../Rtk/slices/getAllslice";
+import Contentloader from "../../component/Contentloader";
 
 const Accountants_Documents = () => {
   const routes = ["Dashboard", "Documents"];
   const dispatch = useDispatch();
   const location = useLocation();
-  const { user } = useAuth();
   const isDashboard = location.pathname.endsWith("dashboard");
   // Data state
-  const [accountantsDocuments, setAccountantDecouments] = useState([]);
-  const [totalDocuments, setTotalDocumets] = useState(null);
-  const [loadingStatus, setLoadingStatus] = useState("");
+  const data =
+    useSelector((state) => state.getall.entities?.tasksDocuments) || [];
+  const totalRecords =
+    useSelector(
+      (state) => state.getall.entities?.tasksDocuments?.TasksDocumentCount
+    ) || 0;
+  const status = useSelector((state) => state.getall?.status?.tasksDocuments);
   // Local state
   const [pagination, setPagination] = useState({ current: 1, pageSize: 10 });
 
-  // Fetch data based on pagination
-  const fetchData = async (page, pageSize) => {
-    setLoadingStatus("loading");
-    try {
-      const response = await getDocuments(
-        page,
-        pageSize,
-        "department",
-        user?.department
-      );
-      if (response?.TasksDocuments.length > 0) {
-        setAccountantDecouments(response?.TasksDocuments);
-        setTotalDocumets(response?.TasksDocumentCount);
-        setLoadingStatus("success");
-      } else {
-        setAccountantDecouments([]);
-        setTotalDocumets(0);
-        setLoadingStatus("success");
-      }
-    } catch (error) {
-      console.log(error);
-      setLoadingStatus("failed");
-    }
+  const fetchData = (current, pageSize) => {
+    dispatch(
+      FetchedItems({
+        path: "tasksDocuments",
+        page: current,
+        limit: pageSize,
+        isDepartment: Boolean(true),
+      })
+    );
   };
 
-  // Fetch data when the component mounts & when pagination changes
+  // Initial fetch on component mount
   useEffect(() => {
-    fetchData(pagination.current, pagination.pageSize);
-  }, [pagination, user?.department]);
+    if (!data.length) {
+      fetchData(pagination.current, pagination.pageSize);
+    }
+  }, []); // Dependency array ensures re-fetching on pagination change
 
   // Handle pagination change
   const onPageChange = (page, pageSize) => {
@@ -169,7 +160,7 @@ const Accountants_Documents = () => {
       ),
     },
   ];
-
+ 
   return (
     <div className="rounded-lg shadow-sm bg-white overflow-hidden">
       {/* Header */}
@@ -200,28 +191,24 @@ const Accountants_Documents = () => {
 
       {/* Table */}
       <div>
-        {loadingStatus === "loading" && (
-          <div className="flex justify-center h-64 items-center">
-            <div className="animate-spin h-8 w-8 border-4 border-gray-300 border-t-slate-900 rounded-full"></div>
-          </div>
-        )}
-        {loadingStatus === "failed" && (
+        {status === "loading" && <Contentloader />}
+        {status === "failed" && (
           <p className="text-red-600 text-center">
             Failed to load your documents.
           </p>
         )}
-        {loadingStatus === "success" && accountantsDocuments?.length === 0 && (
+        {status === "success" && data?.TasksDocuments?.length === 0 && (
           <Empty
             image={Nodataimg}
             description="No Data Available"
             className="flex flex-col text-base items-center font-normal"
           />
         )}
-        {loadingStatus === "success" && accountantsDocuments?.length > 0 && (
+        {status === "success" && data?.TasksDocuments?.length > 0 && (
           <>
             <Table
               columns={columns}
-              dataSource={accountantsDocuments}
+              dataSource={data?.TasksDocuments}
               pagination={false}
               rowKey="_id"
               rowClassName={(record, index) =>
@@ -232,7 +219,7 @@ const Accountants_Documents = () => {
               <Pagination
                 current={pagination.current}
                 pageSize={pagination.pageSize}
-                total={totalDocuments}
+                total={totalRecords}
                 onChange={onPageChange}
               />
             </div>

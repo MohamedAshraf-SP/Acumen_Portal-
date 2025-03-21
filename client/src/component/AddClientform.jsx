@@ -16,7 +16,6 @@ export default function AddClientForm() {
   const status = useSelector((state) => state.AddNew.status); // check adding status
   const [alert, setAlert] = useState({ msg: "", showmsg: false });
   const { validation, checkEmail, resetValidation } = useEmailValidation();
-
   const [fileName, setFileName] = useState("");
   // Helper to check email availability
 
@@ -30,16 +29,7 @@ export default function AddClientForm() {
       setFileName("");
     }
   };
-  const resetForm = () => {
-    formik.resetForm();
-    setFileName("");
-    setEmailValidation({
-      loading: false,
-      valid: null,
-      message: "",
-    });
-    setAlert({ msg: "", showmsg: false });
-  };
+
   // Formik setup
   const formik = useFormik({
     initialValues: {
@@ -97,6 +87,13 @@ export default function AddClientForm() {
       }
     },
   });
+
+  // reset formik
+  const resetForm = () => {
+    formik.resetForm();
+    setFileName("");
+    resetValidation();
+  };
   return (
     <div className="dark:bg-secondary-dark-bg rounded-md h-full">
       <header>

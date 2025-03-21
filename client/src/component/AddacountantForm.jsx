@@ -12,7 +12,6 @@ import Skeleton from "react-loading-skeleton";
 import { useEmailValidation } from "../Hooks/useEmailValidation";
 
 export default function AddacountantForm() {
-  const { validation, checkEmail, resetValidation } = useEmailValidation();
   // List Departments
   const Departments = [
     "Annual accounts, CT and Director department",
@@ -24,6 +23,7 @@ export default function AddacountantForm() {
   ];
 
   const dispatch = useDispatch();
+  const { validation, checkEmail, resetValidation } = useEmailValidation();
   const status = useSelector((state) => state.AddNew.status);
   const [alert, setalert] = useState({ msg: "", showmsg: false });
   const routes = ["Accountants", "Add Accountant"];
@@ -66,6 +66,13 @@ export default function AddacountantForm() {
       }
     },
   });
+
+  // reset formik
+  const resetForm = () => {
+    formik.resetForm();
+    setFileName("");
+    resetValidation();
+  };
   return (
     <div className="dark:bg-secondary-dark-bg rounded-md h-full">
       <div>
@@ -255,9 +262,9 @@ export default function AddacountantForm() {
             </div>
             <div className="flex md:flex-row flex-col  justify-end md:gap-4 gap-2  w-full">
               <button
-                type="button"
+                type="reset"
                 className=" bg-[#efeff0] px-4 font-normal rounded-md "
-                onClick={() => formik.resetForm()}
+                onClick={resetForm}
               >
                 cancel
               </button>
