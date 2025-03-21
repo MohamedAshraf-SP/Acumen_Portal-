@@ -147,6 +147,14 @@ export const getCompanies = async (req, res) => {
 
 export const getCompaniesAbstracted = async (req, res) => {
     try {
+        let filter = {}
+
+        if (req.user.role == "accountant") {
+            filter.departments = { $in: req.user.department }
+        }
+        if (req.user.role == "client") {
+            filter.clientID = req.user.clientID
+        }
 
         const { page = 1, limit = 10 } = req.query; // Default page = 1, limit = 10
 
@@ -155,10 +163,10 @@ export const getCompaniesAbstracted = async (req, res) => {
         const limitNumber = parseInt(limit, 10);
 
         // Calculate total count for pagination metadata
-        const totalCompanies = await Company.countDocuments();
+        const totalCompanies = await Company.countDocuments(filter);
 
         // Fetch companies with pagination
-        const companies = await Company.find()
+        const companies = await Company.find(filter)
             //  .populate({ path: "Client", strictPopulate: false })
             .select({
                 companyName: 1,
@@ -169,16 +177,6 @@ export const getCompaniesAbstracted = async (req, res) => {
                 telephone: 1
             }).skip((pageNumber - 1) * limitNumber) // Skip documents for the previous pages
             .limit(limitNumber);
-
-        // const transformedCompanies = companies.map(company => ({
-        //     company: company.companyName,
-        //     client: company.clientName,
-        //     contactInfo: `${company.contactName} / ${company.phone}`, // Merging fields
-        //     emailAddress: company.email,
-        //     landline: company.telephone
-        // }));
-
-        // Limit the number of documents per page
 
         // Return paginated response
         res.status(200).json({
