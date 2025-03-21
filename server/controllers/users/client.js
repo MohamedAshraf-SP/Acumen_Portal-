@@ -39,8 +39,8 @@ export const getClients = async (req, res) => {
 
   try {
     const clients = await Client.find({})
-      // .populate("userID")
-      // .populate("companies")
+       .populate("userID")
+      .populate("companies")
       .skip(skip)
       .limit(limit);
 
