@@ -39,14 +39,23 @@ export const getClients = async (req, res) => {
 
   try {
     const clients = await Client.find({})
-      .populate("userID")
-      .populate("companies")
+      // .populate("userID")
+      // .populate("companies")
       .skip(skip)
-      .limit(limit); // Skip the specified number of documents.limit(limit);;
+      .limit(limit);
+
+
+    // let resp = clients.map((client) => {
+    //   const clientObj = client.toObject();
+
+    //   clientObj["department"] = req.user?.department || "-"
+    //   return clientObj
+    // });
+
     res.status(200).json({
       currentPage: page,
       pagesCount: pagesCount,
-      clients: clients,
+      clients: resp[0],
       clientCount: clientCount,
     });
   } catch (error) {
@@ -259,7 +268,7 @@ export const getClientCompanies = async (req, res) => {
 
 export const getClientLOE = async (req, res) => {
   try {
-    const clientID = req.params.id;
+    const clientID = req.user.id;
     const LOE = await TasksDocument.findOne({ clientID, title: "LOE" });
     if (!LOE)
       return res
@@ -293,16 +302,20 @@ export const getDepartmentClients = async (req, res) => {
           _id: 0, // Exclude _id if not needed
           name: 1,
           email: 1,
+          phone: 1,
         },
       },
       {
         $addFields: {
-          Department: req.query.department, // Add the requested department
+          Department: req.user.department, // Add the requested department
         },
       },
     ])
       .skip(skip)
       .limit(limit);
+
+
+    console.log(clients);
 
     const pagesCount = Math.ceil(clients.length / limit) || 0;
 
