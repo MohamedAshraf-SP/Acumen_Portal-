@@ -5,10 +5,10 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import Skeleton from "react-loading-skeleton";
 import { ImSpinner8 } from "react-icons/im";
-import axios from "axios";
+
 import { useDebounce } from "../Hooks/useDebounce";
-const api = import.meta.env.VITE_COMPANY_HOUSE_URL;
-const companyKey = import.meta.env.VITE_COMPANY_HOUSE_API_KEY;
+import { getItem } from "../services/globalService";
+
 export default function AddCompany() {
   const routes = ["Companies", "Add Company"];
   const [searchResult, setSearchResult] = useState([]);
@@ -30,16 +30,12 @@ export default function AddCompany() {
   const handleSearch = useCallback(
     useDebounce(async (e) => {
       const searchquery = e.target.value;
-      console.log(searchquery);
+
       setLoading("loading");
       try {
-        const response = await axios.get(
-          `https://cors-anywhere.herokuapp.com/${api}/search/companies?q=${searchquery}`,
-          {
-            headers: {
-              Authorization: `Basic ${btoa(companyKey)}`,
-            },
-          }
+        const response = await getItem(
+          "companyHouse/search/companies",
+          searchquery
         );
         console.log(response);
         if (response.status === 200) {
