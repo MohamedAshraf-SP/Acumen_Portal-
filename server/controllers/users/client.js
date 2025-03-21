@@ -55,7 +55,7 @@ export const getClients = async (req, res) => {
     res.status(200).json({
       currentPage: page,
       pagesCount: pagesCount,
-      clients: resp[0],
+      clients: clients,
       clientCount: clientCount,
     });
   } catch (error) {
