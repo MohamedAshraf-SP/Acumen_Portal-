@@ -63,7 +63,7 @@ const ClientTable = () => {
       fetchData(pagination.current, pagination.pageSize);
     }
   }, [pagination]); // Dependency array ensures re-fetching on pagination change
-
+console.log(data)
   // Columns for the Ant Design Table
   const columns = [
     {

@@ -39,11 +39,10 @@ export const getClients = async (req, res) => {
 
   try {
     const clients = await Client.find({})
-       .populate("userID")
-      .populate("companies")
+      //  .populate("userID")
+      // .populate("companies")
       .skip(skip)
       .limit(limit);
-
 
     // let resp = clients.map((client) => {
     //   const clientObj = client.toObject();
@@ -51,7 +50,6 @@ export const getClients = async (req, res) => {
     //   clientObj["department"] = req.user?.department || "-"
     //   return clientObj
     // });
-
     res.status(200).json({
       currentPage: page,
       pagesCount: pagesCount,
@@ -153,7 +151,7 @@ export const addClient = async (req, res) => {
 
     return res.status(201).json({ message: "Client added successfully!!" });
   } catch (error) {
-   // console.log(error);
+    // console.log(error);
     res.status(400).json(error.message);
   }
 };
@@ -261,7 +259,7 @@ export const getClientCompanies = async (req, res) => {
       companies: paginatedCompanies,
     });
   } catch (error) {
-   // console.error(error);
+    // console.error(error);
     res.status(500).json({ message: "Error retrieving companies!", error });
   }
 };
@@ -313,7 +311,6 @@ export const getDepartmentClients = async (req, res) => {
     ])
       .skip(skip)
       .limit(limit);
-
 
     console.log(clients);
 

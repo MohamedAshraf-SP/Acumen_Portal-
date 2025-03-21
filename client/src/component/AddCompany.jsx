@@ -30,7 +30,6 @@ export default function AddCompany() {
   const handleSearch = useCallback(
     useDebounce(async (e) => {
       const searchquery = e.target.value;
-
       setLoading("loading");
       try {
         const response = await getItem(
