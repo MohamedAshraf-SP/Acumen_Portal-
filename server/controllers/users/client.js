@@ -268,7 +268,7 @@ export const getClientCompanies = async (req, res) => {
 
 export const getClientLOE = async (req, res) => {
   try {
-    const clientID = req.user.id;
+    const clientID = req.params.id;
     const LOE = await TasksDocument.findOne({ clientID, title: "LOE" });
     if (!LOE)
       return res
