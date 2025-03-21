@@ -3,3 +3,5 @@
 **/uploads/
 .env
 **/.gitignore
+client/src/Contexts/missing.txt
+

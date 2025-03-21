@@ -1,21 +1,17 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import _ from "lodash";
-
 // import icons
 import { IoIosCloseCircleOutline } from "react-icons/io";
 import { LuDot } from "react-icons/lu";
 import { ImSpinner8 } from "react-icons/im";
-
 // formik using
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { addNewData } from "../Rtk/slices/addNewSlice";
 import Skeleton from "react-loading-skeleton";
-import axios from "axios";
+import { useEmailValidation } from "../Hooks/useEmailValidation";
 
 export default function AddacountantForm() {
-  const api = import.meta.env.VITE_API_URL;
   // List Departments
   const Departments = [
     "Annual accounts, CT and Director department",
@@ -27,53 +23,11 @@ export default function AddacountantForm() {
   ];
 
   const dispatch = useDispatch();
+  const { validation, checkEmail, resetValidation } = useEmailValidation();
   const status = useSelector((state) => state.AddNew.status);
   const [alert, setalert] = useState({ msg: "", showmsg: false });
-  const [emailValidation, setEmailValidation] = useState({
-    loading: false,
-    valid: null,
-    message: "",
-  });
-
   const routes = ["Accountants", "Add Accountant"];
 
-  // handle email check while typing
-  const checkEmailAvailability = async (email) => {
-    setEmailValidation({ loading: true, valid: null, message: "" });
-    try {
-      const response = await axios.post(`${api}/helpers/checkemail`, { email });
-
-      const { status } = response;
-
-      setEmailValidation({
-        loading: false,
-        valid: status === 200,
-        message: status === 200 && "Email is available.",
-      });
-    } catch (error) {
-      setEmailValidation({
-        loading: false,
-        valid: status === 200,
-        message: "Email already existsd.",
-      });
-    }
-  };
-
-  // Debounced email validation
-  const debouncedValidateEmail = useMemo(
-    () => _.debounce(checkEmailAvailability, 500),
-    [checkEmailAvailability]
-  );
-
-  const handleEmailChange = (e) => {
-    formik.handleChange(e);
-    const email = e.target.value;
-    if (email && Yup.string().email().isValidSync(email)) {
-      debouncedValidateEmail(email);
-    } else {
-      setEmailValidation({ loading: false, valid: null, message: "" });
-    }
-  };
   // handle formik inputs
   const formik = useFormik({
     initialValues: {
@@ -95,33 +49,30 @@ export default function AddacountantForm() {
         const result = await dispatch(
           addNewData({ path: "accountants", itemData: values })
         ).unwrap();
-
-        // Show success alert
         setalert({
           msg: "Accountant added successfully",
           showmsg: true,
         });
-
-        resetForm(); // Reset form only on success
-        return result; // Return result for further use if needed
+        resetForm();
       } catch (error) {
-        // Extract meaningful error message
         const errorMsg = error || "Failed to add accountant";
-        // Show error alert
+
         setalert({
           msg: errorMsg,
           showmsg: true,
         });
       } finally {
-        // Consistent cleanup of validation state
-        setEmailValidation({
-          loading: false,
-          valid: null,
-          message: "",
-        });
+        resetValidation();
       }
     },
   });
+
+  // reset formik
+  const resetForm = () => {
+    formik.resetForm();
+    setFileName("");
+    resetValidation();
+  };
   return (
     <div className="dark:bg-secondary-dark-bg rounded-md h-full">
       <div>
@@ -223,7 +174,10 @@ export default function AddacountantForm() {
                 className="peer input block"
                 type="email"
                 placeholder=" "
-                onChange={handleEmailChange}
+                onChange={(e) => {
+                  formik.handleChange(e);
+                  checkEmail(formik.errors, e.target.value);
+                }}
                 onBlur={formik.handleBlur}
                 value={formik.values.email}
                 aria-live="polite"
@@ -234,23 +188,20 @@ export default function AddacountantForm() {
                   {formik.errors.email}
                 </p>
               )}
-              {emailValidation.loading && (
-                <img
-                  className="w-6 h-6 animate-spin"
-                  src="https://www.svgrepo.com/show/474682/loading.svg"
-                  alt="Loading icon"
-                />
-              )}
-              {emailValidation.valid === false && (
-                <p className="text-red-600 italic mt-1 text-[12px]">
-                  {emailValidation.message}
+              {validation.loading && (
+                <p className={`text-xs mt-1 text-gray-800`}>
+                  {validation.message}
                 </p>
               )}
-              {emailValidation.valid === true && (
-                <p className="text-green-600 italic mt-1 text-[12px]">
-                  {emailValidation.message}
+              {validation.message && !validation.loading ? (
+                <p
+                  className={`text-xs mt-1 ${
+                    validation.valid ? "text-green-600" : "text-red-600"
+                  }`}
+                >
+                  {validation.message}
                 </p>
-              )}
+              ) : null}
             </div>
             <div className="relative w-full">
               <label
@@ -291,7 +242,7 @@ export default function AddacountantForm() {
                 value={formik.values.department || "Finance Department"}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-slate-700 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 outline-none"
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-gray-500 focus:border-slate-700 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:gray-blue-500 dark:focus:border-gray-500 outline-none"
               >
                 {Departments.map((department, index) => (
                   <option
@@ -311,23 +262,23 @@ export default function AddacountantForm() {
             </div>
             <div className="flex md:flex-row flex-col  justify-end md:gap-4 gap-2  w-full">
               <button
-                type="button"
+                type="reset"
                 className=" bg-[#efeff0] px-4 font-normal rounded-md "
-                onClick={() => formik.resetForm()}
+                onClick={resetForm}
               >
                 cancel
               </button>
               <button
                 className={`blackbutton ${
-                  !formik.isValid ||
-                  status == "loading" ||
-                  emailValidation.valid === false
+                  !formik.isValid || status == "loading" || !validation.valid
                     ? "cursor-not-allowed opacity-50  "
                     : " cursor-pointer"
                 }`}
                 type="submit"
                 disabled={
-                  !formik.isValid || status == "loading" || formik.isSubmitting
+                  formik.isSubmitting ||
+                  !validation.valid ||
+                  status == "loading"
                 }
               >
                 {status == "loading" ? "Adding" : "Add accountant"}

@@ -1,67 +1,24 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import _ from "lodash";
 import { IoIosCloseCircleOutline } from "react-icons/io";
 import { LuDot } from "react-icons/lu";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { addNewData } from "../Rtk/slices/addNewSlice";
 import Skeleton from "react-loading-skeleton";
-import axios from "axios";
 import { ImSpinner8 } from "react-icons/im";
+import { useEmailValidation } from "../Hooks/useEmailValidation";
 
 export default function AddClientForm() {
   const routes = ["Clients", "Add Client"];
-  const api = import.meta.env.VITE_API_URL;
+
   const dispatch = useDispatch();
   const status = useSelector((state) => state.AddNew.status); // check adding status
-  const [alert, setAlert] = useState({ msg: "", showmsg: false }); // toggle show or hide alert
-  const [emailValidation, setEmailValidation] = useState({
-    loading: false,
-    valid: null,
-    message: "",
-  }); // state handle email validation
-  const [fileName, setFileName] = useState(""); //carry uploaded file name
+  const [alert, setAlert] = useState({ msg: "", showmsg: false });
+  const { validation, checkEmail, resetValidation } = useEmailValidation();
+  const [fileName, setFileName] = useState("");
   // Helper to check email availability
-  const checkEmailAvailability = async (email) => {
-    setEmailValidation({ loading: true, valid: null, message: "" });
-    try {
-      const response = await axios.post(`${api}/helpers/checkemail`, { email });
-      const { status } = response;
-      setEmailValidation({
-        loading: false,
-        valid: status === 200,
-        message: status === 200 && "Email is available.",
-      });
-    } catch (error) {
-      setEmailValidation({
-        loading: false,
-        valid: false,
-        message: "Email already exists.",
-      });
-    }
-  };
 
-  // Debounced email validation
-  const debouncedValidateEmail = useMemo(
-    () => _.debounce(checkEmailAvailability, 500),
-    []
-  );
-  // clear debouncedValidateEmail
-  useEffect(() => {
-    return () => debouncedValidateEmail.cancel();
-  }, [debouncedValidateEmail]);
-
-  // -----Detect changing in input
-  const handleEmailChange = (e) => {
-    formik.handleChange(e);
-    const email = e.target.value;
-    if (email && Yup.string().email().isValidSync(email)) {
-      debouncedValidateEmail(email);
-    } else {
-      setEmailValidation({ loading: false, valid: null, message: "" });
-    }
-  };
   // for handle upload file
   const handleFileChange = (e) => {
     const file = e.currentTarget.files[0];
@@ -72,16 +29,7 @@ export default function AddClientForm() {
       setFileName("");
     }
   };
-  const resetForm = () => {
-    formik.resetForm();
-    setFileName("");
-    setEmailValidation({
-      loading: false,
-      valid: null,
-      message: "",
-    });
-    setAlert({ msg: "", showmsg: false });
-  };
+
   // Formik setup
   const formik = useFormik({
     initialValues: {
@@ -122,33 +70,30 @@ export default function AddClientForm() {
         const result = await dispatch(
           addNewData({ path: "clients", itemData: formData })
         ).unwrap();
-        // Check if the response contains a success message
+
         if (result?.message) {
           setAlert({ msg: result.message, showmsg: true });
-          resetForm(); // Reset form only on success
         }
-
-        return result; // Return result for further use if needed
       } catch (error) {
-        // Capture Redux rejected value or fallback to generic error message
         const errorMsg = error || "Failed to add client";
-        // console.error("Submission failed:", errorMsg);
         setAlert({
           msg: errorMsg,
           showmsg: true,
         });
       } finally {
-        // Cleanup process to reset email validation state
-        setEmailValidation({
-          loading: false,
-          valid: null,
-          message: "",
-        });
         setFileName(null);
+        resetValidation();
+        resetForm();
       }
     },
   });
 
+  // reset formik
+  const resetForm = () => {
+    formik.resetForm();
+    setFileName("");
+    resetValidation();
+  };
   return (
     <div className="dark:bg-secondary-dark-bg rounded-md h-full">
       <header>
@@ -197,7 +142,7 @@ export default function AddClientForm() {
         </div>
       )}
 
-      <div className="mt-8 bg-white dark:bg-gray-800 rounded-lg max-w-[700px] mx-auto border border-solid border-[#43464933] shadow-md">
+      <div className="mt-8 bg-white dark:bg-gray-800 rounded-lg max-w-[700px] mx-auto border border-solid border-[#43464933] shadow-sm">
         <header className="bg-gray-50">
           <h2 className="text-lg font-medium dark:text-gray-200 py-2 px-4 text-slate-700">
             Add Client
@@ -224,9 +169,7 @@ export default function AddClientForm() {
               onBlur={formik.handleBlur}
               value={formik.values.name}
             />
-            {/* <label htmlFor="clientName" className="customlabel text-gray-700">
-              Client Name
-            </label> */}
+
             {formik.touched.name && formik.errors.name && (
               <p className="text-red-600 italic mt-1 text-[12px]">
                 {formik.errors.name}
@@ -245,7 +188,10 @@ export default function AddClientForm() {
               className="peer input block"
               type="email"
               placeholder=""
-              onChange={handleEmailChange}
+              onChange={(e) => {
+                formik.handleChange(e);
+                checkEmail(formik.errors, e.target.value);
+              }}
               onBlur={formik.handleBlur}
               value={formik.values.email}
               aria-live="polite"
@@ -256,22 +202,20 @@ export default function AddClientForm() {
                 {formik.errors.email}
               </p>
             )}
-            {emailValidation.loading && (
-              <img
-                className="w-4 h-4 animate-spin"
-                src="https://www.svgrepo.com/show/474682/loading.svg"
-                alt="Loading icon"
-              />
-            )}
-            {emailValidation.message && (
-              <p
-                className={`text-xs italic mt-1 ${
-                  emailValidation.valid ? "text-green-600" : "text-red-600"
-                }`}
-              >
-                {emailValidation.message}
+            {validation.loading && (
+              <p className={`text-xs mt-1 text-gray-800`}>
+                {validation.message}
               </p>
             )}
+            {validation.message && !validation.loading ? (
+              <p
+                className={`text-xs mt-1 ${
+                  validation.valid ? "text-green-600" : "text-red-600"
+                }`}
+              >
+                {validation.message}
+              </p>
+            ) : null}
           </div>
 
           {/* File Input */}
@@ -338,13 +282,13 @@ export default function AddClientForm() {
             <button
               type="submit"
               className={`blackbutton ${
-                emailValidation.valid === false ||
-                !formik.isValid ||
-                status == "loading"
+                !validation.valid || !formik.isValid || status == "loading"
                   ? "cursor-not-allowed opacity-50  bg-blue-500"
                   : "bg-blue-500 cursor-pointer"
               }`}
-              disabled={formik.isSubmitting}
+              disabled={
+                formik.isSubmitting || !validation.valid || status == "loading"
+              }
             >
               {status == "loading" ? "Adding" : "Add Client"}
               {status == "loading" && (

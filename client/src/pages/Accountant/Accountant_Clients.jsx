@@ -13,29 +13,29 @@ import {
   setdeleteHintmsg,
   seteditItemForm,
 } from "../../Rtk/slices/settingSlice";
-import { useAuth } from "../../Contexts/AuthContext";
 import Contentloader from "../../component/Contentloader";
-import { getDepartmentClients } from "../../services/globalService";
+import { FetchedItems } from "../../Rtk/slices/getAllslice";
 
 const Accountant_Clients = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { user } = useAuth();
+
   // Redux state
-  const data = useSelector((state) => state.getall.entities?.clients) || [];
+  const data =
+    useSelector((state) => state.getall.entities["clients/ofdepartment"]) || [];
   const totalRecords =
-    useSelector((state) => state.getall.entities?.clients?.clientCount) || 0;
-  const status = useSelector((state) => state.getall?.status.clients);
+    useSelector((state) => state.getall.entities["clients/ofdepartment"]) || 0;
+  const status = useSelector(
+    (state) => state.getall?.status["clients/ofdepartment"]
+  );
   const { show, targetId } = useSelector(
     (state) => state.setting.deleteHintmsg
   );
   const { editItemForm } = useSelector((state) => state.setting);
-
   // Local state
   const [selectedItem, setSelectedItem] = useState(null);
   const [pagination, setPagination] = useState({ current: 1, pageSize: 6 });
-
-  // Handle pagination event
+   // Handle pagination event
   const onPageChange = (page, pageSize) => {
     setPagination({ current: page, pageSize });
     fetchData(page, pageSize);
@@ -58,7 +58,11 @@ const Accountant_Clients = () => {
   // Fetch data
   const fetchData = (current, pageSize) => {
     dispatch(
-      getDepartmentClients({ page: current, limit: pageSize })
+      FetchedItems({
+        path: "clients/ofdepartment",
+        page: current,
+        limit: pageSize,
+      })
     );
   };
 
@@ -129,7 +133,7 @@ const Accountant_Clients = () => {
       ),
     },
   ];
-
+ 
   return (
     <>
       {show && targetId === selectedItem?.itemId && (
@@ -154,32 +158,33 @@ const Accountant_Clients = () => {
 
         {/* Table */}
         <div className="mb-10">
-          {loadingStatus === "loading" && <Contentloader />}
-          {loadingStatus === "success" && clients.length === 0 && (
+          {status === "loading" && <Contentloader />}
+          {status === "success" && data?.clients?.length === 0 && (
             <Empty
               image={Nodataimg}
               description="No Data Available"
               className="flex flex-col items-center justify-center"
             />
           )}
-          {loadingStatus === "success" && clients.length > 0 && (
+          {status === "success" && data?.clients?.length > 0 && (
             <>
-              <Table
-                columns={columns}
-                dataSource={clients}
-                pagination={false}
-              />
+              <Table columns={columns} dataSource={data} pagination={false} />
               {totalClients != null && (
                 <div className="mt-4 flex justify-end">
                   <Pagination
                     current={pagination.current}
                     pageSize={pagination.pageSize}
-                    total={totalClients}
+                    total={totalRecords}
                     onChange={onPageChange}
                   />
                 </div>
               )}
             </>
+          )}
+          {status === "failed" && (
+            <div className="flex items-center justify-center text-center text-red-500 mt-4">
+              failed to load your clients,try again
+            </div>
           )}
         </div>
       </div>

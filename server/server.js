@@ -5,38 +5,45 @@ import dotenv from "dotenv";
 import { run } from "./config/databaseConnection.js";
 import cookieParser from "cookie-parser";
 
-
-/*
-import path from 'path';
-import { fileURLToPath } from 'url';
-Get the filename and directory
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-*/
-
 dotenv.config();
 
 const port = process.env.PORT || 3000;
-const host = process.env.HOST || 'localhost';
-const ORIGIN = process.env.ORIGIN;
+const host = process.env.HOST || "localhost";
 const dbURI = process.env.DB_URI;
 
-console.log(dbURI)
+console.log(dbURI);
+
 const app = express();
-  const corsOptions = {
-    origin: "http://localhost:5174", // ✅ Explicitly specify your frontend URL
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: true, // ✅ Allows cookies/auth headers
-  };
+
+// CORS Configuration
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://api.company-information.service.gov.uk",
+];
+
+const corsOptions = {
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true); // Allow the request
+    } else {
+      callback(new Error("Not allowed by CORS")); // Block the request
+    }
+  },
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true, // Allow credentials
+};
+
 app.use(cors(corsOptions));
+
 // Handle preflight requests for OPTIONS method
-app.options('*', cors(corsOptions));
+app.options("*", cors(corsOptions));
+
 // Connect to the database
 try {
   await run(dbURI); // Ensure run() is an async function
 } catch (error) {
-  console.error('Database connection failed', error);
+  console.error("Database connection failed", error);
   process.exit(1); // Exit if the database connection fails
 }
 
@@ -44,10 +51,11 @@ try {
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+
+// Routes
 app.use("/api", router);
 
-
-
+// Start the server
 app.listen(port, host, (req, res) => {
   console.log(`Server running on Host ${host} Port ${port}...!\n`);
 });

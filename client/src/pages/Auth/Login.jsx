@@ -12,7 +12,7 @@ import LoginImg from "/images/Login/Design-stats-pana.svg";
 import { useAuth } from "../../Contexts/AuthContext";
 
 const Login = () => {
-  const { handleLogin } = useAuth();
+  const { handleLogin, loading } = useAuth();
   const [wrongCredentials, setWrongCredentials] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
@@ -42,18 +42,18 @@ const Login = () => {
     <div className="h-screen grid grid-cols-12 bg-gray-50">
       <section className="  dark:bg-gray-900 my-auto  col-span-12 md:col-span-5  ">
         <div className="flex flex-col items-center justify-center px-6 mx-auto   lg:py-0">
-          <div className="flex flex-row items-center justify-center gap-2 mb-2 md:mb-0">
+          <div className="flex flex-row items-center justify-center gap-2  ">
             <img
               className="w-10 h-10"
               src={PortalLogo}
               loading="lazy"
               alt="logo"
             />
-            <p className="text-3xl font-semibold text-gray-800 dark:text-white">
+            <h1 className="text-3xl font-semibold text-gray-700 dark:text-white">
               AMS Software
-            </p>
+            </h1>
           </div>
-          <div className="w-full dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
+          <div className="w-full dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700   ">
             <div className="flex flex-col sm:p-2">
               <p className="text-sm font-medium text-center text-[#747787] dark:text-white mb-4 md:mb-0 ">
                 Let's get started, Sign in To Your Account
@@ -140,7 +140,7 @@ const Login = () => {
                 <div className="flex items-center justify-end">
                   <a
                     href="#"
-                    className="text-sm text-[#5149DC] font-medium hover:underline dark:text-primary-500"
+                    className="text-sm text-[#3c6bc2] font-medium hover:underline dark:text-primary-500"
                   >
                     Forgot password?
                   </a>
@@ -148,14 +148,14 @@ const Login = () => {
 
                 <button
                   type="submit"
-                  className={`w-full bg-[#5149DC] text-white flex items-center justify-center gap-2 text-md rounded-full p-3 ${
+                  className={`w-full bg-[#3c6bc2] hover:opacity-85 text-white flex items-center justify-center gap-2 text-md rounded-full p-3 ${
                     formik.isSubmitting || !formik.isValid
                       ? "cursor-not-allowed opacity-50"
                       : "cursor-pointer"
                   }`}
                   disabled={formik.isSubmitting || !formik.isValid}
                 >
-                  {formik.isSubmitting ? (
+                  {loading ? (
                     <>
                       <ImSpinner8 className="animate-spin" size={15} />
                       Loading...
@@ -173,7 +173,7 @@ const Login = () => {
         </div>
       </section>
 
-      <div className="md:col-span-7 w-full overflow-hidden rounded-tl-[60px] hidden md:block bg-[#5149DC]">
+      <div className="md:col-span-7 w-full overflow-hidden rounded-tl-[60px] hidden md:block bg-[#2253ad]">
         <div className="mt-20 px-10 flex flex-col gap-3">
           <h1 className="text-2xl text-[#f9fcff] font-medium capitalize leading-8">
             Control Your Business Automatically <br /> with our Smart Portal

@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from "react";
- 
 import { Worker, Viewer } from "@react-pdf-viewer/core";
 import { defaultLayoutPlugin } from "@react-pdf-viewer/default-layout";
 import "@react-pdf-viewer/core/lib/styles/index.css";
 import "@react-pdf-viewer/default-layout/lib/styles/index.css";
 import { FaSpinner } from "react-icons/fa"; // Import spinner icon
 import { useAuth } from "../../Contexts/AuthContext";
-
+import axios from "axios";
+const api = import.meta.env.VITE_API_URL;
 const ClientEngagement = () => {
   const { user, loading } = useAuth();
   const [pdfUrl, setPdfUrl] = useState(null);
-
+  console.log(user);
   // React PDF Viewer plugin (adds zoom, download, and print)
   const defaultLayout = defaultLayoutPlugin();
 
@@ -23,8 +23,9 @@ const ClientEngagement = () => {
   const fetchDocument = async (userId) => {
     try {
       // Replace with your actual API call or Firebase storage retrieval
-      const response = await fetch(`/api/getDocument?userId=${userId}`);
-      const data = await response.json();
+      const response = await axios.get(`${api}/clients/${userId}/engagement`);
+      console.log(response);
+      const data = await response;
       setPdfUrl(data.pdfUrl); // URL of the stored PDF
     } catch (error) {
       console.error("Error fetching document:", error);

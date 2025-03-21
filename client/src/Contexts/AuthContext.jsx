@@ -34,6 +34,7 @@ export const AuthContextProvider = ({ children }) => {
 
       if (response.data) {
         const { accessToken } = response.data;
+
         const decodedUser = decodedToken(accessToken);
 
         if (!decodedUser) {
