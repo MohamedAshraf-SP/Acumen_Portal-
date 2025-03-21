@@ -33,7 +33,7 @@ router.use("/v1/tasksDocuments", tasksRouter);
 router.use("/v1/emailtemplates", templatesRouter);
 router.use("/v1/companies", companyRouter);
 router.use("/v1/companyHouse", companyHouseRouter);
-router.use("/v1", usersRoute);
+router.use("/v1/users", usersRoute);
 
 // /v1/Students/Count
 

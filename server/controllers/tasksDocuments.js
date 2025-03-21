@@ -6,7 +6,7 @@ import { fileURLToPath } from 'url';
 import path from "path"
 import Client from '../models/users/clients.js';
 import { Company } from '../models/company/index.js';
-import company from '../models/company/company.js';
+
 
 
 
@@ -28,7 +28,7 @@ export const addTask = async (req, res) => {
             if (!(await Client.findById(clientID))) return res.status(400).json({ message: "client don't exits" });
         }
 
-        console.log(client);
+        //  console.log(client);
 
 
         if (!req.file) {
@@ -50,7 +50,6 @@ export const addTask = async (req, res) => {
         });
 
 
-
         const savedTask = await newTask.save();
         res.status(201).json({ message: "Task added successfully!!" });
     } catch (error) {
@@ -61,8 +60,6 @@ export const addTask = async (req, res) => {
 // READ: Get all tasks
 export const getAllTasks = async (req, res) => {
     try {
-
-
         const page = req.query.page || 1;
         const limit = req.query.limit || 100;
         const skip = (page - 1) * limit;
@@ -72,7 +69,7 @@ export const getAllTasks = async (req, res) => {
         const companyID = req.query.companyID
         const department = req.query.department
         const sort = req.query.sort === "true";
-         console.log(sort);
+        //console.log(sort);
         if (clientID) filter.clientID = req.query.clientID
         if (companyID) filter.companyID = req.query.companyID
         if (department) filter.department = req.query.department
@@ -81,7 +78,7 @@ export const getAllTasks = async (req, res) => {
 
 
         const TasksDocumentCount = await TasksDocument.countDocuments(filter);
-        console.log(sort ,sort ? { createdAt: -1 } : { createdAt: 1 })
+        /// console.log(sort ,sort ? { createdAt: -1 } : { createdAt: 1 })
 
         const pagesCount = Math.ceil(TasksDocumentCount / limit) || 0;
 
@@ -106,7 +103,6 @@ export const getAllTasks = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
-
 
 // READ: Get task by ID
 export const getTaskById = async (req, res) => {
@@ -172,7 +168,7 @@ export const updateTask = async (req, res) => {
 
         res.status(200).json({ message: "Task updated successfully!!" });
     } catch (error) {
-        console.log(error)
+        //  console.log(error)
         res.status(500).json({ error: error.message });
     }
 };

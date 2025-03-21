@@ -1,5 +1,3 @@
-// auth
-
 import jwt from 'jsonwebtoken';
 
 export const authMiddleware = (req, res, next) => {
@@ -17,10 +15,6 @@ export const authMiddleware = (req, res, next) => {
         res.status(401).json({ message: 'Token is tampered or invalid. Access forbidden!!' });
     }
 };
-
-
-//user role
-
 
 export const roleMiddleware = (requiredRoles) => {
     return (req, res, next) => {

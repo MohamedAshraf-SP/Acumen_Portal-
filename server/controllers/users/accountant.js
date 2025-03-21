@@ -115,7 +115,7 @@ export const addAccountant = async (req, res) => {
 
     res.status(201).json({ message: "New Accountant added successfully!!" });
   } catch (error) {
-    console.log(error);
+    //  console.log(error);
     res.status(400).json({ error: error.message });
   }
 };

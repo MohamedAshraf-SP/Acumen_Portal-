@@ -82,7 +82,7 @@ export const updateUser = async (req, res) => {
       return res.status(401).json({ message: "invalid old password or new password is missing!" })
     }
 
-    console.log(data);
+   // console.log(data);
     const updateduser = await user.findByIdAndUpdate(id, data, {
       new: true,
     });
