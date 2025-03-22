@@ -58,9 +58,11 @@ export default function Client_Dashboard() {
       console.log(error);
     }
   }, []);
+
   useEffect(() => {
     getCounts();
   }, [getCounts]);
+  
   useEffect(() => {
     const date = new Date();
     setTodayDate(date.toDateString());
