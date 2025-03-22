@@ -45,8 +45,7 @@ const Accountant_Clients = () => {
 
   // Handle actions like show, edit, and delete
   const handleAction = (actionType, path, itemId) => {
-    console.log(itemId, path);
-    const itemData = { actionType, path, itemId };
+     const itemData = { actionType, path, itemId };
     setSelectedItem(itemData);
 
     if (actionType === "delete") {
@@ -54,7 +53,7 @@ const Accountant_Clients = () => {
     } else if (actionType === "edit") {
       dispatch(seteditItemForm(true));
     } else if (actionType === "show") {
-      navigate(`/companies/${itemId}`);
+      navigate(`/accountant/companies/${itemId}`);
     }
   };
 
@@ -136,7 +135,7 @@ const Accountant_Clients = () => {
       ),
     },
   ];
-console.log(data?.clients)
+ 
   return (
     <>
       {show && targetId === selectedItem?.itemId && (
@@ -176,7 +175,7 @@ console.log(data?.clients)
                 dataSource={data?.clients}
                 pagination={false}
                 rowKey="_id"
-                className="table-auto w-full divide-y divide-gray-200  border-b border-solid border-gray-200 "
+                className="table-auto w-full divide-y divide-gray-50    "
               />
               {totalRecords != null && (
                 <div className="mt-4 flex justify-end">

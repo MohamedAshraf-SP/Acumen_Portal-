@@ -3,14 +3,15 @@ import { useDispatch, useSelector } from "react-redux";
 import { Table, Pagination, Empty } from "antd";
 import { LuDot } from "react-icons/lu";
 import { RiDownloadCloud2Line } from "react-icons/ri";
-import { AiOutlineEyeInvisible, AiOutlineEye } from "react-icons/ai"; // Updated icons
+import { AiOutlineEyeInvisible, AiOutlineEye } from "react-icons/ai";
 import Nodataimg from "/images/table/No data.svg";
 import { formatDate, handleDownloadPdf } from "../Utils";
 import { updateTargetItem } from "../Rtk/slices/updateItemSlice";
- import { setsuccessmsg } from "../Rtk/slices/settingSlice";
+import { setsuccessmsg } from "../Rtk/slices/settingSlice";
 import { useLocation } from "react-router-dom";
 import { useAuth } from "../Contexts/AuthContext";
 import { FetchedItems } from "../Rtk/slices/getAllslice";
+import Contentloader from "../component/Contentloader";
 
 const Documents = () => {
   const routes = ["Dashboard", "Documents"];
@@ -18,6 +19,7 @@ const Documents = () => {
   const location = useLocation();
   const { user } = useAuth();
   const isDashboard = location.pathname.endsWith("dashboard");
+
   // Redux state
   const data = useSelector((state) => state.getall.entities?.tasksDocuments);
   const totalRecords = useSelector(
@@ -28,24 +30,21 @@ const Documents = () => {
   // Local state
   const [pagination, setPagination] = useState({ current: 1, pageSize: 10 });
 
-  // Fetch data based on pagination
+  // Fetch data
   const fetchData = (current, pageSize) => {
     dispatch(
       FetchedItems({ path: "tasksDocuments", page: current, limit: pageSize })
     );
   };
 
-  // Fetch data when the component mounts & when pagination changes
   useEffect(() => {
     fetchData(pagination.current, pagination.pageSize);
   }, [pagination]);
 
-  // Handle pagination change
-  const onPageChange = (page, pageSize) => {
-    setPagination({ current: page, pageSize });
+  const onPageChange = (page) => {
+    setPagination({ current: page, pageSize: 10 });
   };
 
-  // Handle status change & re-fetch data
   const handleStatus = async (documentId, documentStatus) => {
     try {
       const updatedDocumentStatus =
@@ -66,7 +65,6 @@ const Documents = () => {
         })
       );
 
-      // Re-fetch data after status update
       fetchData(pagination.current, pagination.pageSize);
     } catch (error) {
       dispatch(
@@ -78,13 +76,13 @@ const Documents = () => {
     }
   };
 
-  // Table columns
   const columns = [
     {
       title: "Company",
       dataIndex: "companyName",
       key: "companyName",
       sorter: true,
+      width: 90,
     },
     {
       title: "Title",
@@ -98,9 +96,10 @@ const Documents = () => {
       key: "dateTime",
       sorter: true,
       align: "center",
+      width: 290, // Reduced width
       render: (_, record) => (
         <div className="text-sm font-normal text-gray-800">
-          {formatDate(record.dateTime)}
+          {formatDate(record?.dateTime)}
         </div>
       ),
     },
@@ -111,19 +110,17 @@ const Documents = () => {
       align: "center",
       render: (_, record) => (
         <div className="relative group w-full mx-auto">
-          {/* Tooltip */}
           {user?.role === "admin" && (
             <span
-              className={`absolute -top-8 left-1/2 -translate-x-1/2 w-fit rounded-md group-hover:scale-100 bg-slate-700 text-white px-2 py-1 text-xs shadow-md transition-all duration-300 capitalize ${
+              className={`absolute -top-8 left-1/2 -translate-x-1/2 w-fit rounded-md group-hover:scale-100 bg-slate-700 text-white xl:px-1 xl:py-1 text-xs shadow-md transition-all duration-300 capitalize  ${
                 record.status === "seen"
                   ? "opacity-0 group-hover:opacity-100 "
                   : "opacity-0"
               }`}
             >
-              by Hossam
+              {record?.accountantName?.split(" ")?.slice(0, 2)?.join(" ")}
             </span>
           )}
-          {/* Status text */}
           <p
             className={`relative w-fit mx-auto px-3 py-1 rounded-md text-sm font-normal capitalize tracking-normal cursor-pointer transition-transform duration-300 ease-in-out  ${
               record.status === "seen"
@@ -131,7 +128,7 @@ const Documents = () => {
                 : "bg-[#F7EAD0] text-[#a07b41]"
             }`}
           >
-            {record.status}
+            {record?.status}
           </p>
         </div>
       ),
@@ -140,6 +137,7 @@ const Documents = () => {
       title: "Actions",
       key: "actions",
       align: "center",
+      width: 80, // Reduced width
       render: (_, record) => (
         <ul className="flex items-center justify-center space-x-2">
           <li
@@ -196,12 +194,8 @@ const Documents = () => {
       </div>
 
       {/* Table */}
-      <div>
-        {status === "loading" && (
-          <div className="flex justify-center h-64 items-center">
-            <div className="animate-spin h-8 w-8 border-4 border-gray-300 border-t-slate-900 rounded-full"></div>
-          </div>
-        )}
+      <div className="overflow-x-auto">
+        {status === "loading" && <Contentloader />}
         {status === "failed" && (
           <p className="text-red-600 text-center">Failed to load data.</p>
         )}
@@ -222,6 +216,7 @@ const Documents = () => {
               rowClassName={(record, index) =>
                 index % 2 === 0 ? "bg-white" : "bg-gray-50"
               }
+              scroll={{ x: "max-content" }} // Makes table responsive
             />
             <div className="mt-4 flex justify-end">
               <Pagination
@@ -229,6 +224,7 @@ const Documents = () => {
                 pageSize={pagination.pageSize}
                 total={totalRecords}
                 onChange={onPageChange}
+                showSizeChanger={false} // Removed page size select
               />
             </div>
           </>

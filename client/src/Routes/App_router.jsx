@@ -86,8 +86,8 @@ const AppRouter = () => {
               path="/accountants/add-account"
               element={<AddacountantForm />}
             />
-            <Route path="/editor/:id" element={<Editorpage />} />
             <Route path="/clients" element={<AdminClients />} />
+            <Route path="/editor/:id" element={<Editorpage />} />
             <Route path="/clients/add-client" element={<AddClient />} />
             <Route path="/companies" element={<AdminCompaines />} />
             <Route path="/companies/add-company" element={<AddCompany />} />
@@ -133,6 +133,18 @@ const AppRouter = () => {
             <Route
               path="/accountant/Companies"
               element={<AccountantCompanies />}
+            />
+            <Route
+              path="/accountant/companies/add-company"
+              element={<AddCompany />}
+            />
+            <Route
+              path="/accountant/companies/:companyId"
+              element={<DisplayUsersCompany />}
+            />
+            <Route
+              path="/accountant/companies/editcompany/:companyId"
+              element={<EditUserCompany />}
             />
             <Route path="/accountant/History" element={<AdminHistory />} />
             <Route path="/accountant/Forms" element={<Forms />} />
