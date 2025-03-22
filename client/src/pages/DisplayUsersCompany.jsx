@@ -13,6 +13,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setdeleteHintmsg } from "../Rtk/slices/settingSlice";
 import ConfirmDelete from "../component/ConfirmDelete";
 import { useAuth } from "../Contexts/AuthContext";
+import Contentloader from "../component/Contentloader";
 
 export default function DisplayUsersCompany() {
   const api = import.meta.env.VITE_API_URL;
@@ -43,7 +44,7 @@ export default function DisplayUsersCompany() {
       const response = await axios.get(
         `${api}/clients/${clientId}/companies?page=${page}&limit=${pageSize}`
       );
-      console.log(response)
+      console.log(response);
       if (response.status === 200) {
         setCompanies(response?.data?.companies || []);
         setPagination((prev) => ({
@@ -105,21 +106,21 @@ export default function DisplayUsersCompany() {
       sorter: true,
     },
     {
-      title: "Client Manager",
+      title: "Client Name",
       dataIndex: "clientName",
       key: "clientName",
       sorter: true,
       align: "center",
     },
     {
-      title: "Contact Person Name",
+      title: "Person Name",
       dataIndex: "contactPersonName", // Fixed missing dataIndex
       key: "contactPersonName",
       sorter: true,
       align: "center",
     },
     {
-      title: "Contact Person Phone",
+      title: "Person Phone",
       dataIndex: "phone",
       key: "phone",
       sorter: true,
@@ -200,7 +201,7 @@ export default function DisplayUsersCompany() {
               </ul>
             )}
           </div>
-          <Link to="/clients/add-Client" className="blackbutton">
+          <Link to="/companies/add-company" className="blackbutton">
             <GoPlus size={16} /> Add Company
           </Link>
         </div>
@@ -208,9 +209,7 @@ export default function DisplayUsersCompany() {
         {/* Table */}
         <div className="my-8">
           {status === "loading" ? (
-            <div className="flex justify-center h-64 items-center">
-              <div className="animate-spin h-8 w-8 border-4 border-gray-300 border-t-slate-900 rounded-full"></div>
-            </div>
+            <Contentloader />
           ) : status === "failed" ? (
             <p className="text-red-600 text-center">Failed to load data.</p>
           ) : companies?.length > 0 ? (
