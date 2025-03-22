@@ -19,7 +19,7 @@ const ClientTable = () => {
 
   // Redux state
   const data = useSelector((state) => state.getall.entities?.clients) || [];
- 
+
   const totalRecords =
     useSelector((state) => state.getall.entities?.clients?.clientCount) || 0;
   const status = useSelector((state) => state.getall?.status.clients);
@@ -63,7 +63,7 @@ const ClientTable = () => {
       fetchData(pagination.current, pagination.pageSize);
     }
   }, [pagination]); // Dependency array ensures re-fetching on pagination change
-
+  console.log(data);
   // Columns for the Ant Design Table
   const columns = [
     {
@@ -74,10 +74,19 @@ const ClientTable = () => {
     },
     {
       title: "Accountant Department",
-      dataIndex: "department",
-      key: "department",
+      dataIndex: "departments",
+      key: "departments",
       sorter: true,
       align: "center",
+      render: (departments) => {
+        if (Array.isArray(departments)) {
+          return departments.join(" - ");
+        } else if (typeof departments === "string") {
+          return departments.split(",").join(" - ");
+        }
+        // Fallback in case departments is neither an array nor a string
+        return departments;
+      },
     },
     {
       title: "Email",
@@ -140,7 +149,7 @@ const ClientTable = () => {
         <div className="flex justify-between items-center p-2 border-b">
           <h4 className="text-xl font-semibold text-gray-600">Clients</h4>
           <Link to="/clients/add-Client" className="blackbutton">
-            <GoPlus size={18}/>
+            <GoPlus size={18} />
             Add Client
           </Link>
         </div>
@@ -148,9 +157,7 @@ const ClientTable = () => {
         {/* Table */}
         <div className="mb-10">
           {/* Loading Status */}
-          {status === "loading" && (
-           <Contentloader/>
-          )}
+          {status === "loading" && <Contentloader />}
 
           {status === "failed" && (
             <p className="text-red-600 text-center">Failed to load data.</p>

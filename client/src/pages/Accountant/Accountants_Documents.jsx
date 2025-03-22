@@ -44,7 +44,7 @@ const Accountants_Documents = () => {
     if (!data.length) {
       fetchData(pagination.current, pagination.pageSize);
     }
-  }, []); // Dependency array ensures re-fetching on pagination change
+  }, []);
 
   // Handle pagination change
   const onPageChange = (page, pageSize) => {
@@ -160,7 +160,7 @@ const Accountants_Documents = () => {
       ),
     },
   ];
- 
+
   return (
     <div className="rounded-lg shadow-sm bg-white overflow-hidden">
       {/* Header */}
@@ -221,6 +221,7 @@ const Accountants_Documents = () => {
                 pageSize={pagination.pageSize}
                 total={totalRecords}
                 onChange={onPageChange}
+                className="border-none"
               />
             </div>
           </>

@@ -120,7 +120,7 @@ export default function Accountant_Dashboard() {
       <div className="container overflow-hidden">
         {/* Render tables independently */}
         <LazyTable component={AccountantClient} />
-        <LazyTable component={AccountDocument} />
+        {/* <LazyTable component={AccountDocument} /> */}
       </div>
     </div>
   );
