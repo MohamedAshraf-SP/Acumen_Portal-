@@ -299,7 +299,7 @@ export const getDepartmentClients = async (req, res) => {
       },
       {
         $project: {
-          _id: 0, // Exclude _id if not needed
+          _id: 1, // Exclude _id if not needed
           name: 1,
           email: 1,
           phone: 1,
