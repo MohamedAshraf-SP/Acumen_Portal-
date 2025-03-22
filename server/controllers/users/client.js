@@ -312,7 +312,7 @@ export const getDepartmentClients = async (req, res) => {
       .skip(skip)
       .limit(limit);
 
-    console.log(clients);
+ 
 
     const pagesCount = Math.ceil(clients.length / limit) || 0;
 

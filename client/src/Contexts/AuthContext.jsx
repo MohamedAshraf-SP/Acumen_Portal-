@@ -50,6 +50,7 @@ export const AuthContextProvider = ({ children }) => {
           navigate(`/${decodedUser.role}/dashboard`);
         }
       }
+ 
       return response;
     } catch (error) {
       if (error.response) {

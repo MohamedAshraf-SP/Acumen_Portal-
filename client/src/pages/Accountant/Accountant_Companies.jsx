@@ -1,6 +1,6 @@
 import React, { memo, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
- 
+
 import { Link, useNavigate } from "react-router-dom";
 import { GoPlus } from "react-icons/go";
 import { FaRegTrashCan } from "react-icons/fa6";
@@ -37,7 +37,7 @@ const Accountant_Companies = memo(() => {
     }
 
     if (actionType === "edit") {
-      navigate(`/accountant/companies/editcompany/${companyId}`);
+      navigate(`/companies/editcompany/${companyId}`);
     }
   };
 
@@ -137,7 +137,7 @@ const Accountant_Companies = memo(() => {
         {/* Header */}
         <div className="flex justify-between items-center p-4 border-b dark:border-gray-700">
           <h4 className="text-xl font-semibold text-gray-600">Companies</h4>
-          <Link to="/accountant/companies/add-company" className="blackbutton">
+          <Link to="/companies/add-company" className="blackbutton">
             <GoPlus className="text-lg" />
             Add Company
           </Link>

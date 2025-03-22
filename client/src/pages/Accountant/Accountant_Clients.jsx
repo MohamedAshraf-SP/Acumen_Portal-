@@ -15,11 +15,12 @@ import {
 } from "../../Rtk/slices/settingSlice";
 import Contentloader from "../../component/Contentloader";
 import { FetchedItems } from "../../Rtk/slices/getAllslice";
+import { useAuth } from "../../Contexts/AuthContext";
 
 const Accountant_Clients = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
+  const { user } = useAuth();
   // Redux state
   const data =
     useSelector((state) => state.getall.entities["clients/ofdepartment"]) || [];
@@ -45,15 +46,14 @@ const Accountant_Clients = () => {
 
   // Handle actions like show, edit, and delete
   const handleAction = (actionType, path, itemId) => {
-     const itemData = { actionType, path, itemId };
+    const itemData = { actionType, path, itemId };
     setSelectedItem(itemData);
-
     if (actionType === "delete") {
       dispatch(setdeleteHintmsg({ show: true, targetId: itemId }));
     } else if (actionType === "edit") {
       dispatch(seteditItemForm(true));
     } else if (actionType === "show") {
-      navigate(`/accountant/companies/${itemId}`);
+      navigate(`/companies/${itemId}`);
     }
   };
 
@@ -70,7 +70,7 @@ const Accountant_Clients = () => {
 
   // Initial fetch on component mount
   useEffect(() => {
-    if (!data?.client?.length) {
+    if (!data?.client?.length && user?.role) {
       fetchData(pagination.current, pagination.pageSize);
     }
   }, []); // Dependency array ensures re-fetching on pagination change
@@ -119,14 +119,18 @@ const Accountant_Clients = () => {
           </li>
           <li
             className="bg-[#D6F1E8] text-[#027968] hover:bg-[#027968] hover:text-white w-8 h-8 rounded-full flex items-center justify-center transition cursor-pointer"
-            onClick={() => handleAction("edit", "clients", record._id)}
+            onClick={() =>
+              handleAction("edit", "clients/ofdepartment", record._id)
+            }
             title="Edit"
           >
             <MdOutlineModeEditOutline />
           </li>
           <li
             className="bg-[#FFF2F2] text-[#FF0000] hover:bg-[#FF0000] hover:text-white w-8 h-8 rounded-full flex items-center justify-center transition cursor-pointer"
-            onClick={() => handleAction("delete", "clients", record._id)}
+            onClick={() =>
+              handleAction("delete", "clients/ofdepartment", record._id)
+            }
             title="Delete"
           >
             <FaRegTrashCan />
@@ -135,13 +139,14 @@ const Accountant_Clients = () => {
       ),
     },
   ];
- 
+
   return (
     <>
       {show && targetId === selectedItem?.itemId && (
         <ConfirmDelete
           path={selectedItem.path}
           deletedItemId={selectedItem.itemId}
+          isDepartment={true}
         />
       )}
       {editItemForm && <EditClient TargetItem={selectedItem} />}
@@ -153,7 +158,7 @@ const Accountant_Clients = () => {
             to="/accountant/add-client"
             className="blackbutton flex items-center gap-2"
           >
-            <GoPlus />
+            <GoPlus size={15} />
             Add Client
           </Link>
         </div>

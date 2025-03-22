@@ -1,17 +1,16 @@
 import { Navigate, Outlet } from "react-router-dom";
 import { useAuth } from "../Contexts/AuthContext";
-import Loader from "../component/Loader";
 
 const ProtectedRoute = ({ allowedTo }) => {
   const { user, loading } = useAuth();
 
   // Ensure authentication has finished loading
-  // if (loading) {
-  //   return <Loader />;
-  // }
+  if (loading) {
+    return <Loader />;
+  }
 
   // Redirect to login if no user is found
-  if (!user || !user?.role) {
+  if ((!user && !loading) || !user?.role) {
     return <Navigate to="/auth/login" replace />;
   }
 
