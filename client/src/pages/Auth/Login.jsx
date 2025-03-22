@@ -36,7 +36,7 @@ const Login = () => {
       }
     },
   });
-  console.log(wrongCredentials);
+   
   return (
     <div className="h-screen grid grid-cols-12 bg-gray-50">
       <section className="  dark:bg-gray-900 my-auto  col-span-12 md:col-span-5  ">

@@ -37,10 +37,8 @@ export const login = async (req, res) => {
         department: 1,
         _id: 1,
       });
-      // if (dataObj) console.log(fullUser["department"]);
-      console.log('department here',dataObj.department);
     }
-    console.log('data obj here', dataObj);
+
     fullUser = {
       id: user._id,
       role: user.userRole,
@@ -48,7 +46,7 @@ export const login = async (req, res) => {
       name: dataObj?.name || null,
       department: dataObj?.department || null,
     };
-    console.log('full user here',fullUser);
+
     const accessToken = generateAccessToken(fullUser);
     const refreshToken = generateRefreshToken(fullUser);
     res.cookie("refreshToken", refreshToken, {
@@ -63,54 +61,56 @@ export const login = async (req, res) => {
 };
 
 export const refreshToken = async (req, res) => {
-    const { refreshToken } = req.body;
+  const { refreshToken } = req.body;
 
-    if (!refreshToken) return res.status(403).json({ message: "Refresh token required!!" });
+  if (!refreshToken)
+    return res.status(403).json({ message: "Refresh token required!!" });
 
-    const user = jwt.verify(
-        refreshToken,
-        process.env.JWT_SECRET,
-        async (err, user) => {
-            if (err) return res.status(403).json({ message: "Invalid refresh token!!" });
+  const user = jwt.verify(
+    refreshToken,
+    process.env.JWT_SECRET,
+    async (err, user) => {
+      if (err)
+        return res.status(403).json({ message: "Invalid refresh token!!" });
 
-            const userObj = await User.findById(user.id);
-            if (!userObj) return res.status(404).json({ message: 'User not found!' });
+      const userObj = await User.findById(user.id);
+      if (!userObj) return res.status(404).json({ message: "User not found!" });
 
-            let dataObj = {}
-            if (userObj.userRole == "client") {
-                dataObj = await Client.findOne({ userID: userObj._id }).select({ name: 1, _id: 1 });
-            } else if (userObj.userRole == "accountant") {
-                dataObj = await Accountant.findOne({ userID: userObj._id }).select({ name: 1, department: 1, _id: 1 });
-            }
-
-
-            let fullUser = {
-
-                "id": userObj._id,
-                "role": userObj.userRole,
-                "dataId": dataObj?._id || null,
-                "name": dataObj?.name || null,
-                "department": dataObj?.department || null
-
-
-            }
-
-            const newAccessToken = generateAccessToken(fullUser);
-            const newRefreshToken = generateRefreshToken({ id: userObj.id });
-
-            res.cookie("refreshToken", newRefreshToken, {
-                httpOnly: false,
-                secure: false,
-                sameSite: "Strict",
-            });
-
-            res.json({ newAccessToken });
+      let dataObj = {};
+      if (userObj.userRole == "client") {
+        dataObj = await Client.findOne({ userID: userObj._id }).select({
+          name: 1,
+          _id: 1,
         });
+      } else if (userObj.userRole == "accountant") {
+        dataObj = await Accountant.findOne({ userID: userObj._id }).select({
+          name: 1,
+          department: 1,
+          _id: 1,
+        });
+      }
 
+      let fullUser = {
+        id: userObj._id,
+        role: userObj.userRole,
+        dataId: dataObj?._id || null,
+        name: dataObj?.name || null,
+        department: dataObj?.department || null,
+      };
+
+      const newAccessToken = generateAccessToken(fullUser);
+      const newRefreshToken = generateRefreshToken({ id: userObj.id });
+
+      res.cookie("refreshToken", newRefreshToken, {
+        httpOnly: false,
+        secure: false,
+        sameSite: "Strict",
+      });
+
+      res.json({ newAccessToken });
+    }
+  );
 };
-
-
-
 
 export const resetPassword = async (req, res) => {
   try {

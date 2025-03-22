@@ -4,7 +4,7 @@ import { setdeleteHintmsg, setsuccessmsg } from "../Rtk/slices/settingSlice";
 import { FetchedItems } from "../Rtk/slices/getAllslice";
 import React, { useState } from "react";
 
-function ConfirmDelete({ path, deletedItemId }) {
+function ConfirmDelete({ path, deletedItemId, isDepartment }) {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
 
@@ -24,12 +24,12 @@ function ConfirmDelete({ path, deletedItemId }) {
         );
         setLoading(false);
         // Fetch the updated list of items after deletion
-        dispatch(FetchedItems({ path }));
+        dispatch(FetchedItems({ path, isDepartment }));
       }
     } catch (error) {
       dispatch(
         setsuccessmsg({
-          success: false,
+          success: true,
           fail: true,
           message: "Failed to delete the item.",
         })

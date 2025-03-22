@@ -8,10 +8,11 @@ import { addNewData } from "../Rtk/slices/addNewSlice";
 import Skeleton from "react-loading-skeleton";
 import { ImSpinner8 } from "react-icons/im";
 import { useEmailValidation } from "../Hooks/useEmailValidation";
+import { useAuth } from "../Contexts/AuthContext";
 
 export default function AddClientForm() {
   const routes = ["Clients", "Add Client"];
-
+  const { user } = useAuth();
   const dispatch = useDispatch();
   const status = useSelector((state) => state.AddNew.status); // check adding status
   const [alert, setAlert] = useState({ msg: "", showmsg: false });
@@ -36,9 +37,10 @@ export default function AddClientForm() {
       name: "",
       email: "",
       notification: 1,
-      department: "Finance department",
+      department: user?.department,
       LOEfile: null,
     },
+
     validationSchema: Yup.object({
       name: Yup.string().required("Please enter client name."),
       email: Yup.string()
@@ -74,6 +76,8 @@ export default function AddClientForm() {
         if (result?.message) {
           setAlert({ msg: result.message, showmsg: true });
         }
+        resetForm();
+        setFileName(null);
       } catch (error) {
         const errorMsg = error || "Failed to add client";
         setAlert({
@@ -81,9 +85,7 @@ export default function AddClientForm() {
           showmsg: true,
         });
       } finally {
-        setFileName(null);
         resetValidation();
-        resetForm();
       }
     },
   });

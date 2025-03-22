@@ -51,7 +51,7 @@ const Accountants_Documents = () => {
   const onPageChange = (page, pageSize) => {
     setPagination({ current: page, pageSize });
   };
-console.log(user)
+ 
   // Handle status change & re-fetch data
   const handleStatus = async (documentId, documentStatus) => {
     try {
