@@ -138,7 +138,7 @@ const AppRouter = () => {
 
           {/* shared routes */}
           <Route
-            element={<ProtectedRoute allowedTo={["admin", "accountant"]} />}
+            element={<ProtectedRoute allowedTo={["admin", "accountant","client"]} />}
           >
             <Route path="/companies/add-company" element={<AddCompany />} />
             <Route
@@ -148,10 +148,6 @@ const AppRouter = () => {
             <Route
               path="/companies/editcompany/:companyId"
               element={<EditUserCompany />}
-            />
-            <Route
-              path="/companies/:companyId"
-              element={<DisplayUsersCompany />}
             />
           </Route>
         </Route>
