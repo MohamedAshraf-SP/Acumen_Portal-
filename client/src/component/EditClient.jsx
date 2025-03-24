@@ -64,6 +64,7 @@ function EditClient({ TargetItem }) {
 
     onSubmit: async (values, { resetForm }) => {
       try {
+        console.log(values)
         // Dispatch update action
         await dispatch(
           updateTargetItem({

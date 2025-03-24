@@ -114,6 +114,7 @@ export const addClient = async (req, res) => {
     return res.status(201).json({ message: "Client added successfully!!" });
   } catch (error) {
     // console.log(error);
+    // console.log(error);
     res.status(400).json(error.message);
   }
 };
@@ -269,6 +270,7 @@ export const getClientCompanies = async (req, res) => {
       companies: paginatedCompanies,
     });
   } catch (error) {
+    // console.error(error);
     // console.error(error);
     res.status(500).json({ message: "Error retrieving companies!", error });
   }

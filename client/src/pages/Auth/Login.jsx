@@ -20,24 +20,23 @@ const Login = () => {
     initialValues: { email: "", password: "" },
     validationSchema: Yup.object({
       email: Yup.string()
+
         .email("Please enter a valid email")
         .required("Email is required."),
       password: Yup.string()
         .min(5, "Password can't be less than 5 digits")
         .required("Password is required."),
     }),
-    onSubmit: async (values, { setSubmitting }) => {
-      setWrongCredentials(false);
+    onSubmit: async (values, { resetForm }) => {
       try {
         await handleLogin(values);
       } catch (error) {
+        console.log(error);
         setWrongCredentials(true);
-      } finally {
-        setSubmitting(false);
       }
     },
   });
-
+   
   return (
     <div className="h-screen grid grid-cols-12 bg-gray-50">
       <section className="  dark:bg-gray-900 my-auto  col-span-12 md:col-span-5  ">

@@ -15,16 +15,19 @@ import {
 } from "../../Rtk/slices/settingSlice";
 import Contentloader from "../../component/Contentloader";
 import { FetchedItems } from "../../Rtk/slices/getAllslice";
+import { useAuth } from "../../Contexts/AuthContext";
 
 const Accountant_Clients = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
+  const { user } = useAuth();
   // Redux state
   const data =
     useSelector((state) => state.getall.entities["clients/ofdepartment"]) || [];
   const totalRecords =
-    useSelector((state) => state.getall.entities["clients/ofdepartment"]) || 0;
+    useSelector(
+      (state) => state.getall.entities["clients/ofdepartment"]?.clientCount
+    ) || 0;
   const status = useSelector(
     (state) => state.getall?.status["clients/ofdepartment"]
   );
@@ -35,7 +38,7 @@ const Accountant_Clients = () => {
   // Local state
   const [selectedItem, setSelectedItem] = useState(null);
   const [pagination, setPagination] = useState({ current: 1, pageSize: 6 });
-   // Handle pagination event
+  // Handle pagination event
   const onPageChange = (page, pageSize) => {
     setPagination({ current: page, pageSize });
     fetchData(page, pageSize);
@@ -45,7 +48,6 @@ const Accountant_Clients = () => {
   const handleAction = (actionType, path, itemId) => {
     const itemData = { actionType, path, itemId };
     setSelectedItem(itemData);
-
     if (actionType === "delete") {
       dispatch(setdeleteHintmsg({ show: true, targetId: itemId }));
     } else if (actionType === "edit") {
@@ -68,10 +70,10 @@ const Accountant_Clients = () => {
 
   // Initial fetch on component mount
   useEffect(() => {
-    if (!data.length) {
+    if (!data?.client?.length && user?.role) {
       fetchData(pagination.current, pagination.pageSize);
     }
-  }, [pagination]); // Dependency array ensures re-fetching on pagination change
+  }, []); // Dependency array ensures re-fetching on pagination change
 
   // Table columns
   const columns = [
@@ -83,8 +85,8 @@ const Accountant_Clients = () => {
     },
     {
       title: "Accountant Manager",
-      dataIndex: "customerName",
-      key: "customerName",
+      dataIndex: "Department",
+      key: "Department",
       sorter: true,
       align: "center",
     },
@@ -113,33 +115,38 @@ const Accountant_Clients = () => {
             onClick={() => handleAction("show", "clients", record._id)}
             title="Show"
           >
-            <BiShow className="w-5 h-5" />
+            <BiShow />
           </li>
           <li
             className="bg-[#D6F1E8] text-[#027968] hover:bg-[#027968] hover:text-white w-8 h-8 rounded-full flex items-center justify-center transition cursor-pointer"
-            onClick={() => handleAction("edit", "clients", record._id)}
+            onClick={() =>
+              handleAction("edit", "clients/ofdepartment", record._id)
+            }
             title="Edit"
           >
-            <MdOutlineModeEditOutline className="w-5 h-5" />
+            <MdOutlineModeEditOutline />
           </li>
           <li
             className="bg-[#FFF2F2] text-[#FF0000] hover:bg-[#FF0000] hover:text-white w-8 h-8 rounded-full flex items-center justify-center transition cursor-pointer"
-            onClick={() => handleAction("delete", "clients", record._id)}
+            onClick={() =>
+              handleAction("delete", "clients/ofdepartment", record._id)
+            }
             title="Delete"
           >
-            <FaRegTrashCan className="w-5 h-5" />
+            <FaRegTrashCan />
           </li>
         </ul>
       ),
     },
   ];
- 
+
   return (
     <>
       {show && targetId === selectedItem?.itemId && (
         <ConfirmDelete
           path={selectedItem.path}
           deletedItemId={selectedItem.itemId}
+          isDepartment={true}
         />
       )}
       {editItemForm && <EditClient TargetItem={selectedItem} />}
@@ -151,7 +158,7 @@ const Accountant_Clients = () => {
             to="/accountant/add-client"
             className="blackbutton flex items-center gap-2"
           >
-            <GoPlus />
+            <GoPlus size={15} />
             Add Client
           </Link>
         </div>
@@ -168,8 +175,14 @@ const Accountant_Clients = () => {
           )}
           {status === "success" && data?.clients?.length > 0 && (
             <>
-              <Table columns={columns} dataSource={data} pagination={false} />
-              {totalClients != null && (
+              <Table
+                columns={columns}
+                dataSource={data?.clients}
+                pagination={false}
+                rowKey="_id"
+                className="table-auto w-full divide-y divide-gray-50    "
+              />
+              {totalRecords != null && (
                 <div className="mt-4 flex justify-end">
                   <Pagination
                     current={pagination.current}

@@ -51,12 +51,13 @@ const DisplayUsersCompany = lazy(() => import("../pages/DisplayUsersCompany"));
 
 const AppRouter = () => {
   const { loading, user } = useAuth();
+
   if (loading) {
     return <Loader />;
   }
 
   return (
-    <Suspense fallback={null}>
+    <Suspense fallback={<Loader />}>
       <Routes>
         {/* Redirect to the appropriate dashboard based on the user's role */}
         <Route
@@ -64,10 +65,10 @@ const AppRouter = () => {
           element={
             loading ? (
               <Loader />
-            ) : user ? (
-              <Navigate to={`/${user.role}/dashboard`} />
+            ) : user?.role ? (
+              <Navigate to={`/${user.role}/dashboard`} replace />
             ) : (
-              <Navigate to="/auth/login" />
+              <Navigate to="/auth/login" replace />
             )
           }
         />
@@ -86,19 +87,10 @@ const AppRouter = () => {
               path="/accountants/add-account"
               element={<AddacountantForm />}
             />
-            <Route path="/editor/:id" element={<Editorpage />} />
             <Route path="/clients" element={<AdminClients />} />
+            <Route path="/editor/:id" element={<Editorpage />} />
             <Route path="/clients/add-client" element={<AddClient />} />
             <Route path="/companies" element={<AdminCompaines />} />
-            <Route path="/companies/add-company" element={<AddCompany />} />
-            <Route
-              path="/companies/:companyId"
-              element={<DisplayUsersCompany />}
-            />
-            <Route
-              path="/companies/editcompany/:companyId"
-              element={<EditUserCompany />}
-            />
             <Route path="/notifications" element={<AdminNotifications />} />
             <Route path="/history" element={<AdminHistory />} />
             <Route path="/forms" element={<Forms />} />
@@ -134,12 +126,32 @@ const AppRouter = () => {
               path="/accountant/Companies"
               element={<AccountantCompanies />}
             />
-            <Route path="/accountant/History" element={<AdminHistory />} />
-            <Route path="/accountant/Forms" element={<Forms />} />
-            <Route path="/accountant/Invoices" element={<Invoices />} />
+
             <Route
               path="/accountant/Documents"
               element={<Accountants_Documents />}
+            />
+            <Route path="/accountant/history" element={<AdminHistory />} />
+            <Route path="/accountant/forms" element={<Forms />} />
+            <Route path="/accountant/invoices" element={<Invoices />} />
+          </Route>
+
+          {/* shared routes */}
+          <Route
+            element={<ProtectedRoute allowedTo={["admin", "accountant"]} />}
+          >
+            <Route path="/companies/add-company" element={<AddCompany />} />
+            <Route
+              path="/companies/:companyId"
+              element={<DisplayUsersCompany />}
+            />
+            <Route
+              path="/companies/editcompany/:companyId"
+              element={<EditUserCompany />}
+            />
+            <Route
+              path="/companies/:companyId"
+              element={<DisplayUsersCompany />}
             />
           </Route>
         </Route>

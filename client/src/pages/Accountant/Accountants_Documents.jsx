@@ -6,14 +6,15 @@ import { RiDownloadCloud2Line } from "react-icons/ri";
 import { AiOutlineEyeInvisible, AiOutlineEye } from "react-icons/ai";
 import Nodataimg from "/images/table/No data.svg";
 import { useLocation } from "react-router-dom";
-import { formatDate } from "../../Utils";
+import { formatDate, handleDownloadPdf } from "../../Utils";
 import { updateTargetItem } from "../../Rtk/slices/updateItemSlice";
 import { setsuccessmsg } from "../../Rtk/slices/settingSlice";
 import { FetchedItems } from "../../Rtk/slices/getAllslice";
 import Contentloader from "../../component/Contentloader";
-
+import { useAuth } from "../../Contexts/AuthContext";
 const Accountants_Documents = () => {
   const routes = ["Dashboard", "Documents"];
+  const { user } = useAuth();
   const dispatch = useDispatch();
   const location = useLocation();
   const isDashboard = location.pathname.endsWith("dashboard");
@@ -44,13 +45,13 @@ const Accountants_Documents = () => {
     if (!data.length) {
       fetchData(pagination.current, pagination.pageSize);
     }
-  }, []); // Dependency array ensures re-fetching on pagination change
+  }, []);
 
   // Handle pagination change
   const onPageChange = (page, pageSize) => {
     setPagination({ current: page, pageSize });
   };
-
+ 
   // Handle status change & re-fetch data
   const handleStatus = async (documentId, documentStatus) => {
     try {
@@ -61,7 +62,7 @@ const Accountants_Documents = () => {
         updateTargetItem({
           path: "tasksDocuments",
           itemId: documentId,
-          updatedItemData: { status: updatedDocumentStatus },
+          updatedItemData: { status: updatedDocumentStatus, accountantName:user?.name },
         })
       ).unwrap();
 
@@ -160,7 +161,7 @@ const Accountants_Documents = () => {
       ),
     },
   ];
- 
+
   return (
     <div className="rounded-lg shadow-sm bg-white overflow-hidden">
       {/* Header */}
@@ -221,6 +222,7 @@ const Accountants_Documents = () => {
                 pageSize={pagination.pageSize}
                 total={totalRecords}
                 onChange={onPageChange}
+                className="border-none"
               />
             </div>
           </>

@@ -1,20 +1,26 @@
 import { Navigate, Outlet } from "react-router-dom";
 import { useAuth } from "../Contexts/AuthContext";
-import Loader from "../component/Loader";
 
 const ProtectedRoute = ({ allowedTo }) => {
   const { user, loading } = useAuth();
+
+  // Ensure authentication has finished loading
   if (loading) {
     return <Loader />;
   }
-  if (!user || (!user?.role && !loading)) {
+
+  // Redirect to login if no user is found
+  if ((!user && !loading) || !user?.role) {
     return <Navigate to="/auth/login" replace />;
   }
-  if (!allowedTo.includes(user?.role)) {
-    return <Navigate to="/auth/unauthorized" replace />;
+
+  // Allow access if at least one of the roles is allowed
+  if (Array.isArray(allowedTo) && allowedTo.includes(user.role)) {
+    return <Outlet />;
   }
 
-  return <Outlet />; // Render child routes if role is allowed
+  // Redirect to unauthorized if no matching role is found
+  return <Navigate to="/auth/unauthorized" replace />;
 };
 
 export default ProtectedRoute;

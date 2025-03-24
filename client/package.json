@@ -13,7 +13,7 @@
     "-": "^0.0.1",
     "@react-pdf-viewer/core": "^3.12.0",
     "@react-pdf-viewer/default-layout": "^3.12.0",
-    "@reduxjs/toolkit": "^2.4.0",
+    "@reduxjs/toolkit": "^2.6.1",
     "@syncfusion/ej2": "^19.4.48",
     "@syncfusion/ej2-base": "^28.1.33",
     "@syncfusion/ej2-react-calendars": "^19.4.48",

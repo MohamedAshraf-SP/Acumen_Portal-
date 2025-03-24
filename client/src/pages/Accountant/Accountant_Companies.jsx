@@ -1,5 +1,6 @@
 import React, { memo, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+
 import { Link, useNavigate } from "react-router-dom";
 import { GoPlus } from "react-icons/go";
 import { FaRegTrashCan } from "react-icons/fa6";
@@ -7,68 +8,70 @@ import { MdOutlineModeEditOutline } from "react-icons/md";
 import { Table, Pagination } from "antd";
 import Nodataimg from "/images/table/No data.svg";
 import ConfirmDelete from "../../component/ConfirmDelete";
-import { setdeleteHintmsg } from "../../Rtk/slices/settingSlice";
+import { FetchedItems } from "../../Rtk/slices/getAllslice";
 
-import { useAuth } from "../../Contexts/AuthContext";
-
-const Accountant_Companies = () => {
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const { user } = useAuth();
-  // Redux state
+const Accountant_Companies = memo(() => {
+  const data = useSelector((state) => state?.getall?.entities);
+  const status = useSelector(
+    (state) => state.getall.status["Companies/abstracted"]
+  );
+  const totalRecords = useSelector(
+    (state) => state.getall.entities["Companies/abstracted"]?.TotalCompanies
+  );
   const { show, targetId } = useSelector(
     (state) => state.setting.deleteHintmsg
   );
-  const { editItemForm } = useSelector((state) => state.setting);
-  // Local state
-  const [selectedItem, setSelectedItem] = useState(null);
-  const [pagination, setPagination] = useState({ current: 1, pageSize: 10 });
-  const [clients, setClients] = useState([]);
-  const [totalClients, setTotalClients] = useState(null);
-  const [loadingStatus, setLoadingStatus] = useState("idle");
 
-  // Handle pagination change
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [companies, setCompanies] = useState([]); // Store companies
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [pagination, setPagination] = useState({ current: 1, pageSize: 6 });
+
+  // Handle actions (Edit/Delete)
+  const handleAction = (actionType, path, companyId) => {
+    setSelectedItem({ actionType, path, companyId });
+
+    if (actionType === "delete") {
+      dispatch(setdeleteHintmsg({ show: true, targetId: companyId }));
+    }
+
+    if (actionType === "edit") {
+      navigate(`/companies/editcompany/${companyId}`);
+    }
+  };
+
+  // Handle pagination change (Avoid unnecessary API calls)
   const onPageChange = (page, pageSize) => {
     setPagination({ current: page, pageSize });
   };
 
-  // Fetch department clients
-  const fetDepartmentClients = async (page, pageSize) => {
-    setLoadingStatus("loading");
-    try {
-      const response = await getDepartmentClients(
-        page,
-        pageSize,
-        user?.department
-      );
-
-      if (response && response?.clients) {
-        setClients(response?.clients);
-        setTotalClients(response?.totalClients);
-        setLoadingStatus("success");
-      }
-    } catch (error) {
-      console.error("Error fetching department clients:", error);
-      setLoadingStatus("failed");
-    }
+  // Fetch data based on current pagination
+  const fetchData = () => {
+    dispatch(
+      FetchedItems({
+        path: "Companies/abstracted",
+        page: pagination.current,
+        limit: pagination.pageSize,
+      })
+    );
   };
-  // Fetch data when component mounts or pagination changes
+
+  // 🔹 Fetch Data When `pagination` Changes
   useEffect(() => {
-    fetDepartmentClients(pagination.current, pagination.pageSize);
+    fetchData();
   }, [pagination]);
 
-  // Handle actions
-  const handleAction = (actionType, path, itemId) => {
-    setSelectedItem({ actionType, path, itemId });
-    if (actionType === "delete") {
-      dispatch(setdeleteHintmsg({ show: true, targetId: itemId }));
-    } else if (actionType === "edit") {
-      dispatch(seteditItemForm(true));
-    } else if (actionType === "show") {
-      navigate(`/companies/${itemId}`);d
-    }
-  };
+  // 🔹 Fetch Data When Item is Deleted (When Delete Confirmation is Shown)
+  useEffect(() => {
+    fetchData(); // Re-fetch after deletion
+  }, [show, targetId]);
 
+  // 🔹 Update Companies When Data Changes
+  useEffect(() => {
+    setCompanies(data["Companies/abstracted"]?.companies || []);
+  }, [data]);
+  // Columns for the Ant Design Table
   const columns = [
     {
       title: "Company Name",
@@ -84,7 +87,7 @@ const Accountant_Companies = () => {
       align: "center",
     },
     {
-      title: "Contact Person Name & Phone",
+      title: "Email",
       dataIndex: "email",
       key: "email",
       sorter: true,
@@ -133,13 +136,8 @@ const Accountant_Companies = () => {
       <div className="my-8 rounded-lg shadow-sm bg-white overflow-scroll dark:bg-secondary-dark-bg dark:text-gray-200">
         {/* Header */}
         <div className="flex justify-between items-center p-4 border-b dark:border-gray-700">
-          <h4 className="text-xl font-semibold text-gray-700">
-            Latest Companies
-          </h4>
-          <Link
-            to="/clients/add-Client"
-            className="flex items-center gap-1 bg-[#1A7F64] text-white px-3 py-2 rounded-md hover:shadow-lg hover:opacity-[.8] font-semibold text-[13px] transition"
-          >
+          <h4 className="text-xl font-semibold text-gray-600">Companies</h4>
+          <Link to="/companies/add-company" className="blackbutton">
             <GoPlus className="text-lg" />
             Add Company
           </Link>
@@ -205,6 +203,6 @@ const Accountant_Companies = () => {
       </div>
     </>
   );
-};
+});
 
 export default Accountant_Companies;

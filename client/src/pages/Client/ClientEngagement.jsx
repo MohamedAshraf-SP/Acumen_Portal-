@@ -10,39 +10,47 @@ const api = import.meta.env.VITE_API_URL;
 const ClientEngagement = () => {
   const { user, loading } = useAuth();
   const [pdfUrl, setPdfUrl] = useState(null);
+  const [loadingPdf, setLoadingPdf] = useState(false);
+  const [error, setError] = useState("");
   console.log(user);
   // React PDF Viewer plugin (adds zoom, download, and print)
   const defaultLayout = defaultLayoutPlugin();
 
   useEffect(() => {
-    if (user?.id) {
-      fetchDocument(user.id);
+    if (user?.dataId) {
+      fetchDocument(user?.dataId);
     }
   }, [user]);
 
   const fetchDocument = async (userId) => {
+    setLoadingPdf(true);
     try {
       // Replace with your actual API call or Firebase storage retrieval
       const response = await axios.get(`${api}/clients/${userId}/engagement`);
-      console.log(response);
       const data = await response;
-      setPdfUrl(data.pdfUrl); // URL of the stored PDF
+      console.log(data);
+      setPdfUrl(data?.data?.path); // URL of the stored PDF
     } catch (error) {
+      setLoadingPdf(false);
       console.error("Error fetching document:", error);
+      setError(error?.response?.message);
     }
   };
 
-  if (loading) {
+  if (loading || loadingPdf) {
     return (
-      <div className="flex justify-center items-center min-h-screen">
-        <FaSpinner className="animate-spin text-4xl text-blue-500" />
+      <div className="flex flex-col items-center justify-center gap-2 min-h-screen">
+        <FaSpinner className="animate-spin text-4xl text-gray-500" />
+        <p className="text-gray-600 ">Loading pdf ...</p>
       </div>
     );
   }
-
+  console.log(pdfUrl);
   return (
     <div className="flex flex-col items-center p-4">
-      <h2 className="text-xl font-semibold mb-4">Letter of Engagement</h2>
+      <h2 className="text-xl font-semibold mb-4 text-gray-600 mt-4">
+        Letter of Engagement
+      </h2>
       {pdfUrl ? (
         <div className="w-full max-w-3xl border shadow-lg">
           <Worker
@@ -52,7 +60,7 @@ const ClientEngagement = () => {
           </Worker>
         </div>
       ) : (
-        <p>No document available</p>
+        <p className="text-red-500"> {error}</p>
       )}
     </div>
   );

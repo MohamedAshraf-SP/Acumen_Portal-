@@ -31,30 +31,43 @@ export const AuthContextProvider = ({ children }) => {
           "Content-Type": "application/json",
         },
       });
-
       if (response.data) {
         const { accessToken } = response.data;
-
+        if (!accessToken) {
+          throw new Error("No access token received");
+        }
         const decodedUser = decodedToken(accessToken);
-
         if (!decodedUser) {
           throw new Error("Invalid token received");
         }
-
         setAccessToken(accessToken);
         setUser(decodedUser);
         axios.defaults.headers.common[
           "Authorization"
         ] = `Bearer ${accessToken}`;
 
-        // Navigate AFTER user state updates
-        setTimeout(() => {
+        if (decodedUser?.role) {
           navigate(`/${decodedUser.role}/dashboard`);
-        }, 100);
+        }
       }
+ 
+      return response;
     } catch (error) {
-      // console.error("Login failed:", error);
-      throw error;
+      if (error.response) {
+        // Handle specific HTTP errors
+        if (error.response.status === 401) {
+          console.error("Unauthorized: Invalid credentials");
+        } else {
+          console.error("Server error:", error.response.status);
+        }
+      } else if (error.request) {
+        // Handle network errors (no response from server)
+        console.error("Network error: No response received");
+      } else {
+        // Handle other errors (e.g., invalid token decoding)
+        console.error("Error:", error.message);
+      }
+      throw error; // Rethrow the error for the caller to handle
     } finally {
       setLoading(false);
     }
@@ -67,6 +80,7 @@ export const AuthContextProvider = ({ children }) => {
       setUser(null);
       setAccessToken(null);
       Cookies.remove("refreshToken"); // Ensure refresh token is removed
+      delete axios.defaults.headers.common["Authorization"];
       navigate("/auth/login");
     } catch (error) {
       console.error("Logout failed:", error);

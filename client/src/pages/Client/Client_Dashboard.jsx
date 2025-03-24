@@ -4,7 +4,7 @@ import "react-loading-skeleton/dist/skeleton.css";
 import { LazyTable, formatNum } from "../../Utils";
 import { getCount } from "../../services/globalService";
 import { useCallback } from "react";
- import { FaUserFriends } from "react-icons/fa";
+import { FaUserFriends } from "react-icons/fa";
 
 import Block_Count from "../../component/Block_Count";
 import wavingImg from "/images/Dashboard/hand.gif";
@@ -118,7 +118,6 @@ export default function Client_Dashboard() {
 
         <div className="flex flex-row items-center justify-between gap-2">
           <LazyTable component={UsersCompany} />
-          {/* <LazyTable component={Documents} /> */}
         </div>
         <LazyTable component={UserDocument} />
       </div>
