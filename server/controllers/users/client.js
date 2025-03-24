@@ -8,7 +8,12 @@ import {
   generateRandomPassword,
   hashPassword,
 } from "../../Services/auth/authentication.js";
-import { Company, Director, Shareholder, DueDate } from "../../models/company/index.js";
+import {
+  Company,
+  Director,
+  Shareholder,
+  DueDate,
+} from "../../models/company/index.js";
 
 // Get a Client by ID
 export const getClient = async (req, res) => {
@@ -25,7 +30,6 @@ export const getClient = async (req, res) => {
 
 export const addClient = async (req, res) => {
   try {
-
     let department = req.body.department;
     let userDepartment = req.user?.department;
     if (userDepartment) {
@@ -34,9 +38,7 @@ export const addClient = async (req, res) => {
 
     const departmentForTasks = department;
 
-    const departments = Array.isArray(department)
-      ? department
-      : [department];
+    const departments = Array.isArray(department) ? department : [department];
 
     if (!req.file) {
       return res.status(400).json({ message: "LEO File is required!!" });
@@ -103,11 +105,7 @@ export const addClient = async (req, res) => {
     }
 
     //add the email log
-    addEmailLog(
-      req.body.email,
-      "AMS New User Notification!",
-      req.body.name
-    );
+    addEmailLog(req.body.email, "AMS New User Notification!", req.body.name);
 
     const clientData = await newClient.save();
 
@@ -140,7 +138,8 @@ export const deleteClient = async (req, res) => {
     }
     await User.findByIdAndDelete(result.userID);
 
-    const companiesIds = result.companies.map(company => company._id);
+    const companies = await Company.find({ clientID: result._id });
+    const companiesIds = companies.map((company) => company._id);
 
     console.log(companiesIds);
 
@@ -148,8 +147,7 @@ export const deleteClient = async (req, res) => {
 
     await TasksDocument.deleteMany({
       $or: [{ clientID: result._id }, { companyID: { $in: companiesIds } }],
-    }
-    );
+    });
     await Shareholder.deleteMany({ companyID: { $in: companiesIds } });
     await Director.deleteMany({ companyID: { $in: companiesIds } });
     await DueDate.deleteMany({ companyID: { $in: companiesIds } });
@@ -190,11 +188,10 @@ export const getClients = async (req, res) => {
     //console.log(req?.query);
     ///console.log(req.user.department);
 
-
     const clients = await Client.aggregate([
       {
         $match: {
-          ...filter
+          ...filter,
         },
       },
       {
@@ -203,7 +200,6 @@ export const getClients = async (req, res) => {
           name: 1,
           email: 1,
           phone: 1,
-
         },
       },
       {
@@ -214,7 +210,6 @@ export const getClients = async (req, res) => {
     ])
       .skip(skip)
       .limit(limit);
-
 
     console.log(clients);
 
@@ -295,6 +290,54 @@ export const getClientsCount = async (req, res) => {
   }
 };
 
+export const getDepartmentClients = async (req, res) => {
+  try {
+    const page = Number(req.query.page) || 1;
+    const limit = Number(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+    //console.log(req?.query);
+    ///console.log(req.user.department);
+    if (!req.query.department) {
+      return res.status(400).json({ message: "department required" });
+    }
+
+    const clients = await Client.aggregate([
+      {
+        $match: {
+          departments: { $in: [req.query.department] },
+        },
+      },
+      {
+        $project: {
+          _id: 1, // Exclude _id if not needed
+          name: 1,
+          email: 1,
+          phone: 1,
+        },
+      },
+      {
+        $addFields: {
+          Department: req.user.department, // Add the requested department
+        },
+      },
+    ])
+      .skip(skip)
+      .limit(limit);
+
+    const pagesCount = Math.ceil(clients.length / limit) || 0;
+
+    // Skip the specified number of documents.limit(limit);
+    res.status(200).json({
+      clientCount: clients.length,
+      currentPage: page,
+      pagesCount: pagesCount,
+      clients: clients,
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 export const getClientsDashboardCounts = async (req, res) => {
   try {
     const documentsCount = await TasksDocument.countDocuments({
@@ -313,22 +356,6 @@ export const getClientsDashboardCounts = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 /*
 // Get all client
@@ -369,7 +396,6 @@ export const getClients = async (req, res) => {
 };
 */
 // Add a new client
-
 
 /*
 export const getClientCompanies = async (req, res) => {

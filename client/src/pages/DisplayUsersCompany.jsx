@@ -83,7 +83,7 @@ export default function DisplayUsersCompany() {
   };
   // get id of user from params if exist if not from cookies
   useEffect(() => {
-    setClientId(companyId ? companyId : user?.id);
+    setClientId(companyId ? companyId : user?.dataId);
   }, [companyId, user?.id]);
 
   useEffect(() => {
