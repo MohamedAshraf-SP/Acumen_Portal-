@@ -1,17 +1,14 @@
 import User from "../../models/users/user.js";
 import Client from "../../models/users/clients.js"; // Import the Client model
 import { sendEmail } from "../../helpers/emailSender.js";
-
-import { Company } from "../../models/company/index.js";
-import user from "../../models/users/user.js";
 import { addEmailLog } from "../../helpers/emailLogs.js";
-import mongoose from "mongoose";
 import TasksDocument from "../../models/tasksDocuments.js";
 import {
   checkIfEmailExist,
   generateRandomPassword,
   hashPassword,
 } from "../../Services/auth/authentication.js";
+import { Company,Director, Shareholder,DueDate } from "../../models/company/index.js";
 
 // Get a Client by ID
 export const getClient = async (req, res) => {
@@ -26,44 +23,6 @@ export const getClient = async (req, res) => {
   }
 };
 
-// Get all client
-export const getClients = async (req, res) => {
-  const page = req.query.page || 1;
-  const limit = req.query.limit || 100;
-  const skip = (page - 1) * limit;
-
-  const clientCount = await Client.countDocuments();
-  // console.log(clientCount)
-
-  const pagesCount = Math.ceil(clientCount / limit) || 0;
-
-  try {
-    const clients = await Client.find({})
-      // .populate("userID")
-      // .populate("companies")
-      .skip(skip)
-      .limit(limit);
-
-
-    // let resp = clients.map((client) => {
-    //   const clientObj = client.toObject();
-
-    //   clientObj["department"] = req.user?.department || "-"
-    //   return clientObj
-    // });
-
-    res.status(200).json({
-      currentPage: page,
-      pagesCount: pagesCount,
-      clients: resp[0],
-      clientCount: clientCount,
-    });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
-
-// Add a new client
 export const addClient = async (req, res) => {
   try {
     const departmentForTasks = req.body.department;
@@ -98,6 +57,7 @@ export const addClient = async (req, res) => {
       userID: newUser._id,
       name: req.body.name,
       email: req.body.email,
+      phone: req.body.phone || "-",
       notification: req.body.notification,
       departments: departments || [],
       companies: [newCompany._id],
@@ -153,20 +113,29 @@ export const addClient = async (req, res) => {
 
     return res.status(201).json({ message: "Client added successfully!!" });
   } catch (error) {
-   // console.log(error);
+    // console.log(error);
     res.status(400).json(error.message);
   }
 };
 
-// Delete a client by ID
 export const deleteClient = async (req, res) => {
   try {
     const result = await Client.findByIdAndDelete(req.params.id);
-    let result1;
+
+    console.log(result);
     if (result) {
-      result1 = await user.findByIdAndDelete(result.userID);
-      // result2 = await TasksDocument.findManyAndDelete({clientID:result._id})
-      // result3 = await Company.findByIdAndDelete({clientID:result._id})
+      let companies = await Company.deleteMany({ clientID: result._id })
+      let companiesIds = companies.map(company => company._id)
+      await TasksDocument.deleteMany({
+        $or: [{ clientID: result._id }, { companyID: { $in: companiesIds } }],
+      }
+      );
+      await Shareholder.deleteMany({ companyID: { $in: companiesIds } });
+      await Director.deleteMany({ companyID: { $in: companiesIds } });
+       await DueDate.deleteMany({ companyID: { $in: companiesIds } });
+
+      await User.findByIdAndDelete(result.userID);
+
     }
 
     // console.log(result, result1)
@@ -182,7 +151,6 @@ export const deleteClient = async (req, res) => {
   }
 };
 
-// Update a client by ID
 export const updateClient = async (req, res) => {
   try {
     const { id } = req.params; // Assuming you use ID to find the client
@@ -198,32 +166,72 @@ export const updateClient = async (req, res) => {
   }
 };
 
-// Get the number of client
-export const getClientsCount = async (req, res) => {
+export const getClients = async (req, res) => {
   try {
-    const count = await Client.countDocuments();
-    res.status(200).json({ count });
+    const page = Number(req.query.page) || 1;
+    const limit = Number(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+    let filter = {};
+
+    if (req.user?.department) {
+      filter.departments = { $in: [req.user.department] };
+    }
+    //console.log(req?.query);
+    ///console.log(req.user.department);
+
+
+    const clients = await Client.aggregate([
+      {
+        $match: {
+          ...filter
+        },
+      },
+      {
+        $project: {
+          _id: 1,
+          name: 1,
+          email: 1,
+          phone: 1,
+
+        },
+      },
+      {
+        $addFields: {
+          Department: req.user?.department ? req.user.department : "-", // Add department field
+        },
+      },
+    ])
+      .skip(skip)
+      .limit(limit);
+
+
+    console.log(clients);
+
+    const pagesCount = Math.ceil(clients.length / limit) || 0;
+
+    // Skip the specified number of documents.limit(limit);
+    res.status(200).json({
+      clientCount: clients.length,
+      currentPage: page,
+      pagesCount: pagesCount,
+      clients: clients,
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
 
-export const getClientsDashboardCounts = async (req, res) => {
+export const getClientLOE = async (req, res) => {
   try {
-    const documentsCount = await TasksDocument.countDocuments({
-      clientID: req.user.id,
-    });
-    const companiesCount = await Company.countDocuments({
-      clientID: req.user.id,
-    });
-
-    res.status(200).json([
-      { label: "Documents", count: documentsCount },
-      { label: "Companies", count: companiesCount },
-      { label: "Engagement", count: "1" },
-    ]);
+    const clientID = req.params.id;
+    const LOE = await TasksDocument.findOne({ clientID, title: "LOE" });
+    if (!LOE)
+      return res
+        .status(400)
+        .json({ message: "LOE not found or Client not exits!" });
+    res.status(200).json({ path: LOE.path });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(400).json({ message: error.message });
   }
 };
 
@@ -261,103 +269,108 @@ export const getClientCompanies = async (req, res) => {
       companies: paginatedCompanies,
     });
   } catch (error) {
-   // console.error(error);
+    // console.error(error);
     res.status(500).json({ message: "Error retrieving companies!", error });
   }
 };
 
-export const getClientLOE = async (req, res) => {
+export const getClientsCount = async (req, res) => {
   try {
-    const clientID = req.params.id;
-    const LOE = await TasksDocument.findOne({ clientID, title: "LOE" });
-    if (!LOE)
-      return res
-        .status(400)
-        .json({ message: "LOE not found or Client not exits!" });
-    res.status(200).json({ path: LOE.path });
-  } catch (error) {
-    res.status(400).json({ message: error.message });
-  }
-};
-
-export const getDepartmentClients = async (req, res) => {
-  try {
-    const page = Number(req.query.page) || 1;
-    const limit = Number(req.query.limit) || 10;
-    const skip = (page - 1) * limit;
-    //console.log(req?.query);
-    ///console.log(req.user.department);
-    if (!req.query.department) {
-      return res.status(400).json({ message: "department required" });
-    }
-
-    const clients = await Client.aggregate([
-      {
-        $match: {
-          departments: { $in: [req.query.department] },
-        },
-      },
-      {
-        $project: {
-          _id: 0, // Exclude _id if not needed
-          name: 1,
-          email: 1,
-          phone: 1,
-        },
-      },
-      {
-        $addFields: {
-          Department: req.user.department, // Add the requested department
-        },
-      },
-    ])
-      .skip(skip)
-      .limit(limit);
-
-
-    console.log(clients);
-
-    const pagesCount = Math.ceil(clients.length / limit) || 0;
-
-    // Skip the specified number of documents.limit(limit);
-    res.status(200).json({
-      clientCount: clients.length,
-      currentPage: page,
-      pagesCount: pagesCount,
-      clients: clients,
-    });
+    const count = await Client.countDocuments();
+    res.status(200).json({ count });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
 
-// export const getClientCompanies = async (req, res) => {
+export const getClientsDashboardCounts = async (req, res) => {
+  try {
+    const documentsCount = await TasksDocument.countDocuments({
+      clientID: req.user.id,
+    });
+    const companiesCount = await Company.countDocuments({
+      clientID: req.user.id,
+    });
 
-//     const page = req.query.page || 1;
-//     const limit = req.query.limit || 10;
-//     const skip = (page - 1) * limit;
+    res.status(200).json([
+      { label: "Documents", count: documentsCount },
+      { label: "Companies", count: companiesCount },
+      { label: "Engagement", count: "1" },
+    ]);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+/*
+// Get all client
+export const getClients = async (req, res) => {
+  const page = req.query.page || 1;
+  const limit = req.query.limit || 100;
+  const skip = (page - 1) * limit;
 
-//     // console.log(clientCount)
+  const clientCount = await Client.countDocuments();
+  // console.log(clientCount)
 
-//     try {
-//         const client = JSON.parse(JSON.stringify(await Client.findById(
-//             req.params.id
-//         ).populate('companies')
-//             .skip(skip)
-//             .limit(limit)));
+  const pagesCount = Math.ceil(clientCount / limit) || 0;
 
-//         console.log(client)
+  try {
+    const clients = await Client.find({})
+      // .populate("userID")
+      // .populate("companies")
+      .skip(skip)
+      .limit(limit);
 
-//         const companyCount = client.companies.length
-//         const pagesCount = Math.ceil(companyCount / limit) || 0;
-//         // Skip the specified number of documents.limit(limit);;
-//         res.status(200).json({
-//             currentPage: page,
-//             pagesCount,
-//             companies: client.companies,
-//             companyCount,
-//         });
-//     } catch (error) {
-//         res.status(500).json({ error: error.message });
-//     }
-// };
+
+    // let resp = clients.map((client) => {
+    //   const clientObj = client.toObject();
+
+    //   clientObj["department"] = req.user?.department || "-"
+    //   return clientObj
+    // });
+
+    res.status(200).json({
+      currentPage: page,
+      pagesCount: pagesCount,
+      clients: resp[0],
+      clientCount: clientCount,
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+*/
+// Add a new client
+
+
+/*
+export const getClientCompanies = async (req, res) => {
+
+    const page = req.query.page || 1;
+    const limit = req.query.limit || 10;
+    const skip = (page - 1) * limit;
+
+    // console.log(clientCount)
+
+    try {
+        const client = JSON.parse(JSON.stringify(await Client.findById(
+            req.params.id
+        ).populate('companies')
+            .skip(skip)
+            .limit(limit)));
+
+        console.log(client)
+
+        const companyCount = client.companies.length
+        const pagesCount = Math.ceil(companyCount / limit) || 0;
+        // Skip the specified number of documents.limit(limit);;
+        res.status(200).json({
+            currentPage: page,
+            pagesCount,
+            companies: client.companies,
+            companyCount,
+        });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+*/

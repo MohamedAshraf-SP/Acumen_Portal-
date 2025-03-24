@@ -12,6 +12,7 @@ import companyRouter from "./company/company.js";
 import { authRoute } from "./auth/authentication.js";
 import { authMiddleware, roleMiddleware } from "../middlewares/autherization.js";
 import companyHouseRouter from "./thirdPartyAPI/companyHouseAPI.js"
+import { getAdminDashboardCounts } from "../controllers/users/admin.js";
 
 // import {
 //   roleMiddleware,
@@ -34,6 +35,7 @@ router.use("/v1/emailtemplates", templatesRouter);
 router.use("/v1/companies", companyRouter);
 router.use("/v1/companyHouse", companyHouseRouter);
 router.use("/v1/users", usersRoute);
+router.get("/v1/admin/count", roleMiddleware(["admin"]), getAdminDashboardCounts);
 
 // /v1/Students/Count
 

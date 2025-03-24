@@ -7,7 +7,7 @@ import {
     deleteClient,
     addClient,
     getClientCompanies,
-    getDepartmentClients,
+    //    getDepartmentClients,
     getClientsDashboardCounts,
     getClientLOE
 } from "../controllers/users/client.js";
@@ -16,11 +16,11 @@ import { accountantDepartmentSetMiddleware, accountantRoleMiddleware, authMiddle
 export const clientRoute = express.Router();
 
 // Clients Management
-clientRoute.get("/", roleMiddleware(["admin"]), getClients);
+clientRoute.get("/", roleMiddleware(["admin", "accountant"]), getClients);
 
 clientRoute.get("/count", roleMiddleware(["admin", "accountant"]), getClientsCount);
 clientRoute.get("/dashboard/count", roleMiddleware(["admin", "accountant", "client"]), getClientsDashboardCounts);
-clientRoute.get("/ofdepartment", roleMiddleware(["admin", "accountant"]), accountantRoleMiddleware, getDepartmentClients);
+//clientRoute.get("/ofdepartment", roleMiddleware(["admin", "accountant"]), accountantRoleMiddleware, getDepartmentClients);
 clientRoute.get("/:id/companies", roleMiddleware(["admin", "accountant", "client"]), accountantDepartmentSetMiddleware, getClientCompanies);
 clientRoute.get("/:id/engagement", roleMiddleware(["admin", "accountant", "client"]), getClientLOE);
 clientRoute.get("/:id", roleMiddleware(["admin", "accountant"]), getClient);

@@ -77,7 +77,7 @@ export const addCompany = async (req, res) => {
             entryDate,
             incorporationDate,
             natureOfBusiness,
-            phone,
+            phone: targetClient.phone || req.body.phone,
             registrationDate,
             registrationNumber,
             status,
@@ -105,7 +105,7 @@ export const addCompany = async (req, res) => {
 
         res.status(201).json({ message: "Company added successfully" });
     } catch (error) {
-       // console.log(error);
+        // console.log(error);
         res.status(500).json({ message: "Error adding company", "Error": error.message });
     }
 };
@@ -139,7 +139,7 @@ export const getCompanies = async (req, res) => {
             companies,
         });
     } catch (error) {
-       // console.log(error)
+        // console.log(error)
         res.status(500).json({ message: "Error retrieving companies!", error });
     }
 };
@@ -221,7 +221,7 @@ export const updateCompany = async (req, res) => {
 
         // Update company
         const company = await Company.findByIdAndUpdate(req.params.id, companyData, { new: true });
-      //  console.log(company.clientID);
+        //  console.log(company.clientID);
 
         await Client.findByIdAndUpdate(company.clientID, { $addToSet: { departments: { $each: companyData.departments } } })
 
@@ -312,7 +312,7 @@ export const getDueDateByCompanyId = async (req, res) => {
     try {
         const companyId = req.params.id
         const due = await DueDate.findOne({ companyId });
-      //  console.log(companyId);
+        //  console.log(companyId);
         if (!due) {
             return res.status(404).json({ message: "Due dates for this company not found or company does not exits!!" });
         }
