@@ -133,6 +133,22 @@ export const addClient = async (req, res) => {
 export const deleteClient = async (req, res) => {
   try {
     const result = await Client.findByIdAndDelete(req.params.id);
+
+    console.log(result);
+    if (result) {
+      let companies = await Company.deleteMany({ clientID: result._id });
+      let companiesIds = companies.map((company) => company._id);
+      await TasksDocument.deleteMany({
+        $or: [{ clientID: result._id }, { companyID: { $in: companiesIds } }],
+      });
+      await Shareholder.deleteMany({ companyID: { $in: companiesIds } });
+      await Director.deleteMany({ companyID: { $in: companiesIds } });
+      await DueDate.deleteMany({ companyID: { $in: companiesIds } });
+
+      await User.findByIdAndDelete(result.userID);
+    }
+
+    // console.log(result, result1)
     if (!result) {
       return res.status(404).json({ message: "Client not found" });
     }
