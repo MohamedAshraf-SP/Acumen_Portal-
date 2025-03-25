@@ -5,8 +5,7 @@ import { GoPlus } from "react-icons/go";
 import { FaRegTrashCan } from "react-icons/fa6";
 import { BiShow } from "react-icons/bi";
 import { MdOutlineModeEditOutline } from "react-icons/md";
-import { Table, Pagination, Empty } from "antd";
-import Nodataimg from "/images/table/No data.svg";
+import { Table, Pagination } from "antd";
 import ConfirmDelete from "../../component/ConfirmDelete";
 import EditClient from "../../component/EditClient";
 import {
@@ -16,28 +15,25 @@ import {
 import Contentloader from "../../component/Contentloader";
 import { FetchedItems } from "../../Rtk/slices/getAllslice";
 import { useAuth } from "../../Contexts/AuthContext";
+import Nodata from "../../component/Nodataavilable";
+import FailedLoad from "../../component/FailedLoad";
 
 const Accountant_Clients = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { user } = useAuth();
   // Redux state
-  const data =
-    useSelector((state) => state.getall.entities["clients/ofdepartment"]) || [];
+  const data = useSelector((state) => state.getall.entities?.clients) || [];
   const totalRecords =
-    useSelector(
-      (state) => state.getall.entities["clients/ofdepartment"]?.clientCount
-    ) || 0;
-  const status = useSelector(
-    (state) => state.getall?.status["clients/ofdepartment"]
-  );
+    useSelector((state) => state.getall.entities?.clients?.clientCount) || 0;
+  const status = useSelector((state) => state.getall?.status?.clients);
   const { show, targetId } = useSelector(
     (state) => state.setting.deleteHintmsg
   );
   const { editItemForm } = useSelector((state) => state.setting);
   // Local state
   const [selectedItem, setSelectedItem] = useState(null);
-  const [pagination, setPagination] = useState({ current: 1, pageSize: 6 });
+  const [pagination, setPagination] = useState({ current: 1, pageSize: 10 });
   // Handle pagination event
   const onPageChange = (page, pageSize) => {
     setPagination({ current: page, pageSize });
@@ -61,7 +57,7 @@ const Accountant_Clients = () => {
   const fetchData = (current, pageSize) => {
     dispatch(
       FetchedItems({
-        path: "clients/ofdepartment",
+        path: "clients",
         page: current,
         limit: pageSize,
       })
@@ -119,18 +115,14 @@ const Accountant_Clients = () => {
           </li>
           <li
             className="bg-[#D6F1E8] text-[#027968] hover:bg-[#027968] hover:text-white w-8 h-8 rounded-full flex items-center justify-center transition cursor-pointer"
-            onClick={() =>
-              handleAction("edit", "clients/ofdepartment", record._id)
-            }
+            onClick={() => handleAction("edit", "clients", record._id)}
             title="Edit"
           >
             <MdOutlineModeEditOutline />
           </li>
           <li
             className="bg-[#FFF2F2] text-[#FF0000] hover:bg-[#FF0000] hover:text-white w-8 h-8 rounded-full flex items-center justify-center transition cursor-pointer"
-            onClick={() =>
-              handleAction("delete", "clients/ofdepartment", record._id)
-            }
+            onClick={() => handleAction("delete", "clients", record._id)}
             title="Delete"
           >
             <FaRegTrashCan />
@@ -146,7 +138,6 @@ const Accountant_Clients = () => {
         <ConfirmDelete
           path={selectedItem.path}
           deletedItemId={selectedItem.itemId}
-          isDepartment={true}
         />
       )}
       {editItemForm && <EditClient TargetItem={selectedItem} />}
@@ -165,14 +156,9 @@ const Accountant_Clients = () => {
 
         {/* Table */}
         <div className="mb-10">
+          {status === "failed" && <FailedLoad />}
           {status === "loading" && <Contentloader />}
-          {status === "success" && data?.clients?.length === 0 && (
-            <Empty
-              image={Nodataimg}
-              description="No Data Available"
-              className="flex flex-col items-center justify-center"
-            />
-          )}
+          {status === "success" && data?.clients?.length === 0 && <Nodata />}
           {status === "success" && data?.clients?.length > 0 && (
             <>
               <Table
@@ -193,11 +179,6 @@ const Accountant_Clients = () => {
                 </div>
               )}
             </>
-          )}
-          {status === "failed" && (
-            <div className="flex items-center justify-center text-center text-red-500 mt-4">
-              failed to load your clients,try again
-            </div>
           )}
         </div>
       </div>

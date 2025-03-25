@@ -81,14 +81,14 @@ const EditCompany = () => {
           {routes.map((route, index) => (
             <li
               key={index}
-              className={`flex flex-row items-center text-md ${
+              className={`flex flex-row items-center text-sm font-medium ${
                 index === routes.length - 1
                   ? "text-gray-400"
                   : "text-slate-900 dark:text-gray-200"
               }`}
             >
               {index > 0 && (
-                <LuDot className="text-lg text-gray-400 font-bold" />
+                <LuDot className="text-lg leading-4 font-bold text-gray-400 " />
               )}
               {route}
             </li>
