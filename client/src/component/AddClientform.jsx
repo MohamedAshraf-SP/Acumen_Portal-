@@ -9,7 +9,6 @@ import Skeleton from "react-loading-skeleton";
 import { ImSpinner8 } from "react-icons/im";
 import { useEmailValidation } from "../Hooks/useEmailValidation";
 import { useAuth } from "../Contexts/AuthContext";
-
 export default function AddClientForm() {
   const routes = ["Clients", "Add Client"];
   const { user } = useAuth();
