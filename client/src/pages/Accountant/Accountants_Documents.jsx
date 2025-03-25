@@ -12,6 +12,8 @@ import { setsuccessmsg } from "../../Rtk/slices/settingSlice";
 import { FetchedItems } from "../../Rtk/slices/getAllslice";
 import Contentloader from "../../component/Contentloader";
 import { useAuth } from "../../Contexts/AuthContext";
+import Nodata from "../../component/Nodataavilable";
+import FailedLoad from "../../component/FailedLoad";
 const Accountants_Documents = () => {
   const routes = ["Dashboard", "Documents"];
   const { user } = useAuth();
@@ -45,13 +47,14 @@ const Accountants_Documents = () => {
     if (!data.length) {
       fetchData(pagination.current, pagination.pageSize);
     }
-  }, []);
+  }, [pagination.current, pagination.pageSize]);
 
   // Handle pagination change
   const onPageChange = (page, pageSize) => {
     setPagination({ current: page, pageSize });
+    fetchData(page, pageSize);
   };
- 
+
   // Handle status change & re-fetch data
   const handleStatus = async (documentId, documentStatus) => {
     try {
@@ -62,7 +65,10 @@ const Accountants_Documents = () => {
         updateTargetItem({
           path: "tasksDocuments",
           itemId: documentId,
-          updatedItemData: { status: updatedDocumentStatus, accountantName:user?.name },
+          updatedItemData: {
+            status: updatedDocumentStatus,
+            accountantName: user?.name,
+          },
         })
       ).unwrap();
 
@@ -193,17 +199,9 @@ const Accountants_Documents = () => {
       {/* Table */}
       <div>
         {status === "loading" && <Contentloader />}
-        {status === "failed" && (
-          <p className="text-red-600 text-center">
-            Failed to load your documents.
-          </p>
-        )}
+        {status === "failed" && <FailedLoad />}
         {status === "success" && data?.TasksDocuments?.length === 0 && (
-          <Empty
-            image={Nodataimg}
-            description="No Data Available"
-            className="flex flex-col text-base items-center font-normal"
-          />
+          <Nodata />
         )}
         {status === "success" && data?.TasksDocuments?.length > 0 && (
           <>
@@ -212,7 +210,7 @@ const Accountants_Documents = () => {
               dataSource={data?.TasksDocuments}
               pagination={false}
               rowKey="_id"
-              rowClassName={(record, index) =>
+              rowClassName={(index) =>
                 index % 2 === 0 ? "bg-white" : "bg-gray-50"
               }
             />

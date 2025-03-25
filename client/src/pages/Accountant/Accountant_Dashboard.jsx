@@ -9,7 +9,6 @@ import { FaFilePdf } from "react-icons/fa6";
 import { FaUserFriends } from "react-icons/fa";
 import { FaBuildingShield } from "react-icons/fa6";
 
-
 // Lazy load each table
 const AccountantClient = lazy(() => import("./Accountant_Clients"));
 const AccountDocument = lazy(() => import("./Accountants_Documents"));
