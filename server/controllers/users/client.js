@@ -135,7 +135,7 @@ export const deleteClient = async (req, res) => {
     const result = await Client.findByIdAndDelete(req.params.id);
     if (result) {
       let companies = await Company.deleteMany({ clientID: result._id });
-      let companiesIds = companies.map((company) => company._id);
+      let companiesIds = companies?.map((company) => company._id);
       await TasksDocument.deleteMany({
         $or: [{ clientID: result._id }, { companyID: { $in: companiesIds } }],
       });
