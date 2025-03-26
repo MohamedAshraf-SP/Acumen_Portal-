@@ -6,6 +6,10 @@ import { useDebounce } from "../Hooks/useDebounce";
 import { getItem } from "../services/globalService";
 import Contentloader from "./Contentloader";
 import nosearchresutl from "/images/NodataFound/noSearch.png";
+import { CiSearch } from "react-icons/ci";
+import { ImSpinner2 } from "react-icons/im";
+import { useNavigate } from "react-router-dom";
+
 // Reusable Breadcrumb Component
 const Breadcrumb = ({ routes }) => (
   <ul className="flex items-center space-x-1 text-sm py-2">
@@ -27,7 +31,6 @@ const Breadcrumb = ({ routes }) => (
 
 // Reusable SearchResults Component
 const SearchResults = ({ loading, results, error, onSelect }) => {
-  console.log(results);
   if (loading === "loading") return <Contentloader />;
   if (loading === "failed") return <p className="text-red-500">{error}</p>;
   if (loading === "success" && results?.data?.length === 0)
@@ -62,10 +65,9 @@ export default function AddCompany() {
   const routes = ["Companies", "Add Company"];
   const [companiesResults, setCompaniesResults] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
-
   const [loading, setLoading] = useState(null);
   const [error, setError] = useState(null);
-
+  const navigate = useNavigate();
   // Formik setup
   const formik = useFormik({
     initialValues: {
@@ -77,8 +79,9 @@ export default function AddCompany() {
     }),
     onSubmit: async (values, { resetForm }) => {
       try {
-        console.log("Submitting:", values);
-        resetForm();
+        if (values?.companyCode) {
+          navigate(`/companies/editcompany?companycode=${values?.companyCode}`);
+        }
       } catch (error) {
         console.error("Submission error:", error);
       }
@@ -132,50 +135,51 @@ export default function AddCompany() {
   return (
     <div className="dark:bg-secondary-dark-bg rounded-md h-full">
       <header>
-        <h1 className="text-xl font-semibold leading-[1.5] dark:text-white text-[#1C252E]">
+        <h1 className="text-xl font-semibold leading-[1.5] mt-4 md:mt-2 dark:text-white text-[#1C252E]">
           Create New Company
         </h1>
         <Breadcrumb routes={routes} />
       </header>
 
-      <div className="mt-8 bg-white dark:bg-gray-800 rounded-lg max-w-[700px] mx-auto border border-solid border-[#43464933] shadow-sm">
-        <header className="bg-gray-50">
-          <h2 className="text-lg font-medium dark:text-gray-200 py-2 px-4 text-slate-700">
-            Add Company
-          </h2>
-          <hr className="border-t border-[#919eab33]" />
-        </header>
-
+      <div className=" bg-white dark:bg-gray-800 rounded-lg max-w-[900px] mx-auto   shadow-sm">
         <form
           className="p-4 flex flex-col gap-4 my-4"
           onSubmit={formik.handleSubmit}
         >
           {/* Company Name Input */}
-          <div className="relative w-full mb-4">
-            <label htmlFor="companyName" className="customlabel text-gray-900">
-              Company Name
-            </label>
-            <input
-              id="companyName"
-              name="name"
-              className="peer input block"
-              type="text"
-              onChange={(e) => {
-                formik.handleChange(e);
-                handleSearch(e);
-              }}
-              onBlur={formik.handleBlur}
-              value={formik.values.name}
-            />
+          <div className="relative w-full ">
+            <div className="relative flex items-center justify-center gap-2">
+              <span className="absolute left-3 text-gray-500">
+                <CiSearch size={20} />
+              </span>
+              {loading === "loading" && (
+                <span className="absolute right-2 text-gray-400 animate-spin">
+                  <ImSpinner2 />
+                </span>
+              )}
+              <input
+                id="companyName"
+                name="name"
+                className="text-sm w-full  pl-10 pr-12 py-3 text-gray-600 bg-slate-50 border border-gray-200 rounded-md outline-none  placeholder:text-xs"
+                placeholder="search with company name..."
+                type="text"
+                onChange={(e) => {
+                  formik.handleChange(e);
+                  handleSearch(e);
+                }}
+                onBlur={formik.handleBlur}
+                value={formik.values.name}
+              />
+            </div>
             {formik.touched.name && formik.errors.name && (
-              <p className="text-red-600 italic mt-1 text-[12px]">
+              <p className="text-red-600  mt-1 text-[12px]">
                 {formik.errors.name}
               </p>
             )}
 
             {/* Display search results */}
             {searchQuery.length > 0 && companiesResults?.data && (
-              <div className="absolute top-full left-0 z-50 w-full mt-1 bg-white border border-solid rounded-lg">
+              <div className="absolute top-full left-0 z-50 w-full mt-2 bg-white border border-solid rounded-lg ">
                 <SearchResults
                   loading={loading}
                   results={companiesResults}
@@ -187,20 +191,24 @@ export default function AddCompany() {
           </div>
 
           {/* Company Code Input */}
-          <div className="relative w-full mb-4">
-            <label htmlFor="companyCode" className="customlabel text-gray-900">
-              Company Code
-            </label>
-            <input
-              id="companyCode"
-              name="companyCode"
-              className="peer input block focus:border-[#aeb7c154] cursor-not-allowed"
-              type="text"
-              readOnly
-              value={formik.values.companyCode}
-            />
-          </div>
-
+          {formik.values?.companyCode?.length > 0 && (
+            <div className="relative w-full mb-4">
+              <label
+                htmlFor="companyCode"
+                className="mb-1 block text-gray-600 text-sm font-medium  "
+              >
+                Company Code
+              </label>
+              <input
+                id="companyCode"
+                name="companyCode"
+                className="peer input block focus:border-[#aeb7c154] cursor-not-allowed"
+                type="text"
+                readOnly
+                value={formik.values.companyCode}
+              />
+            </div>
+          )}
           {/* Submit and Cancel Buttons */}
           <div className="flex justify-end md:flex-row flex-col md:gap-4 gap-2">
             <button
