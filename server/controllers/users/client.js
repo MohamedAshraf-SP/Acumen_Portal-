@@ -8,7 +8,7 @@ import {
   generateRandomPassword,
   hashPassword,
 } from "../../Services/auth/authentication.js";
-import { Company,Director, Shareholder,DueDate } from "../../models/company/index.js";
+import { Company, Director, Shareholder, DueDate } from "../../models/company/index.js";
 
 // Get a Client by ID
 export const getClient = async (req, res) => {
@@ -25,11 +25,19 @@ export const getClient = async (req, res) => {
 
 export const addClient = async (req, res) => {
   try {
-    const departmentForTasks = req.body.department;
 
-    const departments = Array.isArray(req.body.department)
-      ? req.body.department
-      : [req.body.department];
+    let department = req.body.department;
+    let userDepartment = req.user?.department;
+    if (userDepartment) {
+      department = userDepartment;
+    }
+
+    const departmentForTasks = department;
+
+    const departments = Array.isArray(department)
+      ? department
+      : [department];
+
     if (!req.file) {
       return res.status(400).json({ message: "LEO File is required!!" });
     }
@@ -49,7 +57,7 @@ export const addClient = async (req, res) => {
     const newUser = await nUser.save();
     //create default company
     const company = new Company({
-      companyName: `default company `,
+      companyName: `default company`,
     });
     const newCompany = await company.save();
     //create the new client
@@ -67,7 +75,7 @@ export const addClient = async (req, res) => {
 
     if (
       !(await sendEmail(
-        "Accumen portal New User Notification!",
+        "AMS portal New User Notification!",
         `Hello ${req.body.name}, `,
         req.body.email,
         `
@@ -77,7 +85,7 @@ export const addClient = async (req, res) => {
 
 
             Thank you
-            accumen portal team.
+            AMS team.
         `,
         "reply to Accumen Portal Email"
       ))
@@ -92,7 +100,7 @@ export const addClient = async (req, res) => {
     //add the email log
     addEmailLog(
       req.body.email,
-      "Accumen portal New User Notification!",
+      "AMS New User Notification!",
       req.body.name
     );
 
@@ -122,30 +130,26 @@ export const addClient = async (req, res) => {
 export const deleteClient = async (req, res) => {
   try {
     const result = await Client.findByIdAndDelete(req.params.id);
-
-    console.log(result);
-    if (result) {
-      let companies = await Company.deleteMany({ clientID: result._id })
-      let companiesIds = companies.map(company => company._id)
-      await TasksDocument.deleteMany({
-        $or: [{ clientID: result._id }, { companyID: { $in: companiesIds } }],
-      }
-      );
-      await Shareholder.deleteMany({ companyID: { $in: companiesIds } });
-      await Director.deleteMany({ companyID: { $in: companiesIds } });
-       await DueDate.deleteMany({ companyID: { $in: companiesIds } });
-
-      await User.findByIdAndDelete(result.userID);
-
-    }
-
-    // console.log(result, result1)
     if (!result) {
       return res.status(404).json({ message: "Client not found" });
     }
+    await User.findByIdAndDelete(result.userID);
+
+    const companies = await Company.find({ clientID: result._id });
+    const companiesIds = companies.map(company => company._id);
+
+    await Company.deleteMany({ clientID: result._id });
+
+    await TasksDocument.deleteMany({
+      $or: [{ clientID: result._id }, { companyID: { $in: companiesIds } }],
+    }
+    );
+    await Shareholder.deleteMany({ companyID: { $in: companiesIds } });
+    await Director.deleteMany({ companyID: { $in: companiesIds } });
+    await DueDate.deleteMany({ companyID: { $in: companiesIds } });
     res.status(200).json({
       message:
-        "Client and associated documents , companies deleted successfully",
+        "Client and associated documents and  companies deleted successfully",
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -303,6 +307,23 @@ export const getClientsDashboardCounts = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /*
 // Get all client
 export const getClients = async (req, res) => {

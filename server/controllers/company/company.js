@@ -52,6 +52,10 @@ export const addCompany = async (req, res) => {
             accountHolder,
             sortCode
         } = req.body;
+        let updatedDepartments = req.body?.departments || [];
+        if (req.user.role == "accountant") {
+            updatedDepartments.push(req.user.department)
+        }
 
         const targetClient = await Client.findById(clientID)
 
@@ -66,7 +70,7 @@ export const addCompany = async (req, res) => {
             AccountsOfficeReference,
             AuthCode,
             CISRegistrationNumber,
-            departments,
+            departments: updatedDepartments,
             VATRegistered,
             accountingReferenceDate,
             bankDetails,
@@ -113,17 +117,22 @@ export const addCompany = async (req, res) => {
 // Get all companies
 export const getCompanies = async (req, res) => {
     try {
-        const { page = 1, limit = 100 } = req.query; // Default page = 1, limit = 10
+        let filter = {}
+        const { page = 1, limit = 100 } = req.query;
+
+        if (req.user.role == "accountant") {
+            filter.departments = { $in: req.user.department }
+        }
 
         // Parse page and limit to integers
         const pageNumber = parseInt(page, 10);
         const limitNumber = parseInt(limit, 10);
 
         // Calculate total count for pagination metadata
-        const totalCompanies = await Company.countDocuments();
+        const totalCompanies = await Company.countDocuments(filter);
 
         // Fetch companies with pagination
-        const companies = await Company.find()
+        const companies = await Company.find(filter)
 
             .populate({ path: "shareholder", strictPopulate: false })
             .populate({ path: "director", strictPopulate: false })
@@ -217,13 +226,18 @@ export const getCompanyById = async (req, res) => {
 export const updateCompany = async (req, res) => {
     try {
         const { ...companyData } = req.body;
-
+        const updateCompanyData = {}
 
         // Update company
         const company = await Company.findByIdAndUpdate(req.params.id, companyData, { new: true });
         //  console.log(company.clientID);
+        if (companyData.departments) {
+            updateCompanyData = { $addToSet: { departments: { $each: companyData.departments } } }
+        }
 
-        await Client.findByIdAndUpdate(company.clientID, { $addToSet: { departments: { $each: companyData.departments } } })
+
+
+        await Client.findByIdAndUpdate(company.clientID, updateCompanyData)
 
         if (!company) {
             return res.status(404).json({ message: "Company not found" });
