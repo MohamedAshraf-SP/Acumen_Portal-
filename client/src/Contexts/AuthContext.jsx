@@ -55,10 +55,6 @@ export const AuthContextProvider = ({ children }) => {
           );
         }
       }
-<<<<<<< HEAD
-=======
-
->>>>>>> 85165b7 (display client engagement and client companies)
       return response;
     } catch (error) {
       if (error.response) {
