@@ -10,6 +10,7 @@ import * as Yup from "yup";
 import { addNewData } from "../Rtk/slices/addNewSlice";
 import Skeleton from "react-loading-skeleton";
 import { useEmailValidation } from "../Hooks/useEmailValidation";
+import Breadcrumb from "./Breadcrumb";
 
 export default function AddacountantForm() {
   // List Departments
@@ -80,23 +81,7 @@ export default function AddacountantForm() {
           Add new Accountant
         </h1>
 
-        <ul className="flex flex-row items-center space-x-1 text-sm py-2">
-          {routes.map((route, index) => (
-            <li
-              key={index}
-              className={`flex flex-row items-center ${
-                index === routes.length - 1
-                  ? "text-gray-400"
-                  : "text-slate-900 dark:text-gray-200"
-              }`}
-            >
-              {index > 0 && (
-                <LuDot className="text-lg text-gray-400 font-bold" />
-              )}
-              {route}
-            </li>
-          ))}
-        </ul>
+        <Breadcrumb routes={routes} />
       </div>
       {/* display success Adding or failed */}
       {alert.showmsg && (

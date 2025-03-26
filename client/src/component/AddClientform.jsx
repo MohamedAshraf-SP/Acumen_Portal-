@@ -17,7 +17,15 @@ export default function AddClientForm() {
   const [alert, setAlert] = useState({ msg: "", showmsg: false });
   const { validation, checkEmail, resetValidation } = useEmailValidation();
   const [fileName, setFileName] = useState("");
-  // Helper to check email availability
+  // List Departments
+  const Departments = [
+    "Finance department",
+    "Annual accounts, CT and Director department",
+    "General and administrative matters",
+    "Paye, Pension and CIS department department",
+    "Self-employed and partnership department",
+    "Vat department",
+  ];
 
   // for handle upload file
   const handleFileChange = (e) => {
@@ -36,7 +44,7 @@ export default function AddClientForm() {
       name: "",
       email: "",
       notification: 1,
-      department: user?.department,
+      department: user ? user.department : "Finance department",
       LOEfile: null,
     },
 
@@ -179,7 +187,7 @@ export default function AddClientForm() {
           </div>
 
           {/* Email Input */}
-          <div className="relative w-full mb-4">
+          <div className="relative w-full ">
             <label htmlFor="clientEmail" className="customlabel text-gray-700">
               Email
             </label>
@@ -218,7 +226,37 @@ export default function AddClientForm() {
               </p>
             ) : null}
           </div>
-
+          <div className="relative w-full overflow-hidden">
+            <label
+              htmlFor="countries"
+              className="block  mb-1 text-sm font-normal text-gray-700 dark:text-white"
+            >
+              Select Department
+            </label>
+            <select
+              id="departments"
+              name="department"
+              value={formik.values.department || "Finance Department"}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg  !focus:border-slate-700 block w-full p-2.5 outline-none"
+            >
+              {Departments.map((department, index) => (
+                <option
+                  className="!cursor-pointer"
+                  key={index}
+                  value={department}
+                >
+                  {department}
+                </option>
+              ))}
+            </select>
+            {formik.touched.department && formik.errors.department ? (
+              <div className="text-red-600 italic mt-1 text-[12px]">
+                {formik.errors.department}
+              </div>
+            ) : null}
+          </div>
           {/* File Input */}
           <div className="w-full mb-5">
             <label
