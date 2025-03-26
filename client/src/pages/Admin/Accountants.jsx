@@ -13,6 +13,7 @@ import ConfirmDelete from "../../component/ConfirmDelete";
 import { Table, Pagination, Empty } from "antd"; // Ant Design components
 // import images
 import Nodataimg from "/images/table/No data.svg";
+import Breadcrumb from "../../component/Breadcrumb";
 
 const Accountants = React.memo(() => {
   const routes = ["Dashboard", "Companies"];
@@ -101,7 +102,7 @@ const Accountants = React.memo(() => {
       ),
     },
   ];
- 
+
   return (
     <>
       {show && targetId === selectedItem.itemId && (
@@ -114,24 +115,10 @@ const Accountants = React.memo(() => {
         {/* Header */}{" "}
         <div className="my-8 flex justify-between items-center p-2 border-b  ">
           <div>
-            <h1 className="text-xl font-semibold">Accountants</h1>
-            <ul className="flex flex-row items-center space-x-1 text-sm py-2">
-              {routes.map((route, index) => (
-                <li
-                  key={index}
-                  className={`flex flex-row items-center ${
-                    index === routes.length - 1
-                      ? "text-gray-400"
-                      : "text-slate-900 dark:text-gray-200"
-                  }`}
-                >
-                  {index > 0 && (
-                    <LuDot className="text-lg text-gray-400 font-bold" />
-                  )}
-                  {route}
-                </li>
-              ))}
-            </ul>
+            <h1 className="font-semibold text-gray-600 text-lg ">
+              Accountants
+            </h1>
+            <Breadcrumb routes={routes} />
           </div>
 
           <Link to="/accountants/add-account" className="blackbutton">

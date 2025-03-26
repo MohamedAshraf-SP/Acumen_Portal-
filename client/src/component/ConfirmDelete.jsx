@@ -9,12 +9,12 @@ function ConfirmDelete({ path, deletedItemId, isDepartment }) {
   const [loading, setLoading] = useState(false);
 
   const handleDelete = async () => {
-    // Remove path argument here
     try {
       setLoading(true);
       const response = await dispatch(
         deleteTargetItem({ path, itemId: deletedItemId })
       );
+
       if (response.meta.requestStatus === "fulfilled") {
         dispatch(
           setsuccessmsg({
@@ -27,6 +27,8 @@ function ConfirmDelete({ path, deletedItemId, isDepartment }) {
         dispatch(FetchedItems({ path, isDepartment }));
       }
     } catch (error) {
+      // Handle errors
+      console.error("Delete error:", error);
       dispatch(
         setsuccessmsg({
           success: true,
@@ -34,13 +36,10 @@ function ConfirmDelete({ path, deletedItemId, isDepartment }) {
           message: "Failed to delete the item.",
         })
       );
-      console.error("Error deleting item:", error);
     } finally {
-      // Close the delete confirmation modal
-      dispatch(setdeleteHintmsg({ show: false, targetId: null }));
+      setLoading(false); // Ensure loading is reset in all cases
     }
   };
-
   const handleCancelDelete = () => {
     dispatch(setdeleteHintmsg({ show: false, targetId: null }));
   };

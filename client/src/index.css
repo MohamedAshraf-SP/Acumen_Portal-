@@ -23,7 +23,7 @@ body {
   @apply flex items-center justify-center text-grayColor cursor-pointer font-bold hover:bg-[#f9fcff] border border-solid hover:border-neutral-300 hover:text-black rounded-full text-[17px] p-2;
 }
 .input {
-  @apply px-[16px] py-[12px] outline-none text-sm text-[#5a5a5a]   border border-solid border-[#aeb7c154] rounded-md focus:border-slate-700 w-full font-normal;
+  @apply px-[16px] py-[10px] md:py-[12px] outline-none text-sm text-[#5a5a5a]   border border-solid border-[#aeb7c154] rounded-md focus:border-slate-700 w-full font-normal;
 }
 .customInput {
   @apply rounded-[16px] border border-solid  py-[16px] px-[20px] outline-none text-sm text-[#1c1c1c]   focus:border-slate-700 w-full placeholder:font-thin placeholder:text-[#a3a2a2];

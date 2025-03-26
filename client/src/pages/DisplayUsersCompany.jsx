@@ -44,7 +44,7 @@ export default function DisplayUsersCompany() {
       const response = await axios.get(
         `${api}/clients/${clientId}/companies?page=${page}&limit=${pageSize}`
       );
-      console.log(response);
+  
       if (response.status === 200) {
         setCompanies(response?.data?.companies || []);
         setPagination((prev) => ({
@@ -83,7 +83,7 @@ export default function DisplayUsersCompany() {
   };
   // get id of user from params if exist if not from cookies
   useEffect(() => {
-    setClientId(companyId ? companyId : user?.id);
+    setClientId(companyId ? companyId : user?.dataId);
   }, [companyId, user?.id]);
 
   useEffect(() => {
