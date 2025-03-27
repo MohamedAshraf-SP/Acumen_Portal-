@@ -28,6 +28,42 @@ export const getClient = async (req, res) => {
   }
 };
 
+// Get all client
+export const getClients = async (req, res) => {
+  const page = req.query.page || 1;
+  const limit = req.query.limit || 100;
+  const skip = (page - 1) * limit;
+
+  const clientCount = await Client.countDocuments();
+  // console.log(clientCount)
+
+  const pagesCount = Math.ceil(clientCount / limit) || 0;
+
+  try {
+    const clients = await Client.find({})
+      //  .populate("userID")
+      // .populate("companies")
+      .skip(skip)
+      .limit(limit);
+
+    // let resp = clients.map((client) => {
+    //   const clientObj = client.toObject();
+
+    //   clientObj["department"] = req.user?.department || "-"
+    //   return clientObj
+    // });
+    res.status(200).json({
+      currentPage: page,
+      pagesCount: pagesCount,
+      clients: clients,
+      clientCount: clientCount,
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+// Add a new client
 export const addClient = async (req, res) => {
   try {
     let department = req.body.department;
@@ -124,7 +160,6 @@ export const addClient = async (req, res) => {
 
     return res.status(201).json({ message: "Client added successfully!!" });
   } catch (error) {
-    // console.log(error);
     // console.log(error);
     res.status(400).json(error.message);
   }
@@ -289,7 +324,6 @@ export const getClientCompanies = async (req, res) => {
       companies: paginatedCompanies,
     });
   } catch (error) {
-    // console.error(error);
     // console.error(error);
     res.status(500).json({ message: "Error retrieving companies!", error });
   }

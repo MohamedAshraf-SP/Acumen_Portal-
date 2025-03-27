@@ -30,9 +30,23 @@ const ClientEngagement = () => {
     }
   }, [user]);
 
+<<<<<<< Updated upstream
 const fetchDocument = async (clientId) => {
   setLoadingPdf(true);
   setError("");
+=======
+  const fetchDocument = async (userId) => {
+    try {
+      // Replace with your actual API call or Firebase storage retrieval
+      const response = await axios.get(`${api}/clients/${userId}/engagement`);
+      const data = await response;
+      console.log(data);
+      setPdfUrl(data?.data?.path); // URL of the stored PDF
+    } catch (error) {
+      console.error("Error fetching document:", error);
+    }
+  };
+>>>>>>> Stashed changes
 
   try {
     const response = await axios.get(`${api}/clients/${clientId}/engagement`); // FIXED
@@ -58,7 +72,7 @@ const fetchDocument = async (clientId) => {
       </div>
     );
   }
-
+  console.log(pdfUrl);
   return (
     <div className="flex flex-col items-center p-4">
       <h2 className="text-xl font-semibold mb-4 text-gray-600 mt-4">
