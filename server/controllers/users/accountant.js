@@ -124,6 +124,7 @@ export const addAccountant = async (req, res) => {
 export const deleteAccountant = async (req, res) => {
   try {
     const result = await Accountant.findByIdAndDelete(req.params.id);
+    await User.findByIdAndDelete(result.userID);
     let result1;
     if (result) {
       result1 = await User.findByIdAndDelete(result.userID);

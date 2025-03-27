@@ -23,8 +23,8 @@ const tasksDocumentSchema = new mongoose.Schema({
   dateTime: { type: Date, required: true, default: Date.now }, // Stores the date and time
   status: {
     type: String,
-    enum: ["pending", "seen", "downloaded"], // Restricts status values
-    default: 'seen'
+    enum: ["", "pending", "seen", "downloaded"], // Restricts status values
+    default: ''
   },
   userKey: { type: String, required: true, default: "000" }, // Unique identifier for the user
   lastUpdate: { type: Date, default: Date.now }, // Tracks last updated time

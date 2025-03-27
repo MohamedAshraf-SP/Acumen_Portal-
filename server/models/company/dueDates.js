@@ -4,6 +4,7 @@ const dueDateSchema = new mongoose.Schema({
     companyId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Company",
+        
     },
     vatNumber: String,
     vatReturnsPeriod: String, // annual, quarterly
@@ -13,6 +14,5 @@ const dueDateSchema = new mongoose.Schema({
     quarter4DueBy: Date,
     confirmationStatementDueBy: Date,
     annualVatDueBy: Date,
-});
-
+}, { timestamps: true })
 export default mongoose.model('DueDate', dueDateSchema) 

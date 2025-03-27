@@ -57,9 +57,14 @@ export const addClient = async (req, res) => {
     const newUser = await nUser.save();
     //create default company
     const company = new Company({
-      companyName: `default company`,
+      companyName: `Default company`,
     });
     const newCompany = await company.save();
+    const dueDate = new DueDate({
+      companyId: newCompany._id,
+      vatNumber: "",
+    });
+    dueDate.save();
     //create the new client
     const newClient = new Client({
       userID: newUser._id,
@@ -135,10 +140,11 @@ export const deleteClient = async (req, res) => {
     }
     await User.findByIdAndDelete(result.userID);
 
-    const companies = await Company.find({ clientID: result._id });
-    const companiesIds = companies.map(company => company._id);
+    const companiesIds = result.companies.map(company => company._id);
 
-    await Company.deleteMany({ clientID: result._id });
+    console.log(companiesIds);
+
+    await Company.deleteMany({ _id: { $in: companiesIds } });
 
     await TasksDocument.deleteMany({
       $or: [{ clientID: result._id }, { companyID: { $in: companiesIds } }],
