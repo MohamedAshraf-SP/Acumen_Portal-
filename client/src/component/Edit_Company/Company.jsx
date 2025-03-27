@@ -22,16 +22,16 @@ const Company = () => {
   const { data, loading, error } = useSelector((state) => state.companyDetails);
   useEffect(() => {
     if (companyId || companyCode) {
-      dispatch(fetchCompanyDetails({ companyId, companyCode }));
+      dispatch(fetchCompanyDetails({ companyId, companyCode, subRoute: "" }));
     }
   }, [companyId, companyCode, dispatch]);
-
+  console.log(data);
   // Formik setup
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
       registrationNumber: data?.registrationNumber || "",
-      companyName: data?.company_name || "",
+      companyName: data?.companyName || "",
       AuthCode: data?.AuthCode || "",
       registrationDate: data?.registrationDate || "",
       incorporationDate: data?.incorporationDate || "",
@@ -39,7 +39,7 @@ const Company = () => {
       CISRegistrationNumber: data?.CISRegistrationNumber || "",
       employerPAYEReference: data?.employerPAYEReference || "",
       AccountsOfficeReference: data?.AccountsOfficeReference || "",
-      status: data?.company_status || "",
+      status: data?.companyStatus || "",
       natureOfBusiness: data?.natureOfBusiness || "",
       corporationTax_UTR: data?.corporationTax_UTR || "",
     },
@@ -70,11 +70,11 @@ const Company = () => {
       }
     },
   });
-console.log(data)
+
   // handle cancel Button
   const handleCancelBtn = () => {
     formik.resetForm();
-    navigate(`${user?.role}/dashboard`);
+    navigate(`/${user?.role}/dashboard`);
   };
   return (
     <div className="my-4 py-4 px-6 rounded-[16px] bg-[#f9f9fa] animate-fade relative">
@@ -194,7 +194,7 @@ console.log(data)
               value={formik.values.status}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-gray-300 focus:border-slate-700 block w-full p-2.5"
+              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg outline-none   focus:border-slate-700 block w-full p-2.5"
             >
               {statusOptions?.map((option, index) => (
                 <option key={index} value={option}>

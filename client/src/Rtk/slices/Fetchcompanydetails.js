@@ -4,19 +4,18 @@ import { getItem } from "../../services/globalService"; // Your API function
 // Async thunk to fetch company details
 export const fetchCompanyDetails = createAsyncThunk(
   "company/fetchCompanyDetails",
-  async ({ companyId, companyCode }, { rejectWithValue }) => {
+  async ({ companyId, companyCode, subRoute = "" }, { rejectWithValue }) => {
+    console.log(companyId, companyCode, subRoute);
     try {
-      let path, itemId;
+      let path;
 
       if (companyId) {
-        path = "companies";
-        itemId = companyId;
+        path = `companies`; // Include subRoute if provided
       } else {
-        path = "companyHouse/company";
-        itemId = companyCode;
+        path = `companyHouse/company`;
       }
 
-      const response = await getItem(path, itemId);
+      const response = await getItem(path, companyId ? companyId : companyCode);
       return response;
     } catch (error) {
       console.error("Error fetching company details", error);

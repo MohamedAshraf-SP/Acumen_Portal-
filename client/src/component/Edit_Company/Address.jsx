@@ -105,7 +105,7 @@ const Address = () => {
           <TextInput
             label="Business Address"
             id="businessAddress"
-            type="number"
+            type="text"
             min={0}
             placeholder="enter Business Address"
             className="customInput"

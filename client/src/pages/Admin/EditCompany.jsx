@@ -106,7 +106,13 @@ const EditCompany = () => {
             <div className="flex flex-row items-center lg:gap-4 gap-3 flex-wrap px-4 rounded-lg">
               {editCompanyLinks?.map((item, index) => (
                 <Link
-                  to={item?.link}
+                  to={
+                    companyCode
+                      ? `/companies/editcompany?companycode=${companyCode}`
+                      : companyId
+                      ? `/companies/editcompany/${companyId}`
+                      : "/companies/editcompany"
+                  }
                   key={index}
                   className={`text-sm font-normal dark:text-gray-200 text-[15px] py-1 capitalize ${
                     openedForm === item.name

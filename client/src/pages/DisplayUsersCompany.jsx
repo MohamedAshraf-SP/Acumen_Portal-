@@ -44,7 +44,7 @@ export default function DisplayUsersCompany() {
       const response = await axios.get(
         `${api}/clients/${clientId}/companies?page=${page}&limit=${pageSize}`
       );
-  
+      console.log(response);
       if (response.status === 200) {
         setCompanies(response?.data?.companies || []);
         setPagination((prev) => ({

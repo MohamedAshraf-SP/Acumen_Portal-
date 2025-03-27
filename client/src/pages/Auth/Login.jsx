@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 
@@ -27,16 +27,21 @@ const Login = () => {
         .min(5, "Password can't be less than 5 digits")
         .required("Password is required."),
     }),
-    onSubmit: async (values, { resetForm }) => {
+    onSubmit: async (values, { setSubmitting }) => {
       try {
-        await handleLogin(values);
+        const response = await handleLogin(values);
+        setWrongCredentials(false);
       } catch (error) {
-        console.log(error);
-        setWrongCredentials(true);
+        if (error.response && error.response.status === 401) {
+          setWrongCredentials(true);
+        } else {
+          setWrongCredentials(false);
+        }
+        setSubmitting(false);
       }
     },
   });
-   
+  console.log(wrongCredentials);
   return (
     <div className="h-screen grid grid-cols-12 bg-gray-50">
       <section className="  dark:bg-gray-900 my-auto  col-span-12 md:col-span-5  ">

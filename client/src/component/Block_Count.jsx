@@ -1,5 +1,6 @@
 import React from "react";
 import blockImg from "/images/BlockCount/background.png";
+import { formatNum } from "../Utils";
 
 export default function Block_Count({
   bgColor,
@@ -14,7 +15,7 @@ export default function Block_Count({
       style={{ backgroundColor: bgColor }}
     >
       {/* Background Image */}
-      <div className="absolute bottom-0 left-0 w-full h-full z-10">
+      <div className="absolute top-0 right-0 w-full h-full z-10">
         <img src={blockImg} alt="Background" className="w-full h-full" />
       </div>
       {/* Content */}
@@ -22,7 +23,7 @@ export default function Block_Count({
         {/* Icon Section */}
         <div className="flex flex-row items-start justify-start">
           <div
-            className="w-[60px] h-[40px] text-2xl flex justify-center items-center z-10 text-[#f0f0f0] overflow-hidden rounded-full"
+            className="w-[60px] h-[40px] text-2xl flex justify-center items-center z-20 text-[#f0f0f0] opacity-90 overflow-hidden rounded-full"
             style={{ backgroundColor: iconColor }}
           >
             {icon}
@@ -36,7 +37,9 @@ export default function Block_Count({
 
         {/* Count Section */}
         <div className="flex flex-col items-end justify-end pt-8">
-          <p className="font-semibold text-3xl text-gray-600">{count}</p>
+          <p className="font-medium text-3xl text-gray-500">
+            {formatNum(count)}
+          </p>
         </div>
       </div>
     </div>

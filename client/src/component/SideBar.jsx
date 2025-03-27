@@ -6,7 +6,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { setActiveMenu } from "../Rtk/slices/settingSlice";
 import { useAuth } from "../Contexts/AuthContext";
 import Skeleton from "react-loading-skeleton";
-
+import dashboardLogo from "/images/DashboardLogo/logo.svg";
 const DEFAULT_SETTINGS = { navColor: "#ffffff", navView: "default" };
 
 export default function SideBar() {
@@ -80,24 +80,24 @@ export default function SideBar() {
       <div
         ref={SideBarRef}
         // style={{ backgroundColor: sidebarSettings.navColor }}
-        className="rounded-tr-xl rounded-br-xl overflow-auto pb-4 px-2 border-r border-[#E2E7EC] dark:bg-secondary-dark-bg h-screen 
+        className="rounded-tr-xl rounded-br-xl overflow-auto pb-4 px-2  dark:bg-secondary-dark-bg h-screen 
         bg-[#006666]"
       >
         {/* Sidebar Header */}
         <div
-          className="flex items-center justify-between px-4 py-4 sticky top-0 z-40 mb-4 bg-[#006666]  
+          className="flex items-center justify-between overflow-hidden px-4 py-4 sticky top-0 z-40 mb-4 bg-[#006666]  
        "
         >
           <Link
             to={`${user?.role}/dashboard`}
-            className="flex items-center gap-3 text-white text-xl "
+            className="flex items-center gap-2 text-white text-xl "
           >
             <img
-              className="w-8 h-8 mr-2"
-              src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/logo.svg"
-              alt="logo"
+              className="w-8 h-8"
+              src={dashboardLogo}
+              alt="dashboard logo"
             />
-            {!collapsed && <span>AMS</span>}
+            {!collapsed && <span className="text-xl  text-gray-100">AMS</span>}
           </Link>
         </div>
 

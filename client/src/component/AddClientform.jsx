@@ -44,7 +44,7 @@ export default function AddClientForm() {
       name: "",
       email: "",
       notification: 1,
-      department: user ? user.department : "Finance department",
+      department:  user?.department||"Finance department",
       LOEfile: null,
     },
 
@@ -239,7 +239,7 @@ export default function AddClientForm() {
               value={formik.values.department || "Finance Department"}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg  !focus:border-slate-700 block w-full p-2.5 outline-none"
+              className="  border border-gray-300 text-sm rounded-lg  text-gray-700 !focus:border-slate-700 block w-full p-2.5 outline-none"
             >
               {Departments.map((department, index) => (
                 <option
