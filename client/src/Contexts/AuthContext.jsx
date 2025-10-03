@@ -98,7 +98,6 @@ export const AuthContextProvider = ({ children }) => {
     try {
       const refreshToken = Cookies.get("refreshToken");
       if (!refreshToken) return null; // No token available, skip refresh
-
       const response = await axios.post(`${api}/auth/refreshtoken`, {
         refreshToken,
       });
