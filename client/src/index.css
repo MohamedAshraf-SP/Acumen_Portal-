@@ -1,5 +1,4 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
- 
 
 body {
   margin: 0;
@@ -23,13 +22,13 @@ body {
   @apply flex items-center justify-center text-grayColor cursor-pointer font-bold hover:bg-[#f9fcff] border border-solid hover:border-neutral-300 hover:text-black rounded-full text-[17px] p-2;
 }
 .input {
-  @apply px-[16px] py-[12px] outline-none text-sm text-[#5a5a5a]   border border-solid border-[#aeb7c154] rounded-md focus:border-slate-700 w-full font-normal;
+  @apply px-[16px] py-[10px] md:py-[12px] outline-none text-sm text-[#5a5a5a]   border border-solid border-[#aeb7c154] rounded-md focus:border-slate-700 w-full font-normal;
 }
 .customInput {
   @apply rounded-[16px] border border-solid  py-[16px] px-[20px] outline-none text-sm text-[#1c1c1c]   focus:border-slate-700 w-full placeholder:font-thin placeholder:text-[#a3a2a2];
 }
 button {
-  @apply font-medium text-sm leading-[1.71429] capitalize min-w-[60px] shadow-none text-black   outline-none border border-solid border-neutral-200 m-0 no-underline px-3 py-[6px] rounded-md   transition-all duration-300 ease-in-out     hover:shadow-md;
+  @apply font-medium text-sm leading-[1.71429] capitalize  shadow-none text-black   outline-none border border-solid border-neutral-200 m-0 no-underline px-3 py-[6px] rounded-md   transition-all duration-300 ease-in-out     hover:shadow-md;
 }
 .blackbutton {
   @apply flex items-center justify-center gap-1 bg-[#1A7F64] text-white px-3 py-2 rounded-md hover:shadow-lg hover:opacity-[.8] font-normal text-[13px] transition;
@@ -83,26 +82,17 @@ button {
 .animate-fade-in-out {
   animation: fade-in-out 4s ease-in-out;
 }
-/* table of suyncfusions style */
-/* Change table header row background */
-.custom-grid .e-headercell {
-  background-color: #f4f6f8 !important; /* Dark Gray */
-  color: #a4a4a4;
-}
-.e-headercelldiv {
-  font-size: 13px !important;
-  font-weight: 400 !important;
-  color: #a4a4a4 !important;
-}
-/* Add shadow to table */
 
 /* Optional: Highlight header row on hover */
 @keyframes spin-fast {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .animate-spin-fast {
   animation: spin-fast 0.6s linear infinite;
 }
-

@@ -47,10 +47,14 @@ export const AuthContextProvider = ({ children }) => {
         ] = `Bearer ${accessToken}`;
 
         if (decodedUser?.role) {
-          navigate(`/${decodedUser.role}/dashboard`);
+          navigate(`/${decodedUser.role}/dashboard`, { replace: true });
+          window.history.replaceState(
+            null,
+            "",
+            `/${decodedUser.role}/dashboard`
+          );
         }
       }
- 
       return response;
     } catch (error) {
       if (error.response) {
@@ -81,7 +85,8 @@ export const AuthContextProvider = ({ children }) => {
       setAccessToken(null);
       Cookies.remove("refreshToken"); // Ensure refresh token is removed
       delete axios.defaults.headers.common["Authorization"];
-      navigate("/auth/login");
+      navigate("/auth/login", { replace: true });
+      window.history.replaceState(null, "", "/auth/login");
     } catch (error) {
       console.error("Logout failed:", error);
     } finally {
@@ -93,7 +98,6 @@ export const AuthContextProvider = ({ children }) => {
     try {
       const refreshToken = Cookies.get("refreshToken");
       if (!refreshToken) return null; // No token available, skip refresh
-
       const response = await axios.post(`${api}/auth/refreshtoken`, {
         refreshToken,
       });

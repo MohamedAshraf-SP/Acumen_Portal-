@@ -14,7 +14,7 @@ const Address = () => {
   const [data, setData] = useState({});
   const updateStatus = useSelector((state) => state.updaateItem?.status);
   const { companyId } = useParams();
-  console.log(updateStatus)
+ 
   // Fetch company details with an API request
   const getCompaniesDetails = async () => {
     try {
@@ -105,7 +105,7 @@ const Address = () => {
           <TextInput
             label="Business Address"
             id="businessAddress"
-            type="number"
+            type="text"
             min={0}
             placeholder="enter Business Address"
             className="customInput"

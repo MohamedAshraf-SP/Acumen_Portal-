@@ -142,8 +142,8 @@ const AppRouter = () => {
           >
             <Route path="/companies/add-company" element={<AddCompany />} />
             <Route
-              path="/companies/:companyId"
-              element={<DisplayUsersCompany />}
+              path="/companies/editcompany"
+              element={<EditUserCompany />}
             />
             <Route
               path="/companies/editcompany/:companyId"

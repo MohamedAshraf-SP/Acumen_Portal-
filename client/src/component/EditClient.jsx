@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import { seteditItemForm, setsuccessmsg } from "../Rtk/slices/settingSlice";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { getItem } from "../services/globalService";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -11,6 +11,7 @@ function EditClient({ TargetItem }) {
   const cardRef = useRef();
   const dispatch = useDispatch();
   const { editItemForm } = useSelector((state) => state.setting);
+  const updateStatus = useSelector((state) => state.updaateItem?.status);
   // handle edit item
   const editItem = () => {
     dispatch(seteditItemForm(!editItemForm));
@@ -64,7 +65,6 @@ function EditClient({ TargetItem }) {
 
     onSubmit: async (values, { resetForm }) => {
       try {
-        console.log(values)
         // Dispatch update action
         await dispatch(
           updateTargetItem({
@@ -73,7 +73,6 @@ function EditClient({ TargetItem }) {
             updatedItemData: values,
           })
         );
-
         // Update form visibility
         dispatch(seteditItemForm(!editItemForm));
 
@@ -103,13 +102,13 @@ function EditClient({ TargetItem }) {
     <>
       <div className="fixed inset-0 flex items-center justify-center bg-[#1c252e7a] z-50 ">
         <div
-          className="bg-[#F4F6F8] dark:bg-secondary-dark-bg
-     w-full max-w-[95%] sm:max-w-[400px]      text-[#1C252E] rounded-[10px] m-[16px] overflow-x-hidden  overflow-y-scroll [box-shadow:rgba(0,_0,_0,_0.24)_-40px_40px_80px_-8px]
+          className="bg-[#ffffff] dark:bg-secondary-dark-bg
+           text-[#1C252E] rounded-[10px]     overflow-y-scroll [box-shadow:rgba(0,_0,_0,_0.24)_-40px_40px_80px_-8px]
        "
           ref={cardRef}
         >
-          <div className="bg-white  px-4">
-            <h4 className="text-[14px] font-semibold py-4 text-slate-950">
+          <div className="bg-white   border-b border-solid  ">
+            <h4 className="text-[16px] font-semibold py-2 text-slate-700 px-4">
               Edit Client
             </h4>
           </div>
@@ -209,7 +208,7 @@ function EditClient({ TargetItem }) {
                       type="checkbox"
                       checked={true} // Always set to true
                       onChange={() => {}} //prevent you change component from controlled to uncontrolled
-                      className="w-5 h-5   appearance-none border border-gray-300 rounded-md mr-2     checked:bg-indigo-700 opacity-60  cursor-not-allowed"
+                      className="w-5 h-5   appearance-none border border-gray-300 rounded-md mr-2     checked:bg-[#1A7F64]   cursor-not-allowed"
                     />
                     <label
                       htmlFor="link-checkbox"
@@ -244,13 +243,15 @@ function EditClient({ TargetItem }) {
                 </button>
                 <button
                   type="submit"
-                  className={` bg-gray-800 text-white text-sm ${
-                    !formik.isValid
+                  className={` blackbutton text-white text-sm ${
+                    !formik.isValid ||
+                    updateStatus === "loading" ||
+                    formik.isSubmitting
                       ? "bg-slate-700 opacity-40 cursor-not-allowed"
                       : "bg-gray-800 opacity-100 cursor-pointer"
                   }`}
                 >
-                  save changes
+                  {updateStatus === "loading" ? "updating" : "save changes "}
                 </button>
               </div>
             </form>
