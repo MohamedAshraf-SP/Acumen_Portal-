@@ -12,11 +12,12 @@ import { MdOutlineModeEditOutline } from "react-icons/md";
 import { Table, Pagination, Empty } from "antd";
 import Nodataimg from "/images/table/No data.svg";
 import Contentloader from "./Contentloader";
+import Breadcrumb from "./Breadcrumb";
 
 const ClientTable = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
+  const routes = ["Dashboard", "clients"];
   // Redux state
   const data = useSelector((state) => state.getall.entities?.clients) || [];
 
@@ -146,7 +147,10 @@ const ClientTable = () => {
       <div className="my-8 rounded-lg shadow-sm bg-white overflow-hidden">
         {/* Header */}
         <div className="flex justify-between items-center p-2 border-b">
-          <h4 className="text-xl font-semibold text-gray-600">Clients</h4>
+          <div>
+            <h1 className="font-semibold text-gray-600 text-lg ">Clients</h1>
+            <Breadcrumb routes={routes} />
+          </div>
           <Link to="/clients/add-Client" className="blackbutton">
             <GoPlus size={18} />
             Add Client

@@ -44,7 +44,7 @@ export const menuItems = {
       label: "accountants",
       icon: <MdOutlineManageAccounts />,
     },
-    { path: "clients", label: "Clients", icon: <MdOutlineAccountCircle /> },
+    { path: "clients", label: "Clients", icon: <FaUserFriends /> },
     {
       path: "companies",
       label: "Companies",

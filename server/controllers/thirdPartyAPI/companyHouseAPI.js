@@ -37,7 +37,7 @@ export const searchCompanies = async (req, res) => {
       `q=${req.params.companyName}`
     );
 
-    const data = companies?.items?.map((company) => {
+    const data = companies.items.map((company) => {
       return {
         companyName: company.title,
         companyNumber: company.company_number,
@@ -48,7 +48,7 @@ export const searchCompanies = async (req, res) => {
       message:
         data?.length >= 1
           ? "companies fetched successfully"
-          : "No companies found for your search try different name",
+          : "No companies found for your search",
       data: data,
     });
   } catch (e) {

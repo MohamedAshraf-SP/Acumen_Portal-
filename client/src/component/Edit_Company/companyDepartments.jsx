@@ -16,26 +16,28 @@ const companyDepartments = () => {
       value: "",
       satus: "",
     },
-    { _id: 2, name: " Finance department", value: "", satus: "" },
+
     {
       _id: 3,
       name: "General and administrative matters",
       value: "checked",
       satus: "",
     },
+    { _id: 2, name: " Finance department", value: "", satus: "" },
     {
       _id: 4,
       name: "Paye, Pension and CIS department department",
       value: "checked",
       satus: "",
     },
-    { _id: 5, name: "Vat department", value: "", satus: "" },
+
     {
       _id: 6,
       name: "Self-employed and partnership department",
       value: "",
       satus: "",
     },
+    { _id: 5, name: "Vat department", value: "", satus: "" },
   ];
   // Fetch company details with an API request
   const getCompaniesDetails = async () => {
@@ -81,23 +83,23 @@ const companyDepartments = () => {
   });
 
   return (
-    <div className="my-4 py-4 px-6 rounded-[16px] bg-[#f9f9fa] animate-fade">
-      <div className="py-4 flex flex-row items-center justify-between ">
+    <div className="my-4 py-4 px-4  rounded-[16px] bg-[#f9f9fa] animate-fade">
+      <div className="py-4 flex flex-row items-center   ">
         <h1 className="text-[15px] font-medium">Company departments</h1>
       </div>
-      <form onSubmit={formik.handleSubmit} className=" ">
-        <div className="grid grid-cols-1 md:grid-cols-3   gap-4">
+      <form onSubmit={formik.handleSubmit} className="mt-4 ">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 space-y-4 md:space-y-1">
           {departments?.map((department) => (
-            <div class="flex items-center justify-start">
+            <div class="flex items-start justify-start">
               <input
+                id="default-checkbox"
                 type="checkbox"
-                checked={department?.value}
-                class="shrink-0 mt-0.5 border-gray-200 rounded text-green-600 focus:green-green-500 disabled:opacity-50 disabled:pointer-events-none   checked:bg-green-700 checked:border-green-500   cursor-pointer"
-                id="hs-checked-checkbox"
+                value=""
+                className="cursor-pointer w-4 h-4  mr-2  appearance-none border border-gray-300 rounded-md  checked:bg-[#1A7F64] outline-none"
               />
               <label
                 for="hs-checked-checkbox"
-                class="text-sm text-gray-500 ms-3 dark:text-neutral-400"
+                class="text-sm text-gray-600   dark:text-neutral-400"
               >
                 {department?.name}
               </label>

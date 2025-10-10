@@ -111,7 +111,9 @@ export default function Navbar() {
             <p className="text-gray-400 font-normal text-14">
               Hi,{" "}
               <span className="font-bold ml-1">
-                {user?.name ? user?.name : "admin"}
+                {user?.name
+                  ? user?.name?.split(" ")?.slice(0, 2)?.join(" ")
+                  : "admin"}
               </span>
             </p>
             <MdKeyboardArrowDown className="text-gray-400 text-14" />
@@ -127,7 +129,11 @@ export default function Navbar() {
                 loading="lazy"
               />
               <div className="flex flex-col justify-center gap-1">
-                <h1 className="text-sm">{user?.name ? user?.name : "admin"}</h1>
+                <h1 className="text-sm font-medium text-gray-600">
+                  {user?.name
+                    ? user?.name?.split(" ")?.slice(0, 2)?.join(" ")
+                    : "admin"}
+                </h1>
                 <p className="text-sm font-medium text-center text-[#389e7c] bg-[#e4fcf0] p-1 rounded-lg capitalize">
                   {user?.role}
                 </p>
@@ -150,7 +156,7 @@ export default function Navbar() {
                 className="w-full mx-1 text-[#b71d18] bg-[#ff563052] hover:bg-[#b71d18] hover:text-white flex items-center justify-center gap-2"
               >
                 Log out
-                <IoIosLogOut size={15}/>
+                <IoIosLogOut size={15} />
               </button>
             </div>
           </div>
