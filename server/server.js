@@ -5,6 +5,21 @@ import dotenv from "dotenv";
 import { run } from "./config/databaseConnection.js";
 import cookieParser from "cookie-parser";
 
+
+
+import crypto from "crypto";
+
+// Generate a random code_verifier
+const codeVerifier = crypto.randomBytes(32).toString("base64url");
+console.log("code_verifier:", codeVerifier);
+
+
+const codeChallenge = crypto
+  .createHash("sha256")
+  .update(codeVerifier)
+  .digest("base64url");
+console.log("codeChallenge:", codeChallenge);
+
 dotenv.config();
 
 const port = process.env.PORT || 3000;
