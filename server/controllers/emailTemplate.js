@@ -43,7 +43,6 @@ export const getTemplates = async (req, res) => {
     }
 };
 
-
 // Get a single email template by ID
 export const getTemplateById = async (req, res) => {
     try {

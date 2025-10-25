@@ -11,7 +11,7 @@ import companyRouter from "./company/company.js";
 import { authRoute } from "./auth/authentication.js";
 import { authMiddleware, roleMiddleware } from "../middlewares/autherization.js";
 import companyHouseRouter from "./thirdPartyAPI/companyHouseAPI.js"
-import vatRouter from "./thirdPartyAPI//vat.js";
+// import vatRouter from "./thirdPartyAPI//vat.js";
 import { getAdminDashboardCounts } from "../controllers/users/admin.js";
 
 // import {
@@ -21,7 +21,7 @@ import { getAdminDashboardCounts } from "../controllers/users/admin.js";
 
 const router = express.Router();
 
-router.use("/v1/vat", vatRouter);
+// router.use("/v1/vat", vatRouter);
 router.use("/v1/auth", authRoute);
 
 

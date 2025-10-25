@@ -3,11 +3,6 @@ import { DueDate, Shareholder, Director, Address, Document, BankDetail, RMdepart
 import Client from "../users/clients.js";
 
 
-
-
-
-
-
 const companySchema = new mongoose.Schema({
   //client Data
   clientID: { type: mongoose.Types.ObjectId, ref: "Client" },

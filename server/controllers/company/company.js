@@ -1,4 +1,5 @@
 
+import { checkDueDatesAndSendEmails } from "../../helpers/dueDateNotificaions.js";
 import dueDates from "../../models/company/dueDates.js";
 import {
     Company,
@@ -98,7 +99,8 @@ export const addCompany = async (req, res) => {
         const savedCompanyID = (await company.save())._id;
 
         const dueDate = new DueDate({
-            companyId: savedCompanyID
+            companyId: savedCompanyID,
+            companyEmail: company.email
         })
         const newDueDate = await dueDate.save()
         //console.log(newDueDate);
@@ -303,7 +305,10 @@ export const updateCompanyDuedates = async (req, res) => {
 
         const dueDate = {
             vatNumber: req.body.vatNumber,
-            vatReturnsPeriod: req.body.vatReturnsPeriod, // annual, quarterly
+            vatReturnsPeriod: req.body.vatReturnsPeriod,
+            companyEmail: company.email,
+
+            // annual, quarterly
             quarter1DueBy: Date.parse(req.body.quarter1DueBy),
             quarter2DueBy: Date.parse(req.body.quarter2DueBy),
             quarter3DueBy: Date.parse(req.body.quarter3DueBy),
@@ -335,3 +340,18 @@ export const getDueDateByCompanyId = async (req, res) => {
         res.status(500).json({ message: "Error fetching DueDate!!" });
     }
 };
+
+
+export const dueDateCornJob = async (req, res) => {
+    try {
+        const res = await checkDueDatesAndSendEmails()
+        //  console.log(companyId);
+        if (!res.message) {
+            return res.status(404).json({ message: "Due dates not success" });
+        }
+        res.status(200).json(due);
+    } catch (error) {
+        res.status(500).json({ message: "Error Sending DueDate emails!!" });
+    }
+};
+

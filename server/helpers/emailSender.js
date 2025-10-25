@@ -50,18 +50,18 @@ export const emailSender = async (req, res) => {
 
 //for function use
 
-export const sendEmail = async (subject, text, userEmail, message) => {
+    export const sendEmail = async (subject, text, userEmail, message) => {
 
 
-    try {
-        const info = await assignEmail(subject, text, userEmail, message);
-        //console.log({ success: true, message: 'Email sent!' });
-        return true
-    } catch (error) {
-        // console.error('Error sending feedback', error.message);
-        return false
+        try {
+            const info = await assignEmail(subject, text, userEmail, message);
+            //console.log({ success: true, message: 'Email sent!' });
+            return true
+        } catch (error) {
+            // console.error('Error sending feedback', error.message);
+            return false
 
+
+        }
 
     }
-
-}
