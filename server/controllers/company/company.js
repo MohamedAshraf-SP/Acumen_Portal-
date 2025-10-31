@@ -10,7 +10,6 @@ import {
     Document,
     BankDetail,
     RMdepartment,
-    DueDate
 } from "../../models/company/index.js";
 import Client from "../../models/users/clients.js";
 import User from "../../models/users/user.js";
@@ -209,23 +208,23 @@ export const getCompanyById = async (req, res) => {
         const companyId = req.params.id
 
         const company = await Company.findById(req.params.id)
-            .populate({ path: "DueDate", strictPopulate: false })
             .populate({ path: "shareholder", strictPopulate: false })
             .populate({ path: "director", strictPopulate: false })
             .populate({ path: "address", strictPopulate: false })
             .populate({ path: "document", strictPopulate: false })
             .populate({ path: "BankDetail", strictPopulate: false })
+            .populate({ path: "dueDates", strictPopulate: false })
         // .populate({ path: "RMdepartment", strictPopulate: false })
 
-        const Shareholders = await Shareholder.find({ companyId })
-        const DueDate = await DueDate.find({ companyId })
-        const Documents = await Document.find({ companyId })
-        const Directors = await Directors.find({ companyId })
-
-        company.shareholders = { ...Shareholders }
-        company.dueDates = { ...DueDate }
-        company.documents = { ...Documents }
-        company.directors = { ...Directors }
+        const shareholders = await Shareholder.find({ companyId })
+        const dueDate = await DueDate.find({ companyId })
+        const documents = await Document.find({ companyId })
+        const directors = await Director.find({ companyId })
+        console.log(dueDate[0]);
+        // company.shareholders = shareholders[0]
+        company.dueDates = dueDate[0]
+        // company.documents = documents[0]
+        // company.directors = directors[0]
 
         if (!company) {
             return res.status(404).json({ message: "Company not found" });
@@ -233,6 +232,7 @@ export const getCompanyById = async (req, res) => {
 
         res.status(200).json(company);
     } catch (error) {
+        console.log(error);
         res.status(500).json({ message: "Error retrieving company", error });
     }
 };
@@ -359,13 +359,14 @@ export const getDueDateByCompanyId = async (req, res) => {
 
 export const dueDateCornJob = async (req, res) => {
     try {
-        const res = await checkDueDatesAndSendEmails()
+        const result = await checkDueDatesAndSendEmails()
         //  console.log(companyId);
-        if (!res.message) {
-            return res.status(404).json({ message: "Due dates not success" });
+        if (!result.success) {
+            return result.status(404).json({ message: "Due dates not success" });
         }
-        res.status(200).json(due);
+        res.status(200).json(result);
     } catch (error) {
+        console.log(error);
         res.status(500).json({ message: "Error Sending DueDate emails!!" });
     }
 };

@@ -6,6 +6,7 @@ import dueDates from "../models/company/dueDates.js";
 import { sendEmail } from "./emailSender.js";
 import Helper from "../models/helpers/helpers.js";
 import Client from "../models/users/clients.js";
+import { addEmailLog } from "./emailLogs.js";
 
 
 
@@ -40,10 +41,10 @@ function replacePlaceholders(template = "", data = {}) {
 export async function checkDueDatesAndSendEmails() {
     try {
         const dueDates = await DueDate.find()//.populate("companyId", "companyEmail");
-        if(!dueDates){
-            return{
-                success:false,
-                message:"No dueDates found"
+        if (!dueDates) {
+            return {
+                success: false,
+                message: "No dueDates found"
             }
         }
         for (const dueDateItem of dueDates) {
@@ -72,7 +73,7 @@ export async function checkDueDatesAndSendEmails() {
 
                 if (daysLeft <= maxDays && daysLeft >= 0) {
                     let template = await EmailTemplate.find({ name: templateName });
-                    console.log(template);
+                    //    console.log(template);
 
                     if (!template[0]) {
                         console.log(`⚠️ No template found for ${templateName}`);
@@ -80,7 +81,7 @@ export async function checkDueDatesAndSendEmails() {
                     }
                     template = template[0]
 
-                    const signture = await Helper.findOne({ name: "SIGNATURE" })||"AMS"
+                    const signture = await Helper.findOne({ name: "SIGNATURE" }) || "AMS"
 
 
                     // Replace placeholders
@@ -100,6 +101,7 @@ export async function checkDueDatesAndSendEmails() {
                     const success = await sendEmail(subject, text, email, undefined, message);
                     if (success) {
                         console.log(`✅ Sent "${templateName}" email to ${email}`);
+                        addEmailLog(email, text, clientName, companyName, subject, dueDate);
                     } else {
                         console.log(`❌ Failed to send "${templateName}" email to ${email}`);
                     }

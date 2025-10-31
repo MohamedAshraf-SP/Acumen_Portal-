@@ -14,6 +14,7 @@ import {
   Shareholder,
   DueDate,
 } from "../../models/company/index.js";
+import mongoose from "mongoose";
 
 // Get a Client by ID
 export const getClient = async (req, res) => {
@@ -134,19 +135,20 @@ export const deleteClient = async (req, res) => {
   try {
     const result = await Client.findByIdAndDelete(req.params.id);
 
-    console.log(result);
-    if (result) {
-      let companies = await Company.deleteMany({ clientID: result._id });
-      let companiesIds = companies.map((company) => company._id);
-      await TasksDocument.deleteMany({
-        $or: [{ clientID: result._id }, { companyID: { $in: companiesIds } }],
-      });
-      await Shareholder.deleteMany({ companyID: { $in: companiesIds } });
-      await Director.deleteMany({ companyID: { $in: companiesIds } });
-      await DueDate.deleteMany({ companyID: { $in: companiesIds } });
+    // console.log(result, result1);
+    // if (result) {
+    //   let companies = await Company.deleteMany({ clientID: result._id });
+    //     console.log(companies);
+    //   let companiesIds = companies.map((company) => company._id);
+    //   await TasksDocument.deleteMany({
+    //     $or: [{ clientID: result._id }, { companyID: { $in: companiesIds } }],
+    //   });
+    //   await Shareholder.deleteMany({ companyID: { $in: companiesIds } });
+    //   await Director.deleteMany({ companyID: { $in: companiesIds } });
+    //   await DueDate.deleteMany({ companyID: { $in: companiesIds } });
 
-      await User.findByIdAndDelete(result.userID);
-    }
+    //   await User.findByIdAndDelete(result.userID);
+    // }
 
     // console.log(result, result1)
     if (!result) {
@@ -154,22 +156,14 @@ export const deleteClient = async (req, res) => {
     }
     await User.findByIdAndDelete(result.userID);
 
-    const companies = await Company.find({ clientID: result._id });
-    const companiesIds = companies.map((company) => company._id);
-
-    await Company.deleteMany({ clientID: result._id });
-
-    await TasksDocument.deleteMany({
-      $or: [{ clientID: result._id }, { companyID: { $in: companiesIds } }],
-    });
-    await Shareholder.deleteMany({ companyID: { $in: companiesIds } });
-    await Director.deleteMany({ companyID: { $in: companiesIds } });
-    await DueDate.deleteMany({ companyID: { $in: companiesIds } });
+    // 
+    
     res.status(200).json({
       message:
-        "Client and associated documents and  companies deleted successfully",
+        "Client  deleted successfully",
     });
   } catch (error) {
+    console.log(error)
     res.status(500).json({ error: error.message });
   }
 };
