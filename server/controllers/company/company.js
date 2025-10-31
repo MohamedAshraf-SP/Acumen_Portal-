@@ -241,27 +241,31 @@ export const getCompanyById = async (req, res) => {
 export const updateCompany = async (req, res) => {
     try {
         const { ...companyData } = req.body;
-        const updateCompanyData = {}
+        let updateCompanyData = {}
 
         // Update company
         const company = await Company.findByIdAndUpdate(req.params.id, companyData, { new: true });
+        if (!company) {
+            return res.status(404).json({ message: "Company not found" });
+        }
         //  console.log(company.clientID);
         if (companyData.departments) {
             updateCompanyData = { $addToSet: { departments: { $each: companyData.departments } } }
         }
 
-        await DueDate.updateOne({ companyId: req.params.id }, { companyEmail: company.email })
-
-
-
-        await Client.findByIdAndUpdate(company.clientID, updateCompanyData)
-
-        if (!company) {
-            return res.status(404).json({ message: "Company not found" });
+        if (company?.companyEmail) {
+            await DueDate.updateOne({ companyId: req.params.id }, { companyEmail: company.companyEmail })
         }
+
+        if (company?.clientID) {
+
+            await Client.findByIdAndUpdate(company.clientID, updateCompanyData)
+        }
+
 
         res.status(200).json({ message: "Company updated successfully!!" });
     } catch (error) {
+        console.log(error);
         res.status(500).json({ message: "Error updating company", error });
     }
 };
