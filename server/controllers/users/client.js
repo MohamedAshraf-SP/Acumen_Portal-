@@ -96,7 +96,7 @@ export const addClient = async (req, res) => {
             Thank you
             AMS team.
         `,
-        "reply to Accumen Portal Email"
+        "reply to Accumen Portal Email", ""
       ))
     ) {
       await User.findByIdAndDelete(newUser._id);

@@ -15,12 +15,19 @@ async function assignEmail(subject, text, userEmail, message, html = "") {
     });
 
     const mailOptions = {
-        from: process.env.ORGANIZATION_EMAIL,  // From the user's email (display purposes only)
-        to: userEmail, // Your organization's email
-        subject: `${subject}`,
-        text: `${text}`,
-        html: `${html}`,
-        Message: `${message}`,
+        from: process.env.ORGANIZATION_EMAIL,  // sender (organization email)
+        to: userEmail,                         // recipient
+        subject: subject || "AMS notification",
+        text: `
+        ${text || ""}
+
+        Message:
+        ${message || ""}
+         `,
+        html: `
+        ${html || ""}
+        ${message ? `<p><strong>Message: ${message}</p></strong>` : ""}
+    `,
         replyTo: userEmail
     };
 
@@ -47,11 +54,11 @@ export const emailSender = async (req, res) => {
 
 //for function use
 
-export const sendEmail = async (subject, text, userEmail, message,html) => {
+export const sendEmail = async (subject, text, userEmail, message, html) => {
 
 
     try {
-        const info = await assignEmail(subject, text, userEmail, message,html);
+        const info = await assignEmail(subject, text, userEmail, message, html);
         //console.log({ success: true, message: 'Email sent!' });
         return true
     } catch (error) {
