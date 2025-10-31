@@ -53,6 +53,7 @@ export const addCompany = async (req, res) => {
             accountHolder,
             sortCode
         } = req.body;
+        const bodyDueDates = req.body?.dueDate;
         let updatedDepartments = req.body?.departments || [];
         if (req.user.role == "accountant") {
             updatedDepartments.push(req.user.department)
@@ -100,7 +101,8 @@ export const addCompany = async (req, res) => {
 
         const dueDate = new DueDate({
             companyId: savedCompanyID,
-            companyEmail: company.email
+            companyEmail: company.email,
+            ...bodyDueDates
         })
         const newDueDate = await dueDate.save()
         //console.log(newDueDate);
