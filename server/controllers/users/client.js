@@ -157,7 +157,7 @@ export const deleteClient = async (req, res) => {
     await User.findByIdAndDelete(result.userID);
 
     // 
-    
+
     res.status(200).json({
       message:
         "Client  deleted successfully",
@@ -243,7 +243,7 @@ export const getClientLOE = async (req, res) => {
       return res
         .status(400)
         .json({ message: "LOE not found or Client not exits!" });
-    res.status(200).json({ path: LOE.path });
+    res.sendPdfUrl(LOE.path);
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
