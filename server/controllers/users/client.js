@@ -243,7 +243,7 @@ export const getClientLOE = async (req, res) => {
       return res
         .status(400)
         .json({ message: "LOE not found or Client not exits!" });
-    res.sendPdfUrl(LOE.path);
+    res.status(200).json({ path: LOE.path });
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
