@@ -54,6 +54,8 @@ export const addCompany = async (req, res) => {
             sortCode
         } = req.body;
         const bodyDueDates = req.body?.dueDates;
+        const shareholders = req.body?.shareholders;
+        const directors = req.body?.directors;
         let updatedDepartments = req.body?.departments || [];
         if (req.user.role == "accountant") {
             updatedDepartments.push(req.user.department)
@@ -111,7 +113,7 @@ export const addCompany = async (req, res) => {
 
 
 
-        res.status(201).json({ message: "Company added successfully" });
+        res.status(201).json({ id: savedCompanyID, message: "Company added successfully" });
     } catch (error) {
         // console.log(error);
         res.status(500).json({ message: "Error adding company", "Error": error.message });
