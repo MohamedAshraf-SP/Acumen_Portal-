@@ -53,7 +53,7 @@ export const addCompany = async (req, res) => {
             accountHolder,
             sortCode
         } = req.body;
-        const bodyDueDates = req.body?.dueDate;
+        const bodyDueDates = req.body?.dueDates;
         let updatedDepartments = req.body?.departments || [];
         if (req.user.role == "accountant") {
             updatedDepartments.push(req.user.department)
