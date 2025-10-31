@@ -43,7 +43,7 @@ export const addTask = async (req, res) => {
             department: department || client.departments[0],
             path: req.file.path,
             title,
-            status: status || "pending",
+            status: "pending",
             userKey,
             accountantName,
             action,
