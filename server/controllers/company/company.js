@@ -9,7 +9,8 @@ import {
     Address,
     Document,
     BankDetail,
-    RMdepartment
+    RMdepartment,
+    DueDate
 } from "../../models/company/index.js";
 import Client from "../../models/users/clients.js";
 import User from "../../models/users/user.js";
