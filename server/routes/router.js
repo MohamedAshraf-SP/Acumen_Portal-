@@ -25,7 +25,7 @@ const router = express.Router();
 router.use("/v1/auth", authRoute);
 
 
-router.use(authMiddleware)
+//router.use(authMiddleware)
 router.use("/v1/accountants", accountantRoute);
 router.use("/v1/clients", clientRouter);
 router.use("/v1/emailsender", emailSenderRouter);

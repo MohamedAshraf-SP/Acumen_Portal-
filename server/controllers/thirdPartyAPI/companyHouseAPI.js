@@ -8,6 +8,21 @@ export const getCompany = async (req, res) => {
       return res.status(404).json({ message: "Company not found!!" });
     }
 
+    const officers = await companyHouse(
+      "/company/" + req.params.companyNumber + "/officers"
+    );
+
+
+    let directorsData = officers.items.map((officer) => {
+      return {
+        dTitle: officer.officer_role,
+        dName: officer.name,
+        dDateOfBirth: new Date(officer.date_of_birth?.year, officer.date_of_birth?.month - 1, 2, 0, 0, 0),
+        dateOfResignation: officer.appointed_on,
+        address: `${officer.address?.address_line_1 || ""} - ${officer.address?.address_line_2 || ""} - ${officer.address?.locality || ""} - ${officer.address?.country || ""} - ${officer.address?.postal_code || ""}`,
+      };
+    })
+
     const data = {
       companyName: company.company_name,
       registrationNumber: company.company_number,
@@ -17,6 +32,7 @@ export const getCompany = async (req, res) => {
       confirmationStatementDueBy: company.confirmation_statement?.next_due,
       AccountsDueBy: company.accounts.next_accounts?.due_on,
       natureOfBusiness: company.sic_codes[0],
+      director:directorsData,
 
 
 

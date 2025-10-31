@@ -59,7 +59,7 @@ export const addCompany = async (req, res) => {
         }
 
         const targetClient = await Client.findById(clientID)
-
+        console.log(targetClient, clientID)
         if ((!clientID) || !(targetClient)) {
             return res.status(400).json({ message: "Company Client  not Found !!" })
         }
@@ -205,6 +205,8 @@ export const getCompaniesAbstracted = async (req, res) => {
 // Get a single company by ID
 export const getCompanyById = async (req, res) => {
     try {
+        const companyId = req.params.id
+
         const company = await Company.findById(req.params.id)
             .populate({ path: "DueDate", strictPopulate: false })
             .populate({ path: "shareholder", strictPopulate: false })
@@ -213,6 +215,16 @@ export const getCompanyById = async (req, res) => {
             .populate({ path: "document", strictPopulate: false })
             .populate({ path: "BankDetail", strictPopulate: false })
         // .populate({ path: "RMdepartment", strictPopulate: false })
+
+        const Shareholders = await Shareholder.find({ companyId })
+        const DueDate = await DueDate.find({ companyId })
+        const Documents = await Document.find({ companyId })
+        const Directors = await Directors.find({ companyId })
+
+        company.shareholders = { ...Shareholders }
+        company.dueDates = { ...DueDate }
+        company.documents = { ...Documents }
+        company.directors = { ...Directors }
 
         if (!company) {
             return res.status(404).json({ message: "Company not found" });
@@ -236,6 +248,8 @@ export const updateCompany = async (req, res) => {
         if (companyData.departments) {
             updateCompanyData = { $addToSet: { departments: { $each: companyData.departments } } }
         }
+
+        await DueDate.updateOne({ companyId: req.params.id }, { companyEmail: company.email })
 
 
 

@@ -1,7 +1,7 @@
 
 import nodemailer from 'nodemailer';
 
-async function assignEmail(subject, text, userEmail, message) {
+async function assignEmail(subject, text, userEmail, message, html = "") {
     // console.log(process.env.ORGANIZATION_EMAIL, process.env.ORGANIZATION_EMAIL_PASS, userEmail)
     const transporter = nodemailer.createTransport({
         host: 'smtp.ionos.co.uk', // IONOS SMTP server
@@ -18,12 +18,9 @@ async function assignEmail(subject, text, userEmail, message) {
         from: process.env.ORGANIZATION_EMAIL,  // From the user's email (display purposes only)
         to: userEmail, // Your organization's email
         subject: `${subject}`,
-        text: `${text}
-      
-
-      
-      Message: 
-      ${message}`,
+        text: `${text}`,
+        html: `${html}`,
+        Message: `${message}`,
         replyTo: userEmail
     };
 
@@ -50,18 +47,18 @@ export const emailSender = async (req, res) => {
 
 //for function use
 
-    export const sendEmail = async (subject, text, userEmail, message) => {
+export const sendEmail = async (subject, text, userEmail, message,html) => {
 
 
-        try {
-            const info = await assignEmail(subject, text, userEmail, message);
-            //console.log({ success: true, message: 'Email sent!' });
-            return true
-        } catch (error) {
-            // console.error('Error sending feedback', error.message);
-            return false
+    try {
+        const info = await assignEmail(subject, text, userEmail, message,html);
+        //console.log({ success: true, message: 'Email sent!' });
+        return true
+    } catch (error) {
+        // console.error('Error sending feedback', error.message);
+        return false
 
-
-        }
 
     }
+
+}

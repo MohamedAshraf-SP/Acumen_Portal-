@@ -2,6 +2,10 @@ import mongoose from "mongoose";
 import Company from "../models/company/company.js";
 import DueDate from "../models/company/dueDates.js";
 import EmailTemplate from "../models/emailTemplate.js";
+import dueDates from "../models/company/dueDates.js";
+import { sendEmail } from "./emailSender.js";
+import Helper from "../models/helpers/helpers.js";
+import Client from "../models/users/clients.js";
 
 
 
@@ -19,77 +23,98 @@ function daysUntil(date) {
 }
 
 // Replace placeholders like #NAME#, #COMPANYNAME#, etc.
-function replacePlaceholders(template, data) {
+function replacePlaceholders(template = "", data = {}) {
+    if (typeof template !== "string") template = String(template ?? "");
     let result = template;
-    for (const [key, value] of Object.entries(data)) {
-        const regex = new RegExp(`#${key.toUpperCase()}#`, "g");
-        result = result.replace(regex, value || "");
+
+    for (const [key, value] of Object.entries(data || {})) {
+        const escapedKey = key.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        const regex = new RegExp(`#${escapedKey}#`, "gi");
+        result = result.replace(regex, value ?? "");
     }
+
     return result;
 }
 
 // Main checker and sender
 export async function checkDueDatesAndSendEmails() {
+    try {
+        const dueDates = await DueDate.find()//.populate("companyId", "companyEmail");
+        if(!dueDates){
+            return{
+                success:false,
+                message:"No dueDates found"
+            }
+        }
+        for (const dueDateItem of dueDates) {
+            const company = await Company.findOne({ _id: dueDateItem.companyId })
+            const companyName = company?.companyName || "The Company";
+            const clientName = company?.clientName || "";
+            const accountantName = "Account Manager";
 
-    const dueDates = await DueDate.find().populate("companyId", "companyEmail");
+            // Define due fields and corresponding email templates
+            const checks = [
+                { field: "quarter1DueBy", templateName: "Vat Returns Due", maxDays: 37 },
+                { field: "quarter2DueBy", templateName: "Vat Returns Due", maxDays: 37 },
+                { field: "quarter3DueBy", templateName: "Vat Returns Due", maxDays: 37 },
+                { field: "quarter4DueBy", templateName: "Vat Returns Due", maxDays: 37 },
+                { field: "confirmationStatementDueBy", templateName: "Confirmation Statement Due", maxDays: 7 },
+                { field: "annualVatDueBy", templateName: "Self Assessment Due", maxDays: 270 },
+                { field: "AccountsDueBy", templateName: "Account Returns Due", maxDays: 270 },
+            ];
 
-    for (const dueDateItem of dueDates) {
-        const company = await Company.findOne({ _id: dueDateItem._id })
-        const companyName = company?.companyName || "The Company";
-        const accountantName = "Account Manager";
+            // Iterate over each due field
+            for (const { field, templateName, maxDays } of checks) {
+                const dueDate = dueDateItem[field];
+                if (!dueDate) continue;
 
-        // Define due fields and corresponding email templates
-        const checks = [
-            { field: "quarter1DueBy", templateName: "Vat Returns Due", maxDays: 37 },
-            { field: "quarter2DueBy", templateName: "Vat Returns Due", maxDays: 37 },
-            { field: "quarter3DueBy", templateName: "Vat Returns Due", maxDays: 37 },
-            { field: "quarter4DueBy", templateName: "Vat Returns Due", maxDays: 37 },
-            { field: "confirmationStatementDueBy", templateName: "Confirmation Statement Due", maxDays: 7 },
-            { field: "annualVatDueBy", templateName: "Self Assessment Due", maxDays: 270 },
-            { field: "AccountsDueBy", templateName: "Account Returns Due", maxDays: 270 },
-        ];
+                const daysLeft = daysUntil(dueDate);
 
-        // Iterate over each due field
-        for (const { field, templateName, maxDays } of checks) {
-            const dueDate = dueDateItem[field];
-            if (!dueDate) continue;
+                if (daysLeft <= maxDays && daysLeft >= 0) {
+                    let template = await EmailTemplate.find({ name: templateName });
+                    console.log(template);
 
-            const daysLeft = daysUntil(dueDate);
+                    if (!template[0]) {
+                        console.log(`⚠️ No template found for ${templateName}`);
+                        continue;
+                    }
+                    template = template[0]
 
-            if (daysLeft <= maxDays && daysLeft >= 0) {
-                const template = EmailTemplate.findOne({ subject: templateName });
-                if (!template) {
-                    console.log(`⚠️ No template found for ${templateName}`);
-                    continue;
-                }
+                    const signture = await Helper.findOne({ name: "SIGNATURE" })||"AMS"
 
-                // Replace placeholders
-                const message = replacePlaceholders(template.content, {
-                    NAME: companyName,
-                    COMPANYNAME: companyName,
-                    LOGINLINK: "<a href='https://yourportal.com/login'>Login here</a>",
-                    ACCOUNTANTNAME: accountantName,
-                    SIGNATURE: "Kind regards,<br>AMS",
-                });
 
-                const subject = template.name;
-                const text = `Reminder: ${template.content} is due soon.`;
-                const email = dueDateItem?.companyEmail;
+                    // Replace placeholders
+                    const message = replacePlaceholders(template.content, {
+                        NAME: clientName,
+                        COMPANYNAME: companyName,
+                        LOGINLINK: `<a href=${process.env.LOGIN_LINK}>Login here</a>`,
+                        ACCOUNTANTNAME: accountantName,
+                        SIGNATURE: signture?.value,
+                    });
 
-                // Use your sendEmail function
-                const success = await sendEmail(subject, text, email, message);
-                if (success) {
-                    console.log(`✅ Sent "${templateName}" email to ${email}`);
-                } else {
-                    console.log(`❌ Failed to send "${templateName}" email to ${email}`);
+                    const subject = template.name;
+                    const text = `Reminder: ${template.name} is due soon.`;
+                    const email = dueDateItem?.companyEmail;
+
+                    // Use your sendEmail function
+                    const success = await sendEmail(subject, text, email, undefined, message);
+                    if (success) {
+                        console.log(`✅ Sent "${templateName}" email to ${email}`);
+                    } else {
+                        console.log(`❌ Failed to send "${templateName}" email to ${email}`);
+                    }
                 }
             }
         }
-    }
 
-    console.log("✅ All due date reminders processed successfully");
+        console.log("✅ All due date reminders processed successfully");
 
-    return {
-        message: "success operation"
+        return {
+            success: true,
+            message: "✅ All due date reminders processed successfully"
+        }
+    } catch (error) {
+        console.log(error)
+        return error
     }
 }
