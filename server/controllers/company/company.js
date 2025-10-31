@@ -59,7 +59,7 @@ export const addCompany = async (req, res) => {
         }
 
         const targetClient = await Client.findById(clientID)
-        console.log(targetClient, clientID)
+        // console.log(targetClient, clientID)
         if ((!clientID) || !(targetClient)) {
             return res.status(400).json({ message: "Company Client  not Found !!" })
         }
@@ -220,11 +220,11 @@ export const getCompanyById = async (req, res) => {
         const dueDate = await DueDate.find({ companyId })
         const documents = await Document.find({ companyId })
         const directors = await Director.find({ companyId })
-        console.log(dueDate[0]);
-        // company.shareholders = shareholders[0]
+        // console.log(dueDate[0]);
+        company.shareholders = shareholders
         company.dueDates = dueDate[0]
         // company.documents = documents[0]
-        // company.directors = directors[0]
+        company.directors = directors
 
         if (!company) {
             return res.status(404).json({ message: "Company not found" });
