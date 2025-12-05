@@ -114,7 +114,7 @@ export default function DisplayUsersCompany() {
     },
     {
       title: "Person Name",
-      dataIndex: "contactPersonName", // Fixed missing dataIndex
+      dataIndex: "contactPersonName",  
       key: "contactPersonName",
       sorter: true,
       align: "center",

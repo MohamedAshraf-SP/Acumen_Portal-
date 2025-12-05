@@ -13,7 +13,7 @@ function App() {
 
   return (
     <>
-        <SettingsPannel /> 
+        {/* <SettingsPannel />  */}
       <Suspense fallback={null}>
         <AuthContextProvider>
           {successmsg?.length > 0 && <ConfrmMessage />}

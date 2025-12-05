@@ -16,7 +16,7 @@ import Nodataimg from "/images/table/No data.svg";
 import Breadcrumb from "../../component/Breadcrumb";
 
 const Accountants = React.memo(() => {
-  const routes = ["Dashboard", "Companies"];
+  const routes = ["Dashboard", "Accountants"];
   const dispatch = useDispatch();
 
   // Redux state

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useFormik } from "formik";
-import { useParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import axios from "axios";
 import { GoPlus } from "react-icons/go";
 import TextInput from "../TextInput";
@@ -9,16 +9,20 @@ import { useDispatch, useSelector } from "react-redux";
 import ConfirmDelete from "../ConfirmDelete";
 import { setdeleteHintmsg, setsuccessmsg } from "../../Rtk/slices/settingSlice";
 import { updateTargetItem } from "../../Rtk/slices/updateItemSlice";
+import { fetchCompanyDetails } from "../../Rtk/slices/Fetchcompanydetails";
 
 const Shareholder = () => {
   const dispatch = useDispatch();
   const api = import.meta.env.VITE_API_URL;
-  const { companyId } = useParams(); //get company id from params
+  
+  const { companyId } = useParams();
   const deletestatus = useSelector((state) => state.deleteItem.status);
   const UpdateStatus = useSelector((state) => state.updaateItem?.status);
   const { show, targetId } = useSelector(
     (state) => state.setting.deleteHintmsg
   );
+  const [searchParams] = useSearchParams();
+  const companyCode = searchParams?.get("companycode");
   const [loadingStatus, setLoadingStatus] = useState("idle"); // for fetching shareholders status
   const [data, setData] = useState([]); // store data after fetching all shareholders data
   const [selectedShareHolderId, setSelectedShareHolder] = useState([]); // for delete shareholder
@@ -41,7 +45,7 @@ const Shareholder = () => {
     try {
       setLoadingStatus("loading");
       const response = await axios.post(
-        `${api}/Companies/${companyId}/shareholders`,
+        `${api}/Companies/${companyId || companyCode}/shareholders`,
         NewShareholders
       );
       if (response.status === 201) {
@@ -53,7 +57,8 @@ const Shareholder = () => {
           })
         );
         setnewshareHolder("");
-        get_User_Share_Holders();
+        dispatch(fetchCompanyDetails({ companyId }));
+        
       }
     } catch (error) {
       console.log(error);
@@ -125,7 +130,7 @@ const Shareholder = () => {
           if (JSON.stringify(prevData) !== JSON.stringify(newData)) {
             return newData;
           }
-          return prevData; // Don't update if data is the same
+          return prevData; 
         });
         setLoadingStatus("success");
       }
@@ -136,13 +141,13 @@ const Shareholder = () => {
   };
 
   useEffect(() => {
-    if (companyId && data?.length === 0) {
+    if (!companyCode ) {
       get_User_Share_Holders();
     }
   }, [companyId]);
   // Load data again after delete item
   useEffect(() => {
-    if (deletestatus === "success" || !show) {
+    if (!companyCode && deletestatus === "success" && !show) {
       get_User_Share_Holders(); // Refresh UI after deletion
     }
   }, [deletestatus, show]);

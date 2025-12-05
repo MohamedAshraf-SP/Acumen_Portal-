@@ -10,7 +10,7 @@ import { handleDownloadPdf } from "../Utils";
 export default function Forms() {
   const dispatch = useDispatch();
 
-  const routes = ["Forms", "display Forms"];
+  const routes = ["Dashboard", "display Forms"];
   const data = useSelector((state) => state?.getall?.entities?.forms);
   const loadingDataStatus = useSelector((state) => state?.getall?.status?.forms);
 

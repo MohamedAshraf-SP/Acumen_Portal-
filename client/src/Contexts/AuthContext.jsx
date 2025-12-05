@@ -58,20 +58,18 @@ export const AuthContextProvider = ({ children }) => {
       return response;
     } catch (error) {
       if (error.response) {
-        // Handle specific HTTP errors
         if (error.response.status === 401) {
           console.error("Unauthorized: Invalid credentials");
         } else {
           console.error("Server error:", error.response.status);
         }
       } else if (error.request) {
-        // Handle network errors (no response from server)
         console.error("Network error: No response received");
       } else {
-        // Handle other errors (e.g., invalid token decoding)
+        // Handle other error (e.g., invalid token decoding)
         console.error("Error:", error.message);
       }
-      throw error; // Rethrow the error for the caller to handle
+      throw error; 
     } finally {
       setLoading(false);
     }
@@ -83,7 +81,7 @@ export const AuthContextProvider = ({ children }) => {
       await axios.get(`${api}/auth/logout`, { withCredentials: true });
       setUser(null);
       setAccessToken(null);
-      Cookies.remove("refreshToken"); // Ensure refresh token is removed
+      Cookies.remove("refreshToken"); 
       delete axios.defaults.headers.common["Authorization"];
       navigate("/auth/login", { replace: true });
       window.history.replaceState(null, "", "/auth/login");

@@ -18,8 +18,7 @@ import { IoIosLogOut } from "react-icons/io";
 
 export default function Navbar() {
   const { logout, user } = useAuth();
-  const [userDetails, setUserDetails] = useState([]);
-  const location = useLocation();
+   const location = useLocation();
   const dispatch = useDispatch();
   const { screenSize, collapsed, activeMenu } = useSelector(
     (state) => state.setting
@@ -30,8 +29,7 @@ export default function Navbar() {
 
   const ProfileSummary = [
     { title: "Profile", href: "/Profile" },
-    { title: "Settings", href: "/settings" },
-  ];
+   ];
 
   useEffect(() => {
     dispatch(setScreenSize(window.innerWidth));
@@ -90,12 +88,12 @@ export default function Navbar() {
 
       {/* Right Section */}
       <div className="flex items-center gap-2">
-        <NavButton title="Dark Mode" icon={<CiDark />} />
+        {/* <NavButton title="Dark Mode" icon={<CiDark />} />
         <NavButton
           title="Settings"
           onClick={() => dispatch(setIsClicked("Settings"))}
           icon={<MdOutlineSettingsSuggest />}
-        />
+        /> */}
 
         {/* Profile Dropdown */}
         <div className="relative group">
@@ -140,7 +138,7 @@ export default function Navbar() {
               </div>
             </div>
             <ul className="  my-2">
-              {ProfileSummary.map((item, index) => (
+              {ProfileSummary?.map((item, index) => (
                 <li
                   key={index}
                   className="px-4 py-2 cursor-pointer text-sm font-medium flex items-center gap-2 text-[#8b8c91] hover:bg-[#ECFDF5] rounded-md"

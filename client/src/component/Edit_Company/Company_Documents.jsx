@@ -2,16 +2,22 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { useParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 // import icons
 import { IoCheckmarkDoneOutline } from "react-icons/io5";
 import { BsFillCloudUploadFill } from "react-icons/bs";
 import CompanyDocTable from "../CompanyDocTable";
+import { useDispatch } from "react-redux";
+import { fetchCompanyDetails } from "../../Rtk/slices/Fetchcompanydetails";
+import { setsuccessmsg } from "../../Rtk/slices/settingSlice";
 const api = import.meta.env.VITE_API_URL;
 
 const Company_Documents = () => {
   // have uploaded document name
   const [documentName, setDocumentName] = useState("");
+  const dispatch = useDispatch();
+  const [searchParams] = useSearchParams();
+  const companyCode = searchParams?.get("companycode");
   const [Uploadstatus, setUploadStatus] = useState("idle");
   // get id from params
   const { companyId } = useParams();
@@ -73,7 +79,18 @@ const Company_Documents = () => {
           `${api}/Companies/${companyId}/documents`,
           formData
         );
-        if (response.status == 201) setUploadStatus("success");
+        if (response.status == 201) {
+          
+          setUploadStatus("success");
+         dispatch(fetchCompanyDetails({ companyId }));
+          dispatch(
+                   setsuccessmsg({
+                     success: true,
+                     message: "new document adding success!",
+                   })
+                 );
+        
+        }
       } catch (error) {
         console.log(error);
         setUploadStatus("failed");

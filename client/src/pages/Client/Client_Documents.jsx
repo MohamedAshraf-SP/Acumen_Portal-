@@ -1,17 +1,18 @@
 import React, { memo, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { Table, Pagination, Empty } from "antd"; // Ant Design components
+import { Table, Pagination, Empty } from "antd"; 
 // readux actions
-import { FetchedItems } from "../Rtk/slices/getAllslice";
-import { setdeleteHintmsg, seteditItemForm } from "../Rtk/slices/settingSlice";
+
+// import { setdeleteHintmsg, seteditItemForm } from "../Rtk/slices/settingSlice";
 // import icons
 import { RiDownloadCloud2Line } from "react-icons/ri";
 import { AiOutlineEyeInvisible } from "react-icons/ai";
 // import images
 import Nodataimg from "/images/table/No data.svg";
 // functions
-import { formatDate, handleDownloadPdf } from "../Utils";
+ import { FetchedItems } from "../../Rtk/slices/getAllslice";
+import { handleDownloadPdf, formatDate } from "../../Utils";
 
 const Client_Documents = memo(() => {
   const navigate = useNavigate();

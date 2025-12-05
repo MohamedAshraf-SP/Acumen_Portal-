@@ -11,23 +11,33 @@ function ConfirmDelete({ path, deletedItemId, isDepartment }) {
   const handleDelete = async () => {
     try {
       setLoading(true);
+
       const response = await dispatch(
         deleteTargetItem({ path, itemId: deletedItemId })
       );
 
       if (response.meta.requestStatus === "fulfilled") {
+        //  Show success message
         dispatch(
           setsuccessmsg({
             success: true,
             message: "Item deleted successfully!",
           })
         );
-        setLoading(false);
-        // Fetch the updated list of items after deletion
+
+        dispatch(setdeleteHintmsg({ show: false, targetId: null }));
+
         dispatch(FetchedItems({ path, isDepartment }));
+      } else {
+        dispatch(
+          setsuccessmsg({
+            success: true,
+            fail: true,
+            message: "Failed to delete the item.",
+          })
+        );
       }
     } catch (error) {
-      // Handle errors
       console.error("Delete error:", error);
       dispatch(
         setsuccessmsg({
@@ -37,9 +47,10 @@ function ConfirmDelete({ path, deletedItemId, isDepartment }) {
         })
       );
     } finally {
-      setLoading(false); // Ensure loading is reset in all cases
+      setLoading(false);
     }
   };
+
   const handleCancelDelete = () => {
     dispatch(setdeleteHintmsg({ show: false, targetId: null }));
   };
@@ -55,10 +66,9 @@ function ConfirmDelete({ path, deletedItemId, isDepartment }) {
           <p>Are you sure you want to delete?</p>
           <div className="flex flex-row items-center justify-end mt-4 gap-2 text-sm">
             <button
-              className={`bg-red-500 text-white hover:bg-[#B71D18] py-[2px] ${
-                loading ? "cursor-not-allowed opacity-[.5]" : ""
-              }`}
-              onClick={handleDelete} // Use handleDelete directly
+              className={`bg-red-500 text-white hover:bg-[#B71D18] py-[2px] ${loading ? "cursor-not-allowed opacity-[.5]" : ""
+                }`}
+              onClick={handleDelete}
               disabled={loading}
             >
               {loading ? "Deleting..." : "Delete"}

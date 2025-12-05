@@ -102,7 +102,7 @@ const Sent_Notifications = () => {
         return record && (record.deadline === null || record == "") ? (
           <div>N/a</div>
         ) : (
-          record.deadline
+            record.deadline
         );
       },
     },

@@ -13,7 +13,7 @@ const EditSettings = React.lazy(() => import("../../component/EditSettings"));
 
 export default function Settings() {
   const api = import.meta.env.VITE_API_URL;
-  const routes = ["settings", "display Signatures"];
+  const routes = ["Dashboard", "display Signatures"];
   const [targetForm, setTargetForm] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);

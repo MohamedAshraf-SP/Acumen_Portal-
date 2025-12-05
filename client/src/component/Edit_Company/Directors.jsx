@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import { useFormik } from "formik";
 import TextInput from "../TextInput"; // Text input component
 // import icons
@@ -19,7 +19,10 @@ const Directors = () => {
   const { show, targetId } = useSelector(
     (state) => state.setting.deleteHintmsg
   );
-  const { companyId } = useParams(); //get company id from url
+  const [searchParams] = useSearchParams();
+  const companyCode = searchParams?.get("companycode");
+  console.log('companyCode', !companyCode);
+    const { companyId } = useParams(); //get company id from url
   const [loadingStatus, setLoadingStatus] = useState("idle"); // loading status
   const [data, setData] = useState([]); // set All data here after fetching
   const [newDirecotor, setNewDirecotor] = useState(null);
@@ -150,14 +153,17 @@ const Directors = () => {
     },
   });
   useEffect(() => {
+    if (!companyCode ) {
     get_User_Dierctors();
-  }, [companyId]);
+    }
+  }, [companyCode]);
   // Load data again after delete item
   useEffect(() => {
-    if (deletestatus === "success" || !show) {
+    if (!companyCode && deletestatus === "success" && !show) {
       get_User_Dierctors(); // Refresh UI after deletion
     }
-  }, [deletestatus, show]);
+  }, [deletestatus, show, companyCode]);
+  
   return (
     <div className="my-4 py-4 px-6 rounded-[16px] bg-[#f9f9fa] animate-fade">
       <div className="py-2 flex flex-row items-center justify-between ">

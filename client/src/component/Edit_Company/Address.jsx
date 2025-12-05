@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -14,13 +14,20 @@ const Address = () => {
   const [data, setData] = useState({});
   const updateStatus = useSelector((state) => state.updaateItem?.status);
   const { companyId } = useParams();
- 
+  const [searchParams] = useSearchParams();
+  const companyCode = searchParams?.get("companycode");
   // Fetch company details with an API request
   const getCompaniesDetails = async () => {
     try {
       const response = await getItem("Companies", companyId);
-      if (response) {
+       if (response) {
         setData(response);
+         dispatch(
+           setsuccessmsg({
+             success: true,
+             message: "new address adding success!",
+           })
+         );
       }
     } catch (error) {
       console.error(error);

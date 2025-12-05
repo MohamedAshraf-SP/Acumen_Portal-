@@ -6,10 +6,10 @@ import "@react-pdf-viewer/default-layout/lib/styles/index.css";
 import { FaSpinner } from "react-icons/fa";
 import { useAuth } from "../../Contexts/AuthContext";
 import axios from "axios";
-import * as pdfjsLib from "pdfjs-dist/build/pdf"; // ✅ FIXED IMPORT
+import * as pdfjsLib from "pdfjs-dist/build/pdf";
+import { apiCall, getItem } from "../../services/globalService";
 
-// ✅ Correctly set up PDF.js worker
-pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
+ pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
   "pdfjs-dist/build/pdf.worker.min.js",
   import.meta.url
 ).toString();
@@ -18,6 +18,7 @@ const api = import.meta.env.VITE_API_URL;
 
 const ClientEngagement = () => {
   const { user, loading } = useAuth();
+  console.log('user',user)
   const [pdfUrl, setPdfUrl] = useState(null);
   const [loadingPdf, setLoadingPdf] = useState(false);
   const [error, setError] = useState("");
@@ -25,43 +26,30 @@ const ClientEngagement = () => {
   const defaultLayout = defaultLayoutPlugin();
 
   useEffect(() => {
-    if (user?.dataId) {
-      fetchDocument(user?.dataId);
-    }
+    fetchDocument(user?.id);
   }, [user]);
 
-<<<<<<< Updated upstream
-const fetchDocument = async (clientId) => {
-  setLoadingPdf(true);
-  setError("");
-=======
-  const fetchDocument = async (userId) => {
+  const fetchDocument = async (clientId) => {
+     setLoadingPdf(true);
+    setError("");
     try {
-      // Replace with your actual API call or Firebase storage retrieval
-      const response = await axios.get(`${api}/clients/${userId}/engagement`);
-      const data = await response;
-      console.log(data);
-      setPdfUrl(data?.data?.path); // URL of the stored PDF
+      const response = await apiCall( "GET", `clients/${clientId}/engagement`);
+console.log('response of file is',response)
+      if (response?.path) {
+        const fullUrl = `${api}/${response?.path.replace(/\\/g, "/")}`;
+        setPdfUrl(fullUrl);
+        console.log("PDF URL:", fullUrl);
+      } else {
+        setError("No PDF path received.");
+      }
     } catch (error) {
       console.error("Error fetching document:", error);
+      setError(error?.response?.data?.message || "Failed to load document.");
+    } finally {
+      setLoadingPdf(false);
     }
   };
->>>>>>> Stashed changes
-
-  try {
-    const response = await axios.get(`${api}/clients/${clientId}/engagement`); // FIXED
-    if (response.data.url) {
-      setPdfUrl(response.data.url);
-    } else {
-      setError("No PDF URL received.");
-    }
-  } catch (error) {
-    console.error("Error fetching document:", error);
-    setError(error?.response?.data?.message || "Failed to load document.");
-  } finally {
-    setLoadingPdf(false);
-  }
-};
+  
 
 
   if (loading || loadingPdf) {
@@ -72,8 +60,7 @@ const fetchDocument = async (clientId) => {
       </div>
     );
   }
-  console.log(pdfUrl);
-  return (
+   return (
     <div className="flex flex-col items-center p-4">
       <h2 className="text-xl font-semibold mb-4 text-gray-600 mt-4">
         Letter of Engagement

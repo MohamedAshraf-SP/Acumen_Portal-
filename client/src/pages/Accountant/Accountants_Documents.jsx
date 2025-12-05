@@ -113,7 +113,7 @@ const Accountants_Documents = () => {
       align: "center",
       render: (_, record) => (
         <div className="text-sm font-normal text-gray-800">
-          {formatDate(record.dateTime)}
+          {formatDate(record?.dateTime)}
         </div>
       ),
     },

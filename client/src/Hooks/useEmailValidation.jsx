@@ -4,7 +4,6 @@ import { useState } from "react";
 import { useDebounce } from "./useDebounce";
 import * as Yup from "yup";
 
-// التحقق من توفر البريد الإلكتروني عبر API
 export const checkEmailAvailability = async (email) => {
   try {
     const response = await axios.post(`${api}/helpers/checkemail`, { email });
@@ -14,7 +13,6 @@ export const checkEmailAvailability = async (email) => {
   }
 };
 
-// هوك التحقق من البريد الإلكتروني
 export const useEmailValidation = () => {
   const [validation, setValidation] = useState({
     loading: false,
@@ -47,7 +45,6 @@ export const useEmailValidation = () => {
       message: "Checking...",
     });
 
-    // التحقق من توفر البريد الإلكتروني
     const isAvailable = await checkEmailAvailability(email);
     setValidation({
       loading: false,

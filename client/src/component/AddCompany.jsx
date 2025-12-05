@@ -1,26 +1,27 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { LuDot } from "react-icons/lu";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useDebounce } from "../Hooks/useDebounce";
-import { getItem } from "../services/globalService";
+import { getAllItems, getItem } from "../services/globalService";
 import Contentloader from "./Contentloader";
 import nosearchresutl from "/images/NodataFound/noSearch.png";
 import { CiSearch } from "react-icons/ci";
 import { ImSpinner2 } from "react-icons/im";
 import { useNavigate } from "react-router-dom";
+import { addNewData } from "../Rtk/slices/addNewSlice";
+import { useDispatch } from "react-redux";
+import ComboBox from "./ComboBox";
 
-// Reusable Breadcrumb Component
 const Breadcrumb = ({ routes }) => (
   <ul className="flex items-center space-x-1 text-sm py-2">
     {routes.map((route, index) => (
       <li
         key={index}
-        className={`flex items-center ${
-          index === routes.length - 1
+        className={`flex items-center ${index === routes.length - 1
             ? "text-gray-400"
             : "text-slate-900 dark:text-gray-200"
-        }`}
+          }`}
       >
         {index > 0 && <LuDot className="text-lg text-gray-400 font-bold" />}
         {route}
@@ -29,30 +30,24 @@ const Breadcrumb = ({ routes }) => (
   </ul>
 );
 
-// Reusable SearchResults Component
 const SearchResults = ({ loading, results, error, onSelect }) => {
   if (loading === "loading") return <Contentloader />;
   if (loading === "failed") return <p className="text-red-500">{error}</p>;
   if (loading === "success" && results?.data?.length === 0)
     return (
-      <p className="text-gray-600 p-2 text-xs flex flex-col items-center justify-center gap-1 py-10">
-        <span className="w-6 h-6 overflow-hidden">
-          <img
-            src={nosearchresutl}
-            alt="no search found"
-            className="w-full h-full"
-          />
-        </span>
-        {results?.message}
-      </p>
+      <div className="flex flex-col items-center justify-center gap-1 py-8 text-gray-600 text-xs">
+        <img src={nosearchresutl} alt="no search" className="w-8 h-8" />
+        <span>{results?.message}</span>
+      </div>
     );
+
   return (
     <ul className="max-h-60 overflow-y-auto w-full bg-white border border-gray-200 rounded-lg py-2 shadow-lg">
       {results?.data?.map((item) => (
         <li
-          className="text-xs text-gray-600 hover:text-gray-900 hover:bg-gray-100 cursor-pointer px-4 py-2 border-b border-solid last:border-none"
           key={item.companyNumber}
           onClick={() => onSelect(item)}
+          className="text-xs text-gray-600 hover:text-gray-900 hover:bg-gray-100 cursor-pointer px-4 py-2 border-b last:border-none"
         >
           {item.companyName}
         </li>
@@ -62,55 +57,71 @@ const SearchResults = ({ loading, results, error, onSelect }) => {
 };
 
 export default function AddCompany() {
-  const routes = ["Companies", "Add Company"];
+  const routes = ["Dashboard", "Add Company"];
   const [companiesResults, setCompaniesResults] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(null);
+  const [clients, setClients] = useState([]);
   const [error, setError] = useState(null);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
-  // Formik setup
+
+  useEffect(() => {
+    const fetchClients = async () => {
+      const data = await getAllItems("clients");
+      setClients(data?.clients || []);
+    };
+    fetchClients();
+  }, []);
+
   const formik = useFormik({
     initialValues: {
       name: "",
       companyCode: "",
+      clientID: "",
     },
     validationSchema: Yup.object({
       name: Yup.string().required("Please enter company name."),
+      // clientID: Yup.string().required("Please select a client."),
     }),
-    onSubmit: async (values, { resetForm }) => {
+    onSubmit: async (values, { setSubmitting }) => {
+      console.log('values',values)
       try {
-        if (values?.companyCode) {
-          navigate(`/companies/editcompany?companycode=${values?.companyCode}`);
-        }
+        const response = await dispatch(
+          addNewData({ path: "companies", itemData: values })
+        ).unwrap();
+
+        console.log("Created:", response);
+        navigate(`/companies/editcompany?companycode=${values.companyCode}`);
       } catch (error) {
-        console.error("Submission error:", error);
+        console.error(" Submission error:", error);
+      } finally {
+        setSubmitting(false);
       }
     },
   });
 
-  // Debounced search function
+  /* ─── Debounced Search ─── */
   const handleSearch = useCallback(
     useDebounce(async (e) => {
       const name = e.target.value;
       setSearchQuery(name);
       if (!name.trim()) {
-        setCompaniesResults([]); // Clear company results
+        setCompaniesResults([]);
         setLoading(null);
-        formik.setFieldValue("companyCode", ""); // 🔹 Reset company code input
+        formik.setFieldValue("companyCode", "");
         return;
       }
+
       setLoading("loading");
       try {
         const response = await getItem("companyHouse/search/companies", name);
-
-        if (response) {
-          setCompaniesResults(response);
-          setLoading("success");
-        }
+        setCompaniesResults(response);
+        setLoading("success");
       } catch (error) {
-        setCompaniesResults([]); // 🔹 Clear company results on error
-        setSearchQuery(""); // 🔹 Reset search input on error
         console.error("Search error:", error);
+        setCompaniesResults([]);
+        setSearchQuery("");
         setLoading("failed");
         setError(
           error.response
@@ -118,18 +129,18 @@ export default function AddCompany() {
             : "Network error: Please check your connection."
         );
       }
-    }, 200),
+    }, 300),
     []
   );
 
-  // Handle company selection from search results
   const handleCompanySelect = (company) => {
     formik.setValues({
+      ...formik.values,
       name: company.companyName,
       companyCode: company.companyNumber,
     });
-    setCompaniesResults([]); // 🔹 Clear search results after selection
-    setSearchQuery(""); // 🔹 Clear search query
+    setCompaniesResults([]);
+    setSearchQuery("");
   };
 
   return (
@@ -141,27 +152,26 @@ export default function AddCompany() {
         <Breadcrumb routes={routes} />
       </header>
 
-      <div className=" bg-white dark:bg-gray-800 rounded-lg max-w-[900px] mx-auto   shadow-sm">
+      <div className="bg-white dark:bg-gray-800 rounded-lg max-w-[900px] mx-auto shadow-sm">
         <form
-          className="p-4 flex flex-col gap-4 my-4"
+          className="p-4 flex flex-col gap-5 my-4"
           onSubmit={formik.handleSubmit}
         >
-          {/* Company Name Input */}
-          <div className="relative w-full ">
-            <div className="relative flex items-center justify-center gap-2">
+          <div className="relative w-full">
+            <div className="relative flex items-center">
               <span className="absolute left-3 text-gray-500">
                 <CiSearch size={20} />
               </span>
               {loading === "loading" && (
-                <span className="absolute right-2 text-gray-400 animate-spin">
+                <span className="absolute right-3 text-gray-400 animate-spin">
                   <ImSpinner2 />
                 </span>
               )}
               <input
                 id="companyName"
                 name="name"
-                className="text-sm w-full  pl-10 pr-12 py-3 text-gray-600 bg-slate-50 border border-gray-200 rounded-md outline-none  placeholder:text-xs"
-                placeholder="search with company name..."
+                className="text-sm w-full pl-10 pr-10 py-3 text-gray-700 bg-slate-50 border border-gray-300 rounded-md outline-none placeholder:text-xs focus:ring-2 focus:ring-gray-300"
+                placeholder="Search with company name..."
                 type="text"
                 onChange={(e) => {
                   formik.handleChange(e);
@@ -171,15 +181,15 @@ export default function AddCompany() {
                 value={formik.values.name}
               />
             </div>
+
             {formik.touched.name && formik.errors.name && (
-              <p className="text-red-600  mt-1 text-[12px]">
+              <p className="text-red-600 mt-1 text-[12px]">
                 {formik.errors.name}
               </p>
             )}
 
-            {/* Display search results */}
             {searchQuery.length > 0 && companiesResults?.data && (
-              <div className="absolute top-full left-0 z-50 w-full mt-2 bg-white border border-solid rounded-lg ">
+              <div className="absolute top-full left-0 z-50 w-full mt-2 bg-white border border-gray-200 rounded-lg">
                 <SearchResults
                   loading={loading}
                   results={companiesResults}
@@ -190,30 +200,53 @@ export default function AddCompany() {
             )}
           </div>
 
-          {/* Company Code Input */}
-          {formik.values?.companyCode?.length > 0 && (
-            <div className="relative w-full mb-4">
-              <label
-                htmlFor="companyCode"
-                className="mb-1 block text-gray-600 text-sm font-medium  "
-              >
-                Company Code
-              </label>
-              <input
-                id="companyCode"
-                name="companyCode"
-                className="peer input block focus:border-[#aeb7c154] cursor-not-allowed"
-                type="text"
-                readOnly
-                value={formik.values.companyCode}
-              />
+          {formik.values.companyCode && (
+            <div className="grid md:grid-cols-2 gap-6">
+              <div>
+                <label
+                  htmlFor="companyCode"
+                  className="mb-1 block text-gray-700 text-sm font-medium"
+                >
+                  Company Code
+                </label>
+                <input
+                  id="companyCode"
+                  name="companyCode"
+                  type="text"
+                  readOnly
+                  className="text-sm w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-md text-gray-600 cursor-not-allowed"
+                  value={formik.values.companyCode}
+                />
+              </div>
+
+              <div>
+                <label
+                  htmlFor="clientId"
+                  className="mb-1 block text-gray-700 text-sm font-medium"
+                >
+                  Client
+                </label>
+                <ComboBox
+                  title="Select client"
+                  arr={clients}
+                  onSelect={(selected) => {
+                    console.log('selected value',selected)
+                    formik.setFieldValue("clientID", selected?.id);
+                  }}
+                />
+                {formik.touched.clientId && formik.errors.clientId && (
+                  <p className="text-red-600 mt-1 text-[12px]">
+                    {formik.errors.clientId}
+                  </p>
+                )}
+              </div>
             </div>
           )}
-          {/* Submit and Cancel Buttons */}
-          <div className="flex justify-end md:flex-row flex-col md:gap-4 gap-2">
+
+          <div className="flex justify-end md:flex-row flex-col md:gap-4 gap-2 mt-2">
             <button
               type="button"
-              className="bg-[#efeff0] px-4 font-normal rounded-md"
+              className="bg-gray-200 hover:bg-gray-300 px-4 py-2 rounded-md text-sm"
               onClick={() => formik.resetForm()}
             >
               Cancel
@@ -221,9 +254,9 @@ export default function AddCompany() {
             <button
               type="submit"
               className="blackbutton"
-              disabled={!formik.isValid || formik.isSubmitting}
+              disabled={formik.isSubmitting}
             >
-              {formik.isSubmitting ? "saving..." : "save Company"}
+              {formik.isSubmitting ? "Saving..." : "Save Company"}
             </button>
           </div>
         </form>

@@ -17,13 +17,22 @@ export default function Unauthorized() {
         <div className="md:w-[300px] w-[250px] h-[300px] overflow-hidden">
           <img src={notfoundImg} alt="not found img" loading="lazy" />
         </div>
-        <Link
-          to={`/${user?.role}/dashboard`}
+        {user?.role ? (
+          <Link
+            to={`/${user?.role}/dashboard`}
+            className=" p-3 bg-[#1C252E] text-white rounded-md cursor-pointer hover:bg-slate-950  transition-all duration-300 font-normal text-sm flex items-center justify-center gap-1"
+          >
+            <IoIosHome size={18} />
+            Take me back
+          </Link>
+        ) : (<Link
+          to={`/auth/login`}
           className=" p-3 bg-[#1C252E] text-white rounded-md cursor-pointer hover:bg-slate-950  transition-all duration-300 font-normal text-sm flex items-center justify-center gap-1"
         >
           <IoIosHome size={18} />
           Take me back
-        </Link>
+        </Link>)}
+     
       </div>
     </div>
   );

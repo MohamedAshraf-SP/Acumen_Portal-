@@ -5,8 +5,7 @@ import { getItem } from "../../services/globalService"; // Your API function
 export const fetchCompanyDetails = createAsyncThunk(
   "company/fetchCompanyDetails",
   async ({ companyId, companyCode, subRoute = "" }, { rejectWithValue }) => {
-    console.log(companyId, companyCode, subRoute);
-    try {
+     try {
       let path;
 
       if (companyId) {
@@ -16,7 +15,7 @@ export const fetchCompanyDetails = createAsyncThunk(
       }
 
       const response = await getItem(path, companyId ? companyId : companyCode);
-      return response;
+       return response;
     } catch (error) {
       console.error("Error fetching company details", error);
       return rejectWithValue(

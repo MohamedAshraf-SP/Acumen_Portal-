@@ -7,6 +7,7 @@ import Contentloader from "../../component/Contentloader";
 import ComboBox from "../../component/ComboBox";
 import { useDispatch, useSelector } from "react-redux";
 import { FetchedItems } from "../../Rtk/slices/getAllslice";
+import { fetchCompanyDetails } from "../../Rtk/slices/Fetchcompanydetails";
 
 // Lazy load components
 const Company = lazy(() => import("../../component/Edit_Company/Company"));
@@ -34,32 +35,40 @@ const EditCompany = () => {
   const { companyId } = useParams();
   const [searchParams] = useSearchParams();
   const companyCode = searchParams?.get("companycode"); //if it come from company House Api
-  //check if company exist
-  // get all clients
+ 
+     const updateStatus = useSelector((state) => state.updaateItem?.status);
+    // Get company data from Redux
+    const { data,  error } = useSelector((state) => state.companyDetails);
+    useEffect(() => {
+      if (companyId || companyCode) {
+        dispatch(fetchCompanyDetails({ companyId, companyCode, subRoute: "" }));
+      }
+    }, [companyId, companyCode, dispatch]);
+    // get all clients
   const clients = useSelector(
     (state) => state.getall.entities?.clients?.clients
   );
   const loading = useSelector((state) => state.getall?.status.clients);
-  const renderComponent = () => {
+   const renderComponent = () => {
     switch (openedForm) {
       case "Company":
         return <Company />;
       case "due dates":
-        return <Due_Dates />;
+        return <Due_Dates vatRegitered={data?.VATRegistered} dueDates={data?.dueDates}/>;
       case "Shareholdes":
-        return <Shareholder />;
+        return <Shareholder shareholders={data?.shareholders } />;
       case "Directors":
-        return <Directors />;
+        return <Directors directors={data?.directors}/>;
       case "Address":
         return <Address />;
       case "documents":
-        return <CompanyDocuments />;
+        return <CompanyDocuments documents={data?.documents }/>;
       case "bank details":
         return <BankDetails />;
       case "contact":
         return <Contact />;
       case "departments":
-        return <CmopanyDepartmets />;
+        return <CmopanyDepartmets departments={data?.departments}/>;
       default:
         return null;
     }

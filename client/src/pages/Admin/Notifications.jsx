@@ -37,6 +37,7 @@ const Notifications = () => {
     <>
       <div className="my-2 py-4 px-4 rounded-lg shadow-sm h-full  dark:bg-secondary-dark-bg dark:text-gray-200">
         {/* Header */}
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
         <div className=" p-4  ">
           <h1 className="text-xl font-semibold ">Notifications</h1>
           <ul className="flex flex-row items-center space-x-1 text-sm py-2">
@@ -56,6 +57,13 @@ const Notifications = () => {
               </li>
             ))}
           </ul>
+        </div>
+        <button
+            onClick={() => navigate("/add-notification")}
+            className="blackbutton text-white text-sm"
+          >
+            Add Notification
+          </button>
         </div>
 
         {/* Table or No Data */}

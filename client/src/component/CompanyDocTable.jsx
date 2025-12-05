@@ -38,8 +38,7 @@ const CompanyDocTable = memo(({ Uploadstatus }) => {
   useEffect(() => {
     fetchData(pagination?.current, pagination?.pageSize);
   }, [dispatch, Uploadstatus]);
-  console.log(data);
-  // Columns for the Ant Design Table
+   // Columns for the Ant Design Table
   const columns = [
     {
       title: "Document Title",

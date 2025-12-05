@@ -31,7 +31,6 @@ const Companytable = memo(() => {
   // Handle actions (Edit/Delete)
   const handleAction = (actionType, path, companyId) => {
     setSelectedItem({ actionType, path, companyId });
-
     if (actionType === "delete") {
       dispatch(setdeleteHintmsg({ show: true, targetId: companyId }));
     }
@@ -57,18 +56,15 @@ const Companytable = memo(() => {
     );
   };
 
-  // 🔹 Fetch Data When `pagination` Changes
-  useEffect(() => {
+   useEffect(() => {
     fetchData();
   }, [pagination]);
 
-  // 🔹 Fetch Data When Item is Deleted (When Delete Confirmation is Shown)
-  useEffect(() => {
+   useEffect(() => {
     fetchData(); // Re-fetch after deletion
   }, [show, targetId]);
 
-  // 🔹 Update Companies When Data Changes
-  useEffect(() => {
+   useEffect(() => {
     setCompanies(data["Companies/abstracted"]?.companies || []);
   }, [data]);
   // Columns for the Ant Design Table
@@ -111,14 +107,14 @@ const Companytable = memo(() => {
             onClick={() => handleAction("edit", "Companies", record._id)}
             title="Edit"
           >
-            <MdOutlineModeEditOutline /> {/* Adjust icon size */}
+            <MdOutlineModeEditOutline />  
           </li>
           <li
             className="bg-[#FFF2F2] text-[#FF0000] hover:bg-[#FF0000] hover:text-white text-[14px] w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 ease-in-out cursor-pointer"
             onClick={() => handleAction("delete", "Companies", record._id)}
             title="Delete"
           >
-            <FaRegTrashCan /> {/* Adjust icon size */}
+            <FaRegTrashCan />  
           </li>
         </ul>
       ),

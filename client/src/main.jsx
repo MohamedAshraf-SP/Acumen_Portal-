@@ -10,7 +10,6 @@ import { store } from "./Rtk/store/store.js";
 import { AuthContextProvider } from "./Contexts/AuthContext.jsx";
 import { BrowserRouter } from "react-router-dom";
 // Register Syncfusion license key
-
 registerLicense(
   "Ngo9BigBOggjHTQxAR8/V1NMaF5cXmBCfEx1WmFZfVtgfV9GYlZTQmYuP1ZhSXxWdkRjXX9XcHZWQmhYUUI="
 );

@@ -25,8 +25,7 @@ const Company = () => {
       dispatch(fetchCompanyDetails({ companyId, companyCode, subRoute: "" }));
     }
   }, [companyId, companyCode, dispatch]);
-  console.log(data);
-  // Formik setup
+   // Formik setup
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
@@ -56,7 +55,7 @@ const Company = () => {
       dispatch(
         updateTargetItem({
           path: "Companies",
-          itemId: companyId ? companyId : companyCode,
+          itemId: companyId && companyId,
           updatedItemData: values,
         })
       );
@@ -282,7 +281,7 @@ const Company = () => {
           </button>
           <button
             type="submit"
-            disabled={!formik.isValid}
+            // disabled={!formik.isValid}
             className={`blackbutton !rounded-xl ${
               updateStatus == "loading" || !formik.isValid
                 ? "opacity-[.6] cursor-not-allowed"

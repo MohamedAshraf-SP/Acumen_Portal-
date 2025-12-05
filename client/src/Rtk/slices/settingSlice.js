@@ -16,6 +16,7 @@ const initialState = {
   ViewClient: false,
   successmsg: [],
 };
+
 const settingSlice = createSlice({
   name: "setting",
   initialState,
@@ -55,14 +56,21 @@ const settingSlice = createSlice({
     setViewClient: (state, action) => {
       state.ViewClient = action.payload;
     },
+
     setsuccessmsg: (state, action) => {
       state.successmsg.push(action.payload);
     },
+
+    replaceSuccessMsgs: (state, action) => {
+      state.successmsg = action.payload;
+    },
+
     clearSuccessMsg: (state) => {
-      state.successmsg = []; // Clear all messages
+      state.successmsg = [];
     },
   },
 });
+
 export const {
   setScreenSize,
   setActiveMenu,
@@ -70,10 +78,11 @@ export const {
   removeClick,
   setCollapsed,
   setdeleteHintmsg,
-  setsuccessmsg,
   seteditItemForm,
   clearSuccessMsg,
   setViewClient,
+  setsuccessmsg,
+  replaceSuccessMsgs,
 } = settingSlice.actions;
 
 export default settingSlice.reducer;

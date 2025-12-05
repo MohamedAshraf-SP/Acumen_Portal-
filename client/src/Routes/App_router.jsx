@@ -7,8 +7,9 @@ import { useAuth } from "../Contexts/AuthContext";
 import Login from "../pages/Auth/Login";
 import Unauthorized from "../pages/Auth/Unauthorized";
 import NotFind from "../pages/NotFind";
+import ForgetPassword from "../pages/Auth/Forget-password";
+import SuccessConfirm from "../pages/Auth/success-confirm";
 
-// Lazy Load Pages
 // -------------Admin --------------
 const AdminDashboard = lazy(() => import("../pages/Admin/Admin_Dashboard"));
 const AdminAccounts = lazy(() => import("../pages/Admin/Accountants"));
@@ -23,6 +24,8 @@ const SentNotifications = lazy(() =>
   import("../pages/Admin/sent_Notifications")
 );
 const EditUserCompany = lazy(() => import("../pages/Admin/EditCompany"));
+const AddNotifications = lazy(() => import("../pages/Admin/AddNotifications"));
+
 // ---------------client ---------
 const ClientDashboard = lazy(() => import("../pages/Client/Client_Dashboard"));
 const AddCompany = lazy(() => import("../component/AddCompany"));
@@ -48,7 +51,7 @@ const Forms = lazy(() => import("../pages/Forms"));
 const Invoices = lazy(() => import("../pages/Invoices"));
 const Documents = lazy(() => import("../pages/Documents"));
 const DisplayUsersCompany = lazy(() => import("../pages/DisplayUsersCompany"));
-
+import Profile from "../pages/Profile";
 const AppRouter = () => {
   const { loading, user } = useAuth();
 
@@ -75,6 +78,9 @@ const AppRouter = () => {
 
         {/* Catch-all route for non-existent pages */}
         <Route path="/auth/login" element={<Login />} />
+        <Route path="/auth/Forget-password" element={<ForgetPassword />} />
+        <Route path="/auth/success-confirm" element={<SuccessConfirm />} />
+
         <Route path="/auth/unauthorized" element={<Unauthorized />} />
         <Route path="*" element={<NotFind />} />
         {/* start our routes */}
@@ -83,6 +89,10 @@ const AppRouter = () => {
           <Route element={<ProtectedRoute allowedTo={["admin"]} />}>
             <Route path="/admin/dashboard" element={<AdminDashboard />} />
             <Route path="/accountants" element={<AdminAccounts />} />
+            <Route
+              path="/accountants/add-account"
+              element={<AddacountantForm />}
+            />
             <Route
               path="/accountants/add-account"
               element={<AddacountantForm />}
@@ -99,6 +109,8 @@ const AppRouter = () => {
             <Route path="/settings" element={<AdminSettings />} />
             <Route path="/import-clients" element={<ImportClients />} />
             <Route path="/sent-notification" element={<SentNotifications />} />
+            <Route path="/add-notification" element={<AddNotifications />} />
+
           </Route>
 
           {/* Client Routes */}
@@ -138,7 +150,7 @@ const AppRouter = () => {
 
           {/* shared routes */}
           <Route
-            element={<ProtectedRoute allowedTo={["admin", "accountant"]} />}
+            element={<ProtectedRoute allowedTo={["admin", "accountant","client"]} />}
           >
             <Route path="/companies/add-company" element={<AddCompany />} />
             <Route
@@ -152,6 +164,10 @@ const AppRouter = () => {
             <Route
               path="/companies/:companyId"
               element={<DisplayUsersCompany />}
+            />
+            <Route
+              path="/Profile"
+              element={<Profile />}
             />
           </Route>
         </Route>

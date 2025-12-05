@@ -4,10 +4,10 @@ import { addItem } from "../../services/globalService";
 const addNewData = createAsyncThunk(
   "data/addNewData",
   async ({ path, itemData }, thunkAPI) => {
-    try {
-      const response = await addItem(path, itemData); // Call the service
+     try {
+      const response = await addItem(path, itemData);  
   
-      return { path, ...response }; // Ensure full response is returned
+      return { path, ...response };  
     } catch (error) {
      // console.error(error);
       const errorMessage =
