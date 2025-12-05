@@ -1,6 +1,9 @@
+import fs from 'fs';
+import path from 'path';
 import User from "../../models/users/user.js";
 import Client from "../../models/users/clients.js"; // Import the Client model
 import { sendEmail } from "../../helpers/emailSender.js";
+import mongoose from "mongoose";
 import { addEmailLog } from "../../helpers/emailLogs.js";
 import TasksDocument from "../../models/tasksDocuments.js";
 import {
@@ -14,7 +17,6 @@ import {
   Shareholder,
   DueDate,
 } from "../../models/company/index.js";
-import mongoose from "mongoose";
 
 // Get a Client by ID
 export const getClient = async (req, res) => {
@@ -219,7 +221,7 @@ export const getClients = async (req, res) => {
       .skip(skip)
       .limit(limit);
 
-    console.log(clients);
+    //console.log(clients);
 
     const pagesCount = Math.ceil(clients.length / limit) || 0;
 
@@ -238,17 +240,39 @@ export const getClients = async (req, res) => {
 export const getClientLOE = async (req, res) => {
   try {
     const clientID = req.params.id;
-    const LOE = await TasksDocument.findOne({ clientID, title: "LOE" });
-    if (!LOE)
-      return res
-        .status(400)
-        .json({ message: "LOE not found or Client not exits!" });
-    res.status(200).json({ path: LOE.path });
+    const engagement = await TasksDocument.findOne({
+      clientID,
+      title: "LOE"
+    });
+
+    if (!engagement) {
+      return res.status(404).json({
+        message: "Engagement document not found"
+      });
+    }
+
+    // Get the absolute file path
+    const filePath = path.resolve(engagement.path);
+
+    // Check if file exists
+    if (!fs.existsSync(filePath)) {
+      return res.status(404).json({
+        message: "File not found on server"
+      });
+    }
+
+    // Set appropriate headers for PDF
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', 'inline; filename="engagement-letter.pdf"');
+
+    // Stream the file
+    const fileStream = fs.createReadStream(filePath);
+    fileStream.pipe(res);
+
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    res.status(500).json({ message: error.message });
   }
 };
-
 export const getClientCompanies = async (req, res) => {
   try {
     const { page = 1, limit = 10, department } = req.query; // Default: page 1, limit 10

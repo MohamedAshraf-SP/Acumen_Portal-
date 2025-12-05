@@ -1,7 +1,8 @@
 import jwt from "jsonwebtoken";
 
 export const authMiddleware = (req, res, next) => {
-  const token = req.header("Authorization")?.replace("Bearer ", "");
+  // Check for token in Authorization header or query params (for iframe)
+  const token = req.query.token || req.header("Authorization")?.replace("Bearer ", "");
   if (!token) {
     return res.status(400).json({ message: "Missing token!!" });
   }

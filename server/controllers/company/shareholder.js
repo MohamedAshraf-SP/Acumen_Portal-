@@ -46,7 +46,7 @@ export const getAllShareholdersOfCompany = async (req, res) => {
             .skip((pageNumber - 1) * limitNumber) // Skip documents for the previous pages
             .limit(limitNumber); // Limit the number of documents per page
 
-        console.log(Shareholders.length);
+        //console.log(Shareholders.length);
         // Return paginated response
         res.status(200).json({
             totalShareholders: totalShareholders,

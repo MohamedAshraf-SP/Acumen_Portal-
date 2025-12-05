@@ -11,14 +11,14 @@ import crypto from "crypto";
 
 // Generate a random code_verifier
 const codeVerifier = crypto.randomBytes(32).toString("base64url");
-console.log("code_verifier:", codeVerifier);
+//console.log("code_verifier:", codeVerifier);
 
 
 const codeChallenge = crypto
   .createHash("sha256")
   .update(codeVerifier)
   .digest("base64url");
-console.log("codeChallenge:", codeChallenge);
+//console.log("codeChallenge:", codeChallenge);
 
 dotenv.config();
 
