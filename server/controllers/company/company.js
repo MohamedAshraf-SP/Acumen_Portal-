@@ -109,7 +109,7 @@ export const addCompany = async (req, res) => {
         const newDueDate = await dueDate.save()
         //console.log(newDueDate);
 
-        await Client.findByIdAndUpdate(clientID, { $push: { companies: savedCompanyID }, $addToSet: { departments: { $each: departments } } })
+        await Client.findByIdAndUpdate(clientID, { $push: { companies: savedCompanyID }, $addToSet: { departments: { $each: departments || [] } } })
 
 
 
