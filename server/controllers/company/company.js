@@ -274,9 +274,6 @@ export const updateCompany = async (req, res) => {
     }
 };
 
-
-
-
 // Delete a company
 export const deleteCompany = async (req, res) => {
     try {
@@ -313,8 +310,6 @@ export const getCompaniesCount = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
-
-
 
 //update duedates
 export const updateCompanyDuedates = async (req, res) => {
