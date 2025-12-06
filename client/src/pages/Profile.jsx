@@ -22,7 +22,7 @@ const Profile = () => {
     const [userData, setUserData] = useState(null);
     const { user } = useAuth();
 
-     useEffect(() => {
+    useEffect(() => {
         const fetchUser = async () => {
             if (!user?.id) return;
             try {
@@ -35,6 +35,7 @@ const Profile = () => {
 
         fetchUser();
     }, [user]);
+
     const formik = useFormik({
         initialValues: {
             currentPassword: "",
@@ -52,26 +53,40 @@ const Profile = () => {
                 .required("Confirm your password")
                 .oneOf([yup.ref("newPassword")], "Passwords must match"),
         }),
-        onSubmit: (values, { resetForm }) => {
+        onSubmit: async (values, { resetForm }) => {
             setLoading(true);
-            setTimeout(() => {
-                alert("Password updated successfully!");
+            try {
+                const response = await dispatch(
+                    addNewData({ path: "update-password", itemData: values })
+                ).unwrap();
+
+                if (response && response.success) {
+                    dispatch(
+                        setsuccessmsg({
+                            success: true,
+                            message: "company updating success!",
+                        })
+                    );
+                }
+            } catch (error) {
+                console.error("Submission error:", error);
+            } finally {
                 setLoading(false);
-                resetForm();
-            }, 1500);
+            }
+
+            resetForm();
         },
     });
 
     return (
         <div className="min-h-screen flex items-start justify-center p-6">
-            <div className="w-full max-w-6xl bg-white dark:bg-gray-800 rounded-3xl p-8 md:p-12  border border-gray-100 dark:border-gray-700 ">
-                {/* Profile Header */}
+            <div className="w-full max-w-6xl bg-white dark:bg-gray-800 rounded-3xl p-8 md:p-12 border border-gray-100 dark:border-gray-700">
                 <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-6 text-center">
                     Profile Overview
                 </h2>
 
                 <div className="grid md:grid-cols-2 gap-8">
-                     <div className="flex flex-col items-center bg-gradient-to-br from-blue-100 to-blue-50 dark:from-gray-700 dark:to-gray-600 rounded-2xl p-6 shadow-inner">
+                    <div className="flex flex-col items-center bg-gradient-to-br from-blue-100 to-blue-50 dark:from-gray-700 dark:to-gray-600 rounded-2xl p-6 shadow-inner">
                         <div className="p-1 border-2 border-blue-200 rounded-full bg-white">
                             <FaUserCircle
                                 className="text-sky-600 dark:text-blue-400"
@@ -79,9 +94,6 @@ const Profile = () => {
                             />
                         </div>
                         <div className="text-start mt-3">
-                            {/* <h3 className="text-xl font-semibold text-gray-800 dark:text-white">
-                                {userData?.name || "Loading..."}
-                            </h3> */}
                             <div className="flex items-center mt-2 text-gray-600 dark:text-gray-300">
                                 <FaEnvelope className="mr-2" />
                                 <span>{userData?.userName || "Loading..."}</span>
@@ -93,14 +105,12 @@ const Profile = () => {
                         </div>
                     </div>
 
-                    {/* Right - Change Password */}
                     <div>
                         <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-4 border-b pb-2">
                             Change Password
                         </h3>
 
                         <form onSubmit={formik.handleSubmit} className="space-y-4">
-                            {/* Current Password */}
                             <PasswordInput
                                 label="Current Password"
                                 name="currentPassword"
@@ -118,7 +128,6 @@ const Profile = () => {
                                 onBlur={formik.handleBlur}
                             />
 
-                            {/* New Password */}
                             <PasswordInput
                                 label="New Password"
                                 name="newPassword"
@@ -136,7 +145,6 @@ const Profile = () => {
                                 onBlur={formik.handleBlur}
                             />
 
-                            {/* Confirm Password */}
                             <PasswordInput
                                 label="Confirm Password"
                                 name="confirmPassword"
@@ -154,7 +162,6 @@ const Profile = () => {
                                 onBlur={formik.handleBlur}
                             />
 
-                            {/* Submit */}
                             <button
                                 type="submit"
                                 disabled={loading || !formik.isValid}
@@ -180,7 +187,7 @@ const Profile = () => {
     );
 };
 
- const PasswordInput = ({
+const PasswordInput = ({
     label,
     name,
     value,
@@ -195,6 +202,7 @@ const Profile = () => {
         <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">
             {label}
         </label>
+
         <input
             type={show ? "text" : "password"}
             name={name}
@@ -202,15 +210,17 @@ const Profile = () => {
             onChange={onChange}
             onBlur={onBlur}
             placeholder="••••••••"
-            className={`w-full rounded-lg border px-4 py-3 text-gray-800 dark:text-white bg-transparent    ${error && touched ? "border-red-500" : "border-gray-300"
+            className={`w-full rounded-lg border px-4 py-3 text-gray-800 dark:text-white bg-transparent ${error && touched ? "border-red-500" : "border-gray-300"
                 }`}
         />
+
         <div
             className="absolute right-3 top-9 cursor-pointer text-gray-500"
             onClick={onToggle}
         >
             {show ? <FaEyeSlash /> : <FaEye />}
         </div>
+
         {touched && error && (
             <p className="text-red-600 text-sm mt-1">{error}</p>
         )}

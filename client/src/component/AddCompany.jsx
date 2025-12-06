@@ -118,7 +118,6 @@ export default function AddCompany() {
         setCompaniesResults(response);
         setLoading("success");
       } catch (error) {
-        console.error("Search error:", error);
         setCompaniesResults([]);
         setSearchQuery("");
         setLoading("failed");
