@@ -7,6 +7,7 @@ import { fetchCompanyDetails } from "../../Rtk/slices/Fetchcompanydetails";
 
 const CompanyDepartments = ({ departments = [] }) => {
   const { companyId } = useParams();
+  
   const dispatch = useDispatch();
   const allDepartments = [
     { _id: 1, name: "Annual accounts, CT and Director department" },
@@ -17,7 +18,6 @@ const CompanyDepartments = ({ departments = [] }) => {
     { _id: 6, name: "Self-employed and partnership department" },
   ]; 
   const [searchParams] = useSearchParams();
-  const companyCode = searchParams?.get("companycode");
    const [selectedDepartments, setSelectedDepartments] = useState(departments);
   const [loading, setLoading] = useState(false);
 
@@ -37,7 +37,7 @@ const CompanyDepartments = ({ departments = [] }) => {
     e.preventDefault();
     setLoading(true);
     try {
-      if(company)
+      if (companyId)
       await updateItem("Companies", companyId, {
         departments: selectedDepartments,
       });

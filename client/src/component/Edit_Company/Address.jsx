@@ -22,12 +22,12 @@ const Address = () => {
       const response = await getItem("Companies", companyId);
        if (response) {
         setData(response);
-         dispatch(
-           setsuccessmsg({
-             success: true,
-             message: "new address adding success!",
-           })
-         );
+        //  dispatch(
+        //    setsuccessmsg({
+        //      success: true,
+        //      message: "new address adding success!",
+        //    })
+        //  );
       }
     } catch (error) {
       console.error(error);

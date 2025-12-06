@@ -133,7 +133,7 @@ const Due_Dates = ({ vatRegitered, dueDates }) => {
                   loading={false}
                   searchQuery={formik.values.vatReturnsPeriod}
                   onSelect={(selectedValue) =>
-                    formik.setFieldValue("vatReturnsPeriod", selectedValue)
+                    formik.setFieldValue("vatReturnsPeriod", selectedValue.name)
                   }
                   className="bg-white !rounded-lg h-full px-3 py-2 w-full"
                 />

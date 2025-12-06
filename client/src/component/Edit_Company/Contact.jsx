@@ -10,7 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 const Contact = () => {
   const dispatch = useDispatch();
   const updateStatus = useSelector((state) => state.updaateItem?.status);
-
+  console.log('updateStatus', updateStatus)
   const [data, setData] = useState({});
   const { companyId } = useParams();
 

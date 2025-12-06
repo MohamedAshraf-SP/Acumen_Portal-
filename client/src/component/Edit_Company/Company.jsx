@@ -20,6 +20,7 @@ const Company = () => {
   const updateStatus = useSelector((state) => state.updaateItem?.status);
   // Get company data from Redux
   const { data, loading, error } = useSelector((state) => state.companyDetails);
+  
   useEffect(() => {
     if (companyId || companyCode) {
       dispatch(fetchCompanyDetails({ companyId, companyCode, subRoute: "" }));

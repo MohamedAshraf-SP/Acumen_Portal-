@@ -23,11 +23,11 @@ const Shareholder = () => {
   );
   const [searchParams] = useSearchParams();
   const companyCode = searchParams?.get("companycode");
-  const [loadingStatus, setLoadingStatus] = useState("idle"); // for fetching shareholders status
-  const [data, setData] = useState([]); // store data after fetching all shareholders data
-  const [selectedShareHolderId, setSelectedShareHolder] = useState([]); // for delete shareholder
-  const [editedShareholder, setEditedShareHolderId] = useState({}); // git id when select shareholder to update
-  const [NewShareholders, setnewshareHolder] = useState(null); // for add new shareholder
+  const [loadingStatus, setLoadingStatus] = useState("idle");  
+  const [data, setData] = useState([]); 
+  const [selectedShareHolderId, setSelectedShareHolder] = useState([]); 
+  const [editedShareholder, setEditedShareHolderId] = useState({});
+  const [NewShareholders, setnewshareHolder] = useState(null); 
   // Add new shareholder
   const AddNewShareHolder = () => {
     setnewshareHolder({
@@ -53,12 +53,11 @@ const Shareholder = () => {
         dispatch(
           setsuccessmsg({
             success: true,
-            message: "new shareHolder adding success!",
+            message: "new shareholder adding success!",
           })
         );
         setnewshareHolder("");
-        dispatch(fetchCompanyDetails({ companyId }));
-        
+        await get_User_Share_Holders();        
       }
     } catch (error) {
       console.log(error);
@@ -105,7 +104,7 @@ const Shareholder = () => {
             dispatch(
               setsuccessmsg({
                 success: true,
-                message: "shareHolder updating success!",
+                message: "shareholder updating success!",
               })
             );
           }

@@ -85,14 +85,14 @@ export default function AddCompany() {
       // clientID: Yup.string().required("Please select a client."),
     }),
     onSubmit: async (values, { setSubmitting }) => {
-      console.log('values',values)
+      // console.log('values',values)
       try {
         const response = await dispatch(
           addNewData({ path: "companies", itemData: values })
         ).unwrap();
 
-        console.log("Created:", response);
-        navigate(`/companies/editcompany?companycode=${values.companyCode}`);
+        // console.log("Created:", response);
+        navigate(`/companies/editcompany/${response.id}`);
       } catch (error) {
         console.error(" Submission error:", error);
       } finally {
@@ -101,7 +101,6 @@ export default function AddCompany() {
     },
   });
 
-  /* ─── Debounced Search ─── */
   const handleSearch = useCallback(
     useDebounce(async (e) => {
       const name = e.target.value;
@@ -230,8 +229,7 @@ export default function AddCompany() {
                   title="Select client"
                   arr={clients}
                   onSelect={(selected) => {
-                    console.log('selected value',selected)
-                    formik.setFieldValue("clientID", selected?.id);
+                     formik.setFieldValue("clientID", selected?.id);
                   }}
                 />
                 {formik.touched.clientId && formik.errors.clientId && (

@@ -35,7 +35,6 @@ const Profile = () => {
 
         fetchUser();
     }, [user]);
-console.log("User Data:", userData);
     const formik = useFormik({
         initialValues: {
             currentPassword: "",
@@ -203,7 +202,7 @@ console.log("User Data:", userData);
             onChange={onChange}
             onBlur={onBlur}
             placeholder="••••••••"
-            className={`w-full rounded-lg border px-4 py-3 text-gray-800 dark:text-white bg-transparent focus:ring-2 focus:ring-blue-400 ${error && touched ? "border-red-500" : "border-gray-300"
+            className={`w-full rounded-lg border px-4 py-3 text-gray-800 dark:text-white bg-transparent    ${error && touched ? "border-red-500" : "border-gray-300"
                 }`}
         />
         <div

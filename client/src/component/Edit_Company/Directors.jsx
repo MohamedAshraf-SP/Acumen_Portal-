@@ -21,7 +21,6 @@ const Directors = () => {
   );
   const [searchParams] = useSearchParams();
   const companyCode = searchParams?.get("companycode");
-  console.log('companyCode', !companyCode);
     const { companyId } = useParams(); //get company id from url
   const [loadingStatus, setLoadingStatus] = useState("idle"); // loading status
   const [data, setData] = useState([]); // set All data here after fetching
