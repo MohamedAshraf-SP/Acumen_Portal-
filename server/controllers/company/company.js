@@ -104,6 +104,7 @@ export const addCompany = async (req, res) => {
         const dueDate = new DueDate({
             companyId: savedCompanyID,
             companyEmail: company.email,
+            VATRegistered,
             ...bodyDueDates
         })
         const newDueDate = await dueDate.save()
@@ -325,6 +326,7 @@ export const updateCompanyDuedates = async (req, res) => {
             vatNumber: req.body.vatNumber,
             vatReturnsPeriod: req.body.vatReturnsPeriod,
             companyEmail: company.email,
+            VATRegistered: req.body.VATRegistered || false,
 
             // annual, quarterly
             quarter1DueBy: Date.parse(req.body.quarter1DueBy),

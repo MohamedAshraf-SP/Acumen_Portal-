@@ -112,6 +112,49 @@ export const refreshToken = async (req, res) => {
   );
 };
 
+export const updatePassword = async (req, res) => {
+  try {
+    const { email, currentPassword, newPassword } = req.body;
+    if (!email) {
+      res.status(400).json({ message: "Email is required!!" });
+    }
+    const currentUser = await User.findOne({ userName: email });
+    if (!currentUser || !(await bcrypt.compare(currentPassword, currentUser.password))) {
+      return res.status(401).json({ message: "Invalid email or password!!" });
+    }
+
+
+
+    const plainPassword = newPassword
+    const hashedPassword = await hashPassword(plainPassword);
+    const user = await User.findOneAndUpdate(
+      { userName: email },
+      { password: hashedPassword }
+    );
+
+    await sendEmail(
+      "AMS update password Notification!",
+      `Hello, `,
+      req.body.email,
+      `
+                this is your Password to AMS : ${plainPassword} \n
+    
+    
+                Thank you\n
+                AMS team.\n
+            `,
+      "reply to AMS Portal Email"
+    )
+
+
+    return res
+      .status(200)
+      .json({ message: "Password Updated and sent to your Email!!" });
+  } catch (e) {
+    console.log(e);
+    return res.status(400).json({ message: "Error resetting the password!!" });
+  }
+};
 export const resetPassword = async (req, res) => {
   try {
     const email = req.body.email;
@@ -129,17 +172,17 @@ export const resetPassword = async (req, res) => {
     if (user) {
       if (
         !(await sendEmail(
-          "Accumen portal reset password Notification!",
+          "AMS reset password Notification!",
           `Hello, `,
           req.body.email,
           `
-                these are your credintials to ACCUMEN PORTAL :
+                these are your credintials to AMS :
                 Email: ${email}
                 New Password: ${plainPassword} 
     
     
                 Thank you
-                accumen portal team.
+                AMS team.
             `,
           "reply to AMS Portal Email"
         ))

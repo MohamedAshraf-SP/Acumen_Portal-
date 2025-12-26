@@ -8,6 +8,7 @@ const dueDateSchema = new mongoose.Schema({
     },
     companyEmail:String,
     vatNumber: String,
+    VATRegistered:Boolean,
     vatReturnsPeriod: String, // annual, quarterly
     quarter1DueBy: Date,
     quarter2DueBy: Date,
