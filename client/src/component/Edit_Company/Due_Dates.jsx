@@ -6,7 +6,7 @@ import ComboBox from "../ComboBox";
 import { apiCall } from "../../services/globalService";
 import { fetchCompanyDetails } from "../../Rtk/slices/Fetchcompanydetails";
 import { setsuccessmsg } from "../../Rtk/slices/settingSlice";
-
+import { removenullUndefined } from '../../Utils/removeNullUndefined'
 // Helper function to format ISO date -> YYYY-MM-DD
 const formatDate = (dateString) => {
   if (!dateString) return "";
@@ -56,13 +56,13 @@ const Due_Dates = ({ vatRegitered, dueDates }) => {
           confirmationStatementDueBy: toISODate(values.confirmationStatementDueBy),
           annualVatDueBy: toISODate(values.annualVatDueBy),
         };
-
+        const cleanData = removenullUndefined(formattedValues)
         await apiCall(
           "PUT",
           `Companies/${companyId || companyCode}/duedates`,
           null,
           null,
-          formattedValues
+          cleanData
         );
         dispatch(fetchCompanyDetails({ companyId }));
         dispatch(
