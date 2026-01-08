@@ -10,13 +10,13 @@ const dueDateSchema = new mongoose.Schema({
     vatNumber: String,
     VATRegistered:Boolean,
     vatReturnsPeriod: String, // annual, quarterly
-    quarter1DueBy: Date,
-    quarter2DueBy: Date,
-    quarter3DueBy: Date,
-    quarter4DueBy: Date,
-    confirmationStatementDueBy: Date,
-    AccountsDueBy: Date,
-    annualVatDueBy: Date,
+    quarter1DueBy: Date|null,
+    quarter2DueBy: Date|null,
+    quarter3DueBy: Date|null,
+    quarter4DueBy: Date|null,
+    confirmationStatementDueBy: Date|null,
+    AccountsDueBy: Date|null,
+    annualVatDueBy: Date|null,
    
 }, { timestamps: true })
 export default mongoose.model('DueDate', dueDateSchema) 
