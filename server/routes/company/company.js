@@ -26,7 +26,10 @@ companyRoute.get("/abstracted", roleMiddleware(["admin", "accountant", "client"]
 companyRoute.get("/:id/duedates", roleMiddleware(["admin", "accountant", "client"]), getDueDateByCompanyId);
 companyRoute.get("/:id", roleMiddleware(["admin", "accountant", "client"]), getCompanyById);
 companyRoute.post("/", addCompany);
+/****************************** */
+//cornjob xx to send Emails duedates
 companyRoute.post("/cornjobs/duedates", dueDateCornJob);
+//****************************** */
 companyRoute.put("/:id/duedates", roleMiddleware(["admin", "accountant", "client"]), updateCompanyDuedates);
 companyRoute.put("/:id", roleMiddleware(["admin", "accountant", "client"]), updateCompany);
 companyRoute.delete("/:id", roleMiddleware(["admin", "accountant", "client"]), deleteCompany);

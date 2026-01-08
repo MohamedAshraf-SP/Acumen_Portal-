@@ -1,5 +1,5 @@
 
-import { checkDueDatesAndSendEmails } from "../../helpers/dueDateNotificaions.js";
+import { checkDueDatesAndSendEmails } from "../../cron-job/dueDateNotificaions.js";
 import dueDates from "../../models/company/dueDates.js";
 import {
     Company,

@@ -2,19 +2,18 @@ import mongoose from "mongoose";
 import Company from "../models/company/company.js";
 import DueDate from "../models/company/dueDates.js";
 import EmailTemplate from "../models/emailTemplate.js";
-import dueDates from "../models/company/dueDates.js";
-import { sendEmail } from "./emailSender.js";
+import { sendEmail } from "../helpers/emailSender.js";
 import Helper from "../models/helpers/helpers.js";
-import Client from "../models/users/clients.js";
-import { addEmailLog } from "./emailLogs.js";
+import { addEmailLog } from "../helpers/emailLogs.js";
+
+// here is the cron job to check due dates and send email notifications
+// this function can be called from  an endpoint
+// it will check all due dates and send email notifications accordingly
+// you can set up a cron job to call this function at desired intervals
+
+//    /api/v1/companies/cornjobs/duedates
 
 
-
-
-
-/**
- * Utility to calculate difference in days
- */
 
 // Helper to calculate days until a date
 function daysUntil(date) {
@@ -40,7 +39,7 @@ function replacePlaceholders(template = "", data = {}) {
 // Main checker and sender
 export async function checkDueDatesAndSendEmails() {
     try {
-        const dueDates = await DueDate.find()//.populate("companyId", "companyEmail");
+        const dueDates = await DueDate.find()
         if (!dueDates) {
             return {
                 success: false,
