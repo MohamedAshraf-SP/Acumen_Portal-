@@ -75,14 +75,14 @@ export const importClientsFromCSV = async (req, res) => {
 
 
             if (!sendEmail(
-                "welcome to ACCUMEN Portal",
+                "welcome to AMS",
                 `this is your ${savedUser.userRole} Credentials:
 
                 UserName: ${savedUser.userName}  ,
                 password: ${savedUser.password}
                 
                 
-                `, savedUser.userName, "accumen portal team")
+                `, savedUser.userName, "AMS team")
             ) {
                 await User.findByIdAndDelete(newUser._id)
                 await Client.findByIdAndDelete(clientID._id)
@@ -225,7 +225,7 @@ export const importClientsFromCSV = async (req, res) => {
                 })
 
 
-            addEmailLog(results[i]['Email'], "Accumen portal New User Notification!", results[i]['clientName'], results[i]['companyName'])
+            addEmailLog(results[i]['Email'], "AMS New User Notification!", results[i]['clientName'], results[i]['companyName'])
 
             await Company.findByIdAndUpdate(
                 companyID,

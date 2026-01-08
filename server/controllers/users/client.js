@@ -90,7 +90,7 @@ export const addClient = async (req, res) => {
         `Hello ${req.body.name}, `,
         req.body.email,
         `
-            these are your credintials to ACCUMEN PORTAL :
+            these are your credintials to AMS :
             Email: ${req.body.email}
             Password: ${plainPassword} 
 
@@ -98,7 +98,7 @@ export const addClient = async (req, res) => {
             Thank you
             AMS team.
         `,
-        "reply to Accumen Portal Email", ""
+        "reply to AMS Email", ""
       ))
     ) {
       await User.findByIdAndDelete(newUser._id);

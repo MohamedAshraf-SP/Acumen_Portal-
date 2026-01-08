@@ -84,19 +84,19 @@ export const addAccountant = async (req, res) => {
 
     if (
       !(await sendEmail(
-        "Accumen portal New User Notification!",
+        "AMS New User Notification!",
         `Hello ${req.body.name}, `,
         req.body.email,
         `
-               these are your credintials to ACCUMEN PORTAL :
+               these are your credintials to AMS :
                Email: ${req.body.email}
                Password: ${plainPassword}  
    
    
                Thank you
-               accumen portal team.
+               AMS team.
            `,
-        "reply to Accumen Portal Email"
+        "reply to AMS Email"
       ))
     ) {
       await User.findByIdAndDelete(newUser._id);
@@ -107,7 +107,7 @@ export const addAccountant = async (req, res) => {
 
     addEmailLog(
       req.body.email,
-      "Accumen portal New User Notification!",
+      "AMS New User Notification!",
       req.body.name
     );
 
