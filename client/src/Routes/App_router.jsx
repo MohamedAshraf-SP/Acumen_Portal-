@@ -21,7 +21,7 @@ const AdminHistory = lazy(() => import("../pages/Admin/History"));
 const AdminSettings = lazy(() => import("../pages/Admin/Settings"));
 const ImportClients = lazy(() => import("../pages/Admin/Import_clients"));
 const SentNotifications = lazy(() =>
-  import("../pages/Admin/sent_Notifications")
+  import("../pages/Admin/Sent_Notifications")
 );
 const EditUserCompany = lazy(() => import("../pages/Admin/EditCompany"));
 const AddNotifications = lazy(() => import("../pages/Admin/AddNotifications"));
@@ -150,7 +150,7 @@ const AppRouter = () => {
 
           {/* shared routes */}
           <Route
-            element={<ProtectedRoute allowedTo={["admin", "accountant","client"]} />}
+            element={<ProtectedRoute allowedTo={["admin", "accountant", "client"]} />}
           >
             <Route path="/companies/add-company" element={<AddCompany />} />
             <Route

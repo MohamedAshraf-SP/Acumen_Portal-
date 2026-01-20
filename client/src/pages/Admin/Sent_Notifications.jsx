@@ -7,7 +7,7 @@ import { FetchedItems } from "../../Rtk/slices/getAllslice";
 import { LuDot } from "react-icons/lu";
 // import components
 
-import { Table, Pagination, Empty } from "antd"; // Ant Design components
+import { Table, Pagination, Empty } from "antd";
 // import images
 import Nodataimg from "/images/table/No data.svg";
 import { formatDate } from "../../Utils";
@@ -102,7 +102,7 @@ const Sent_Notifications = () => {
         return record && (record.deadline === null || record == "") ? (
           <div>N/a</div>
         ) : (
-            record.deadline
+          record.deadline
         );
       },
     },
@@ -133,11 +133,10 @@ const Sent_Notifications = () => {
               {routes.map((route, index) => (
                 <li
                   key={index}
-                  className={`flex flex-row items-center ${
-                    index === routes.length - 1
+                  className={`flex flex-row items-center ${index === routes.length - 1
                       ? "text-gray-400"
                       : "text-slate-900 dark:text-gray-200"
-                  }`}
+                    }`}
                 >
                   {index > 0 && (
                     <LuDot className="text-lg text-gray-400 font-bold" />
